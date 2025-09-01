@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { ExternalLink, Eye, Code, Palette, Smartphone, Globe } from 'lucide-react';
 import { CSSProperties } from 'react';
 
@@ -9,88 +9,88 @@ const Portfolio = () => {
 
   const categories = [
     { id: 'all', label: 'All Projects' },
-    { id: 'web-design', label: 'Web Design' },
-    { id: 'web-development', label: 'Web Development' },
-    { id: 'app-development', label: 'App Development' },
-    { id: 'graphics', label: 'Graphics Design' },
+    { id: 'web', label: 'Web Development' },
+    { id: 'mobile', label: 'Mobile App' },
   ];
 
   const projects = [
     {
       id: 1,
-      title: "E-Commerce Platform",
-      category: "web-development",
-      description: "Modern online shopping platform with payment integration and inventory management.",
-      image: "/api/placeholder/400/300",
-      tags: ["React", "Node.js", "MongoDB", "Stripe"],
+      title: "Paynasi",
+      category: "web",
+      description: "Responsive payment app website with server-side rendering for SEO using Next.js.",
+      image: "/images/paynasi.png",
+      tags: ["Next.js", "TypeScript", "APIs"],
       liveUrl: "#",
       codeUrl: "#",
-      icon: <Code size={20} />
+      icon: <Globe size={32} />
     },
     {
       id: 2,
-      title: "Restaurant Website",
-      category: "web-design",
-      description: "Elegant restaurant website with online reservation system and menu showcase.",
-      image: "/api/placeholder/400/300",
-      tags: ["UI/UX", "Responsive", "WordPress", "SEO"],
+      title: "Latisec",
+      category: "web",
+      description: "Cybersecurity website with secure API integration using Angular and PHP.",
+      image: "/images/latisec.png",
+      tags: ["Angular", "PHP", "APIs"],
       liveUrl: "#",
       codeUrl: "#",
-      icon: <Globe size={20} />
+      icon: <Code size={32} />
     },
     {
       id: 3,
-      title: "Mobile Banking App",
-      category: "app-development",
-      description: "Secure mobile banking application with biometric authentication and real-time transactions.",
-      image: "/api/placeholder/400/300",
-      tags: ["React Native", "Firebase", "Biometric", "Security"],
+      title: "Wateramba",
+      category: "web",
+      description: "Aquatic services website with interactive UI using React and RESTful APIs.",
+      image: "/images/wateramba.png",
+      tags: ["React", "APIs", "JavaScript"],
       liveUrl: "#",
       codeUrl: "#",
-      icon: <Smartphone size={20} />
+      icon: <Globe size={32} />
     },
     {
       id: 4,
-      title: "Brand Identity Package",
-      category: "graphics",
-      description: "Complete brand identity design including logo, business cards, and marketing materials.",
-      image: "/api/placeholder/400/300",
-      tags: ["Logo Design", "Branding", "Print Design", "Adobe Suite"],
+      title: "Tranzit Mobile App",
+      category: "mobile",
+      description: "Transportation-of-goods app with real-time geolocation using Flutter.",
+      image: "/images/tranzit.png",
+      tags: ["Flutter", "Geolocation", "APIs"],
       liveUrl: "#",
       codeUrl: "#",
-      icon: <Palette size={20} />
+      icon: <Smartphone size={32} />
     },
     {
       id: 5,
-      title: "Task Management System",
-      category: "web-development",
-      description: "Collaborative project management tool with real-time updates and team communication.",
-      image: "/api/placeholder/400/300",
-      tags: ["Vue.js", "Laravel", "MySQL", "Socket.io"],
+      title: "Ibukatech",
+      category: "web",
+      description: "E-learning website with server-side rendering for SEO using Angular 17.",
+      image: "/images/ibuka.png",
+      tags: ["Angular", "TypeScript", "SSR"],
       liveUrl: "#",
       codeUrl: "#",
-      icon: <Code size={20} />
+      icon: <Code size={32} />
     },
     {
       id: 6,
-      title: "Portfolio Website",
-      category: "web-design",
-      description: "Creative portfolio website for a photography studio with gallery and booking system.",
-      image: "/api/placeholder/400/300",
-      tags: ["Next.js", "Tailwind", "Framer Motion", "CMS"],
+      title: "Cargo Connect",
+      category: "web",
+      description: "Cargo logistics PWA with real-time pricing and tracking using Laravel and React.",
+      image: "/images/cargo.png",
+      tags: ["Laravel", "React", "PWA"],
       liveUrl: "#",
       codeUrl: "#",
-      icon: <Globe size={20} />
+      icon: <Globe size={32} />
     },
   ];
 
-  const filteredProjects = activeFilter === 'all' 
-    ? projects 
-    : projects.filter(project => project.category === activeFilter);
+  const filteredProjects = useMemo(() => {
+    return activeFilter === 'all' 
+      ? projects 
+      : projects.filter(project => project.category === activeFilter);
+  }, [activeFilter]);
 
   const styles: { [key: string]: CSSProperties } = {
     section: {
-      padding: 'var(--spacing-3xl) 0',
+      padding: 'clamp(2rem, 8vw, 6rem) 0', // Responsive padding
       background: '#ffffff',
       fontFamily: 'var(--font-sans)',
       position: 'relative',
@@ -99,34 +99,37 @@ const Portfolio = () => {
     container: {
       maxWidth: '1280px',
       margin: '0 auto',
-      padding: '0 var(--spacing-lg)',
+      padding: '0 clamp(1rem, 4vw, 2rem)', // Responsive container padding
+      width: '100%',
+      boxSizing: 'border-box',
     },
     header: {
       textAlign: 'center',
-      marginBottom: 'var(--spacing-3xl)',
+      marginBottom: 'clamp(2rem, 6vw, 3rem)', // Responsive margin
+      padding: '0 clamp(0.5rem, 2vw, 1rem)', // Inner padding for mobile
     },
     tagline: {
       color: 'var(--color-primary-500)',
-      fontSize: '1rem',
+      fontSize: 'clamp(0.875rem, 2.5vw, 1rem)', // Responsive tagline
       fontWeight: '600',
       fontFamily: 'var(--font-heading)',
-      marginBottom: 'var(--spacing-sm)',
+      marginBottom: 'clamp(0.5rem, 2vw, 1rem)', // Responsive margin
       textTransform: 'uppercase',
       letterSpacing: '0.1em',
       display: 'block',
     },
     title: {
-      fontSize: 'clamp(2rem, 4vw, 3rem)',
+      fontSize: 'clamp(1.75rem, 6vw, 3rem)', // Responsive title
       fontWeight: '700',
       fontFamily: 'var(--font-heading)',
       color: '#1f2937',
-      marginBottom: 'var(--spacing-md)',
+      marginBottom: 'clamp(1rem, 3vw, 1.5rem)', // Responsive margin
       lineHeight: '1.2',
     },
     description: {
-      fontSize: '1.125rem',
+      fontSize: 'clamp(1rem, 3vw, 1.125rem)', // Responsive description
       color: '#6b7280',
-      maxWidth: '600px',
+      maxWidth: '100%', // Full width on mobile
       margin: '0 auto',
       lineHeight: '1.6',
     },
@@ -134,19 +137,20 @@ const Portfolio = () => {
       display: 'flex',
       justifyContent: 'center',
       flexWrap: 'wrap',
-      gap: 'var(--spacing-sm)',
-      marginBottom: 'var(--spacing-3xl)',
+      gap: 'clamp(0.5rem, 2vw, 1rem)', // Responsive gap
+      marginBottom: 'clamp(2rem, 6vw, 3rem)', // Responsive margin
     },
     filterButton: {
       background: '#f8fafc',
       color: '#64748b',
       border: '1px solid #e2e8f0',
-      padding: '8px 16px',
+      padding: 'clamp(6px, 2vw, 8px) clamp(12px, 3vw, 16px)', // Responsive padding
       borderRadius: 'var(--radius-lg)',
-      fontSize: '0.875rem',
+      fontSize: 'clamp(0.75rem, 2vw, 0.875rem)', // Responsive font size
       fontWeight: '500',
       cursor: 'pointer',
       transition: 'all var(--transition-default)',
+      whiteSpace: 'nowrap', // Prevent text wrapping
     },
     activeFilterButton: {
       background: 'var(--color-primary-500)',
@@ -155,8 +159,8 @@ const Portfolio = () => {
     },
     projectsGrid: {
       display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
-      gap: 'var(--spacing-xl)',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', // Smaller minimum for mobile
+      gap: 'clamp(1rem, 4vw, 2rem)', // Responsive grid gap
     },
     projectCard: {
       background: '#ffffff',
@@ -170,7 +174,7 @@ const Portfolio = () => {
     imageWrapper: {
       position: 'relative',
       width: '100%',
-      height: '240px',
+      height: 'clamp(180px, 40vw, 240px)', // Responsive image height
       background: 'linear-gradient(135deg, #f8fafc, #e2e8f0)',
       display: 'flex',
       alignItems: 'center',
@@ -185,7 +189,7 @@ const Portfolio = () => {
       alignItems: 'center',
       justifyContent: 'center',
       color: '#ffffff',
-      fontSize: '1.5rem',
+      fontSize: 'clamp(1.25rem, 4vw, 1.5rem)', // Responsive placeholder text
       fontWeight: '600',
     },
     overlay: {
@@ -198,7 +202,7 @@ const Portfolio = () => {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      gap: 'var(--spacing-md)',
+      gap: 'clamp(1rem, 3vw, 1.5rem)', // Responsive button gap
       opacity: 0,
       transition: 'all var(--transition-default)',
     },
@@ -207,8 +211,8 @@ const Portfolio = () => {
       color: '#1f2937',
       border: 'none',
       borderRadius: '50%',
-      width: '40px',
-      height: '40px',
+      width: 'clamp(36px, 8vw, 40px)', // Responsive button size
+      height: 'clamp(36px, 8vw, 40px)', // Responsive button size
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -216,35 +220,35 @@ const Portfolio = () => {
       transition: 'all var(--transition-default)',
     },
     cardContent: {
-      padding: 'var(--spacing-lg)',
+      padding: 'clamp(1rem, 4vw, 1.5rem)', // Responsive card padding
     },
     projectTitle: {
-      fontSize: '1.25rem',
+      fontSize: 'clamp(1rem, 3.5vw, 1.25rem)', // Responsive title
       fontWeight: '600',
       fontFamily: 'var(--font-heading)',
       color: '#1f2937',
-      marginBottom: 'var(--spacing-xs)',
+      marginBottom: 'clamp(0.5rem, 2vw, 0.75rem)', // Responsive margin
       display: 'flex',
       alignItems: 'center',
-      gap: 'var(--spacing-xs)',
+      gap: 'clamp(0.5rem, 2vw, 0.75rem)', // Responsive icon gap
     },
     projectDescription: {
-      fontSize: '0.975rem',
+      fontSize: 'clamp(0.875rem, 2.5vw, 0.975rem)', // Responsive description
       color: '#6b7280',
       lineHeight: '1.5',
-      marginBottom: 'var(--spacing-md)',
+      marginBottom: 'clamp(1rem, 3vw, 1.5rem)', // Responsive margin
     },
     tagsList: {
       display: 'flex',
       flexWrap: 'wrap',
-      gap: 'var(--spacing-xs)',
+      gap: 'clamp(0.375rem, 1.5vw, 0.5rem)', // Responsive tag gap
     },
     tag: {
       background: '#f1f5f9',
       color: '#475569',
-      padding: '4px 8px',
+      padding: 'clamp(2px, 1vw, 4px) clamp(6px, 2vw, 8px)', // Responsive tag padding
       borderRadius: 'var(--radius-md)',
-      fontSize: '0.75rem',
+      fontSize: 'clamp(0.625rem, 2vw, 0.75rem)', // Responsive tag font size
       fontWeight: '500',
       border: '1px solid #e2e8f0',
     },
@@ -253,25 +257,94 @@ const Portfolio = () => {
   return (
     <>
       <style jsx>{`
-        .project-card:hover {
-          transform: translateY(-8px);
-          box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-          border-color: var(--color-primary-500);
+        /* Mobile First Responsive Styles */
+        .filter-buttons {
+          justify-content: center;
+          flex-wrap: wrap;
         }
         
-        .project-card:hover .overlay {
-          opacity: 1;
+        .projects-grid {
+          grid-template-columns: 1fr;
+          gap: 1.5rem;
         }
-        
-        .action-button:hover {
-          background: var(--color-primary-500);
-          color: #ffffff;
-          transform: scale(1.1);
+
+        /* Small Mobile (up to 480px) */
+        @media (max-width: 480px) {
+          .filter-buttons {
+            justify-content: flex-start;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+          }
+          
+          .filter-buttons::-webkit-scrollbar {
+            display: none;
+          }
+          
+          .filter-button {
+            flex-shrink: 0;
+          }
+          
+          .projects-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+          }
         }
-        
-        .filter-button:hover:not(.active) {
-          background: #f1f5f9;
-          color: #475569;
+
+        /* Tablet (641px - 768px) */
+        @media (min-width: 641px) and (max-width: 768px) {
+          .projects-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+          }
+        }
+
+        /* Desktop (1025px and up) */
+        @media (min-width: 1025px) {
+          .projects-grid {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+          }
+        }
+
+        /* Hover Effects - Only on devices that support hover */
+        @media (hover: hover) and (pointer: fine) {
+          .project-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            border-color: var(--color-primary-500);
+          }
+          
+          .project-card:hover .overlay {
+            opacity: 1;
+          }
+          
+          .action-button:hover {
+            background: var(--color-primary-500);
+            color: #ffffff;
+            transform: scale(1.1);
+          }
+          
+          .filter-button:hover:not(.active) {
+            background: #f1f5f9;
+            color: #475569;
+          }
+        }
+
+        /* Touch devices - show overlay on tap */
+        @media (hover: none) and (pointer: coarse) {
+          .project-card:active .overlay {
+            opacity: 1;
+          }
+        }
+
+        /* Focus states for accessibility */
+        .project-card:focus,
+        .filter-button:focus,
+        .action-button:focus {
+          outline: 2px solid var(--color-primary-500);
+          outline-offset: 2px;
         }
 
         /* Override global styles */
@@ -299,14 +372,61 @@ const Portfolio = () => {
           color: #6b7280 !important;
         }
 
-        @media (max-width: 768px) {
-          .projects-grid {
-            grid-template-columns: 1fr;
+        /* Reduced motion support */
+        @media (prefers-reduced-motion: reduce) {
+          .project-card,
+          .action-button,
+          .overlay {
+            transition: none !important;
           }
-          .filter-buttons {
-            justify-content: flex-start;
-            overflow-x: auto;
-            padding-bottom: 10px;
+          
+          .project-card:hover {
+            transform: none !important;
+          }
+        }
+
+        /* Dark mode adjustments */
+        @media (prefers-color-scheme: dark) {
+          .portfolio-section {
+            background: var(--background-secondary, #1f2937);
+          }
+          
+          .portfolio-title {
+            color: #ffffff !important;
+          }
+          
+          .portfolio-description {
+            color: #d1d5db !important;
+          }
+          
+          .project-card {
+            background: var(--card, #374151);
+            border-color: var(--border-light, #4b5563);
+          }
+          
+          .project-card-title {
+            color: #ffffff !important;
+          }
+          
+          .project-card-description {
+            color: #d1d5db !important;
+          }
+          
+          .filter-button {
+            background: #374151;
+            color: #d1d5db;
+            border-color: #4b5563;
+          }
+          
+          .filter-button.active {
+            background: var(--color-primary-500);
+            color: #ffffff;
+          }
+          
+          .tag {
+            background: #374151;
+            color: #d1d5db;
+            border-color: #4b5563;
           }
         }
       `}</style>
@@ -348,8 +468,37 @@ const Portfolio = () => {
                 className="project-card"
               >
                 <div style={styles.imageWrapper}>
-                  <div style={styles.imagePlaceholder}>
-                    {project.icon}
+                  <img 
+                    src={project.image}
+                    alt={project.title}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      display: 'block'
+                    }}
+                    onError={(e) => {
+                      // Fallback to gradient with icon if image fails to load
+                      e.currentTarget.style.display = 'none';
+                      if (e.currentTarget.nextElementSibling) {
+                        (e.currentTarget.nextElementSibling as HTMLElement).style.display = 'flex';
+                      }
+                    }}
+                  />
+                  <div 
+                    style={{
+                      ...styles.imagePlaceholder,
+                      display: 'none' // Hidden by default, shows on image error
+                    }}
+                    className="image-fallback"
+                  >
+                    {React.cloneElement(project.icon, {
+                      size: 'clamp(24, 6vw, 32)',
+                      style: { 
+                        width: 'clamp(24px, 6vw, 32px)', 
+                        height: 'clamp(24px, 6vw, 32px)' 
+                      }
+                    })}
                   </div>
                   <div style={styles.overlay} className="overlay">
                     <button style={styles.actionButton} className="action-button">
@@ -362,7 +511,7 @@ const Portfolio = () => {
                 </div>
                 <div style={styles.cardContent}>
                   <h3 style={styles.projectTitle} className="project-card-title">
-                    {project.icon}
+                    {React.cloneElement(project.icon, { size: 16 })}
                     {project.title}
                   </h3>
                   <p style={styles.projectDescription} className="project-card-description">
