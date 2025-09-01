@@ -49,16 +49,42 @@ const Contact = () => {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = () => {
+    // Validate required fields
+    if (!formData.name || !formData.email || !formData.subject || !formData.message) {
+      alert('Please fill in all fields before sending.');
+      return;
+    }
+
     setIsSubmitting(true);
     
-    // Simulate form submission
+    // Format the message for WhatsApp
+    const whatsappMessage = `*New Contact Form Submission*%0A%0A` +
+      `*Name:* ${formData.name}%0A` +
+      `*Email:* ${formData.email}%0A` +
+      `*Subject:* ${formData.subject}%0A%0A` +
+      `*Message:*%0A${formData.message}%0A%0A` +
+      `----%0ASent from DigitBye Contact Form`;
+
+    // Your WhatsApp number (in international format without + sign)
+    const whatsappNumber = '254742580239';
+    
+    // Create WhatsApp URL
+    const whatsappURL = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
+    
+    // Simulate brief loading then open WhatsApp
     setTimeout(() => {
       setIsSubmitting(false);
-      alert('Message sent successfully!');
+      
+      // Open WhatsApp in a new tab/window
+      window.open(whatsappURL, '_blank');
+      
+      // Clear the form after successful "submission"
       setFormData({ name: '', email: '', subject: '', message: '' });
-    }, 2000);
+      
+      // Show success message
+      alert('Redirecting to WhatsApp! Your message will be sent when you click send in WhatsApp.');
+    }, 1000);
   };
 
   const styles: { [key: string]: CSSProperties } = {
@@ -232,6 +258,18 @@ const Contact = () => {
       gap: 'var(--spacing-xs)',
       marginTop: 'var(--spacing-md)',
     },
+    whatsappNotice: {
+      background: '#dcfce7',
+      border: '1px solid #bbf7d0',
+      borderRadius: 'var(--radius-md)',
+      padding: 'var(--spacing-md)',
+      marginTop: 'var(--spacing-md)',
+      fontSize: '0.875rem',
+      color: '#166534',
+      display: 'flex',
+      alignItems: 'center',
+      gap: 'var(--spacing-xs)',
+    },
   };
 
   return (
@@ -273,6 +311,11 @@ const Contact = () => {
         
         .contact-description {
           color: #6b7280 !important;
+        }
+
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
         }
 
         @media (max-width: 768px) {
@@ -323,7 +366,7 @@ const Contact = () => {
                 <Send size={24} />
                 Send Message
               </h3>
-              <form style={styles.form} onSubmit={handleSubmit}>
+              <div style={styles.form}>
                 <div style={styles.inputGroup}>
                   <label style={styles.label} htmlFor="name">Full Name</label>
                   <input
@@ -384,7 +427,8 @@ const Contact = () => {
                 </div>
 
                 <button
-                  type="submit"
+                  type="button"
+                  onClick={handleSubmit}
                   style={styles.submitButton}
                   className="submit-button"
                   disabled={isSubmitting}
@@ -399,16 +443,21 @@ const Contact = () => {
                         borderRadius: '50%',
                         animation: 'spin 1s linear infinite'
                       }} />
-                      Sending...
+                      Opening WhatsApp...
                     </>
                   ) : (
                     <>
                       <Send size={16} />
-                      Send Message
+                      Send via WhatsApp
                     </>
                   )}
                 </button>
-              </form>
+
+                <div style={styles.whatsappNotice}>
+                  <MessageSquare size={16} />
+                  This form will open WhatsApp with your message pre-filled. Just click send in WhatsApp to deliver your message.
+                </div>
+              </div>
             </div>
           </div>
         </div>
