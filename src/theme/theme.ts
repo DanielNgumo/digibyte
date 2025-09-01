@@ -261,16 +261,20 @@ export const theme = {
 export type Theme = typeof theme;
 export type ThemeColors = typeof theme.colors;
 
-// Helper functions for theme usage
+// Replace the getColor function with this properly typed version:
 export const getColor = (colorPath: string): string => {
   const keys = colorPath.split('.');
-  let value: any = theme.colors;
+  let value: unknown = theme.colors;
   
   for (const key of keys) {
-    value = value?.[key];
+    if (typeof value === 'object' && value !== null && key in value) {
+      value = (value as Record<string, unknown>)[key];
+    } else {
+      return '#000000'; // fallback color
+    }
   }
   
-  return value || '#000000';
+  return typeof value === 'string' ? value : '#000000';
 };
 
 // CSS Custom Properties for dynamic theming

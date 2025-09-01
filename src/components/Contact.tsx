@@ -558,11 +558,11 @@ const Contact = () => {
           <div style={styles.header} className="contact-header">
             <span style={styles.tagline} className="contact-tagline">Contact Us</span>
             <h2 style={styles.title} className="contact-title">
-              Let's Start Your Project
+              Lets Start Your Project
             </h2>
             <p style={styles.description} className="contact-description">
               Ready to transform your digital presence? Get in touch with us today 
-              and let's discuss how we can help bring your vision to life.
+              and lets discuss how we can help bring your vision to life.
             </p>
           </div>
 

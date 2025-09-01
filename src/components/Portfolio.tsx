@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState, useMemo, useCallback } from 'react';
-import { ExternalLink, Eye, Code, Palette, Smartphone, Globe } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { ExternalLink, Eye, Code, Smartphone, Globe } from 'lucide-react';
 import { CSSProperties } from 'react';
+import Image from 'next/image';
 
 const Portfolio = () => {
   const [activeFilter, setActiveFilter] = useState('all');
@@ -13,7 +14,7 @@ const Portfolio = () => {
     { id: 'mobile', label: 'Mobile App' },
   ];
 
-  const projects = [
+  const projects = useMemo(() => [
     {
       id: 1,
       title: "Paynasi",
@@ -80,13 +81,13 @@ const Portfolio = () => {
       codeUrl: "#",
       icon: <Globe size={32} />
     },
-  ];
+  ], []);
 
   const filteredProjects = useMemo(() => {
     return activeFilter === 'all' 
       ? projects 
       : projects.filter(project => project.category === activeFilter);
-  }, [activeFilter]);
+  }, [activeFilter, projects]);
 
   const styles: { [key: string]: CSSProperties } = {
     section: {
@@ -439,7 +440,7 @@ const Portfolio = () => {
               Recent Projects
             </h2>
             <p style={styles.description} className="portfolio-description">
-              Take a look at some of our recent work and see how we've helped 
+              Take a look at some of our recent work and see how we&apos;ve helped 
               businesses transform their digital presence.
             </p>
           </div>
@@ -468,20 +469,22 @@ const Portfolio = () => {
                 className="project-card"
               >
                 <div style={styles.imageWrapper}>
-                  <img 
+                  <Image
                     src={project.image}
                     alt={project.title}
+                    width={280} // Adjust based on your design
+                    height={240} // Match the height from styles.imageWrapper
                     style={{
                       width: '100%',
                       height: '100%',
                       objectFit: 'cover',
-                      display: 'block'
                     }}
                     onError={(e) => {
                       // Fallback to gradient with icon if image fails to load
-                      e.currentTarget.style.display = 'none';
-                      if (e.currentTarget.nextElementSibling) {
-                        (e.currentTarget.nextElementSibling as HTMLElement).style.display = 'flex';
+                      const target = e.target as HTMLElement;
+                      target.style.display = 'none';
+                      if (target.nextElementSibling) {
+                        (target.nextElementSibling as HTMLElement).style.display = 'flex';
                       }
                     }}
                   />

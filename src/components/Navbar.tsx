@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Menu, X, Phone } from 'lucide-react';
+import Link from 'next/link';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -688,7 +689,7 @@ const Navbar = () => {
         {/* Main Navbar */}
         <div className="container">
           <div className="nav-content">
-            <a href="/" className="logo">DigiByte</a>
+            <Link href="/" className="logo">DigiByte</Link>
             
             <div className="desktop-nav">
               {navLinks.map((link) => (

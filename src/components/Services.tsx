@@ -475,7 +475,7 @@ const Services = () => {
             </h2>
             <p style={styles.description} className="services-description">
               We offer a full range of technology services to help your business 
-              succeed in the digital world. From design to development, we've got you covered.
+              succeed in the digital world. From design to development, we ve got you covered.
             </p>
           </div>
 

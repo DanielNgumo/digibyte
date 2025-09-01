@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { Star, Quote, ChevronLeft, ChevronRight, Users } from 'lucide-react';
 
 const Testimonials = () => {
@@ -68,7 +69,7 @@ const Testimonials = () => {
             What Our <span className="bg-gradient-primary bg-clip-text text-transparent">Clients Say</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Don't just take our word for it. Hear from the businesses we've helped transform their digital presence.
+            Don&apos;t just take our word for it. Hear from the businesses we&apos;ve helped transform their digital presence.
           </p>
         </div>
 
@@ -91,14 +92,16 @@ const Testimonials = () => {
 
             {/* Testimonial text */}
             <blockquote className="text-xl md:text-2xl leading-relaxed text-foreground mb-8 font-medium">
-              "{current.text}"
+              &ldquo;{current.text}&rdquo;
             </blockquote>
 
             {/* Client info */}
             <div className="flex items-center gap-4">
-              <img
+              <Image
                 src={current.image}
                 alt={current.name}
+                width={64}
+                height={64}
                 className="w-16 h-16 rounded-full object-cover border-4 border-primary/20"
               />
               <div>
@@ -113,6 +116,7 @@ const Testimonials = () => {
               <button
                 onClick={prevTestimonial}
                 className="flex items-center justify-center w-12 h-12 bg-muted hover:bg-primary hover:text-white rounded-full transition-all duration-300"
+                aria-label="Previous testimonial"
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
@@ -126,6 +130,7 @@ const Testimonials = () => {
                     className={`w-3 h-3 rounded-full transition-all duration-300 ${
                       index === currentTestimonial ? 'bg-primary' : 'bg-muted'
                     }`}
+                    aria-label={`Go to testimonial ${index + 1}`}
                   />
                 ))}
               </div>
@@ -133,6 +138,7 @@ const Testimonials = () => {
               <button
                 onClick={nextTestimonial}
                 className="flex items-center justify-center w-12 h-12 bg-muted hover:bg-primary hover:text-white rounded-full transition-all duration-300"
+                aria-label="Next testimonial"
               >
                 <ChevronRight className="w-5 h-5" />
               </button>
