@@ -1,23 +1,32 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { Menu, X, Phone } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Menu, X, Phone, MapPin, Mail } from 'lucide-react';
 import Link from 'next/link';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  // Optimized scroll handler with throttling
   useEffect(() => {
+    let ticking = false;
+    
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          setIsScrolled(window.scrollY > 20);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mobile menu when window is resized to desktop
+  // Auto-close mobile menu on resize
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024) {
@@ -25,9 +34,22 @@ const Navbar = () => {
       }
     };
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener('resize', handleResize, { passive: true });
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  // Prevent body scroll when menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMobileMenuOpen]);
 
   const navLinks = [
     { name: 'Home', href: '#hero' },
@@ -37,14 +59,14 @@ const Navbar = () => {
     { name: 'Contact', href: '#contact' },
   ];
 
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+  const handleNavClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     
-    const targetId = href.substring(1); // Remove the # from href
+    const targetId = href.substring(1);
     const targetElement = document.getElementById(targetId);
     
     if (targetElement) {
-      const offsetTop = targetElement.offsetTop - 120; // Account for fixed navbar height
+      const offsetTop = targetElement.offsetTop - 100;
       
       window.scrollTo({
         top: offsetTop,
@@ -52,646 +74,44 @@ const Navbar = () => {
       });
     }
     
-    // Close mobile menu if open
     setIsMobileMenuOpen(false);
-  };
+  }, []);
+
+  const toggleMobileMenu = useCallback(() => {
+    setIsMobileMenuOpen(prev => !prev);
+  }, []);
 
   return (
     <>
-      <style jsx>{`
-        .navbar {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          z-index: 50;
-          background: ${isScrolled ? 'rgba(0, 48, 135, 0.95)' : 'var(--color-secondary-600)'};
-          backdrop-filter: ${isScrolled ? 'blur(10px)' : 'none'};
-          box-shadow: ${isScrolled ? 'var(--shadow-lg)' : 'none'};
-          transition: all var(--transition-default);
-          font-family: var(--font-sans);
-        }
-
-        .top-bar {
-          background: var(--color-neutral-900);
-          color: #ffffff;
-          padding: 6px 1rem;
-          font-size: 13px;
-          font-weight: 400;
-          line-height: 1.4;
-        }
-
-        .top-bar-content {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          max-width: 1280px;
-          margin: 0 auto;
-          min-height: 32px;
-        }
-
-        .top-bar-left {
-          display: flex;
-          align-items: center;
-          gap: 20px;
-          flex-wrap: wrap;
-        }
-
-        .top-bar-item {
-          display: flex;
-          align-items: center;
-          gap: 4px;
-          white-space: nowrap;
-        }
-
-        .top-bar-right {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          flex-shrink: 0;
-        }
-
-        .top-bar-highlight {
-          color: var(--color-primary-500);
-          font-weight: 500;
-        }
-
-        .container {
-          max-width: 1280px;
-          margin: 0 auto;
-          padding: 0 1rem;
-        }
-
-        .nav-content {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          height: 60px;
-        }
-
-        .logo {
-          color: #ffffff;
-          font-size: 24px;
-          font-weight: 800;
-          font-family: var(--font-heading);
-          text-decoration: none;
-          transition: all var(--transition-default);
-          flex-shrink: 0;
-        }
-
-        .logo:hover {
-          color: var(--color-primary-500);
-          transform: scale(1.05);
-        }
-
-        .desktop-nav {
-          display: none;
-          align-items: center;
-          gap: 24px;
-        }
-
-        .nav-link {
-          color: #ffffff;
-          font-weight: 500;
-          font-size: 15px;
-          text-decoration: none;
-          padding: 8px 12px;
-          position: relative;
-          transition: all var(--transition-default);
-          border-radius: var(--radius-sm);
-          white-space: nowrap;
-        }
-
-        .nav-link::after {
-          content: '';
-          position: absolute;
-          bottom: 4px;
-          left: 12px;
-          right: 12px;
-          height: 2px;
-          background: var(--color-primary-500);
-          transform: scaleX(0);
-          transition: transform var(--transition-default);
-          border-radius: 1px;
-        }
-
-        .nav-link:hover {
-          color: var(--color-primary-500);
-          background: rgba(255, 255, 255, 0.1);
-        }
-
-        .nav-link:hover::after {
-          transform: scaleX(1);
-        }
-
-        .contact-section {
-          display: none;
-          align-items: center;
-          gap: 12px;
-          padding: 6px 12px;
-          background: rgba(255, 255, 255, 0.1);
-          border-radius: var(--radius-md);
-          backdrop-filter: blur(10px);
-          border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .contact-text {
-          color: #ffffff;
-          font-size: 13px;
-          font-weight: 500;
-          margin: 0;
-          white-space: nowrap;
-        }
-
-        .phone-link {
-          color: var(--color-primary-500);
-          font-size: 14px;
-          font-weight: 600;
-          text-decoration: none;
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          transition: all var(--transition-default);
-          white-space: nowrap;
-        }
-
-        .phone-link:hover {
-          color: var(--text-inverse);
-          transform: scale(1.05);
-        }
-
-        .mobile-button {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 8px;
-          border-radius: var(--radius-md);
-          color: var(--text-inverse);
-          background: none;
-          border: none;
-          cursor: pointer;
-          transition: all var(--transition-default);
-          width: 40px;
-          height: 40px;
-        }
-
-        .mobile-button:hover {
-          background: rgba(255, 255, 255, 0.1);
-          transform: scale(1.1);
-        }
-
-        .mobile-menu {
-          position: absolute;
-          top: 100%;
-          left: 0;
-          right: 0;
-          max-height: ${isMobileMenuOpen ? '500px' : '0'};
-          opacity: ${isMobileMenuOpen ? 1 : 0};
-          overflow: hidden;
-          transition: all var(--transition-slow);
-          background: var(--color-secondary-600);
-          backdrop-filter: blur(10px);
-          border-top: 1px solid rgba(255, 255, 255, 0.1);
-          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-        }
-
-        .mobile-menu-content {
-          padding: 20px;
-        }
-
-        .mobile-nav-link {
-          display: block;
-          color: var(--text-inverse);
-          font-weight: 500;
-          font-size: 16px;
-          text-decoration: none;
-          padding: 14px 0;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-          transition: all var(--transition-default);
-          position: relative;
-        }
-
-        .mobile-nav-link:last-child {
-          border-bottom: none;
-        }
-
-        .mobile-nav-link:hover {
-          color: var(--color-primary-500);
-          padding-left: 12px;
-        }
-
-        .mobile-contact {
-          margin-top: 20px;
-          padding-top: 20px;
-          border-top: 1px solid rgba(255, 255, 255, 0.1);
-          text-align: center;
-        }
-
-        .social-link {
-          color: var(--text-inverse);
-          font-size: 16px;
-          text-decoration: none;
-          transition: all var(--transition-default);
-          opacity: 0.8;
-          width: 28px;
-          height: 28px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 50%;
-          background: rgba(255, 255, 255, 0.1);
-        }
-
-        .social-link:hover {
-          color: var(--color-primary-500);
-          opacity: 1;
-          transform: scale(1.2);
-          background: rgba(255, 255, 255, 0.2);
-        }
-
-        .overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          z-index: 40;
-          background-color: rgba(0, 0, 0, 0.5);
-          backdrop-filter: blur(4px);
-          opacity: ${isMobileMenuOpen ? 1 : 0};
-          visibility: ${isMobileMenuOpen ? 'visible' : 'hidden'};
-          transition: all var(--transition-default);
-        }
-
-        /* Responsive breakpoints */
-        
-        /* Small mobile devices (320px - 480px) */
-        @media (max-width: 480px) {
-          .top-bar {
-            padding: 4px 0.75rem;
-            font-size: 11px;
-          }
-          
-          .top-bar-left {
-            gap: 12px;
-            overflow: hidden;
-          }
-          
-          .top-bar-item:nth-child(2) {
-            display: none;
-          }
-          
-          .top-bar-item:nth-child(3) {
-            font-size: 10px;
-          }
-          
-          .container {
-            padding: 0 0.75rem;
-          }
-          
-          .nav-content {
-            height: 56px;
-          }
-          
-          .logo {
-            font-size: 20px;
-          }
-          
-          .mobile-button {
-            width: 36px;
-            height: 36px;
-          }
-          
-          .mobile-menu-content {
-            padding: 16px;
-          }
-          
-          .mobile-nav-link {
-            font-size: 15px;
-            padding: 12px 0;
-          }
-          
-          .top-bar-right {
-            gap: 6px;
-          }
-          
-          .social-link {
-            width: 24px;
-            height: 24px;
-            font-size: 14px;
-          }
-        }
-
-        /* Mobile devices (481px - 768px) */
-        @media (min-width: 481px) and (max-width: 768px) {
-          .top-bar {
-            font-size: 12px;
-          }
-          
-          .top-bar-left {
-            gap: 16px;
-          }
-          
-          .top-bar-item:nth-child(3) {
-            display: none;
-          }
-          
-          .logo {
-            font-size: 22px;
-          }
-          
-          .nav-content {
-            height: 58px;
-          }
-        }
-
-        /* Tablet devices (769px - 1023px) */
-        @media (min-width: 769px) and (max-width: 1023px) {
-          .top-bar {
-            font-size: 13px;
-          }
-          
-          .top-bar-left {
-            gap: 24px;
-          }
-          
-          .logo {
-            font-size: 26px;
-          }
-          
-          .contact-section {
-            display: flex;
-          }
-          
-          .contact-text {
-            font-size: 12px;
-          }
-          
-          .phone-link {
-            font-size: 13px;
-          }
-        }
-
-        /* Small desktop (1024px - 1199px) */
-        @media (min-width: 1024px) and (max-width: 1199px) {
-          .desktop-nav {
-            display: flex;
-            gap: 20px;
-          }
-          
-          .mobile-button {
-            display: none;
-          }
-          
-          .contact-section {
-            display: flex;
-          }
-          
-          .nav-link {
-            font-size: 14px;
-            padding: 8px 10px;
-          }
-          
-          .container {
-            padding: 0 1.5rem;
-          }
-        }
-
-        /* Large desktop (1200px+) */
-        @media (min-width: 1200px) {
-          .desktop-nav {
-            display: flex;
-            gap: 32px;
-          }
-          
-          .mobile-button {
-            display: none;
-          }
-          
-          .contact-section {
-            display: flex;
-          }
-          
-          .container {
-            padding: 0 2rem;
-          }
-          
-          .logo {
-            font-size: 28px;
-          }
-          
-          .nav-link {
-            font-size: 16px;
-          }
-          
-          .top-bar {
-            font-size: 14px;
-          }
-        }
-
-        /* Ultra-wide screens (1400px+) */
-        @media (min-width: 1400px) {
-          .container {
-            padding: 0 3rem;
-          }
-          
-          .top-bar-content {
-            padding: 0 3rem;
-          }
-          
-          .desktop-nav {
-            gap: 40px;
-          }
-        }
-
-        /* Landscape mobile orientation */
-        @media (max-height: 500px) and (orientation: landscape) {
-          .top-bar {
-            padding: 3px 1rem;
-            font-size: 11px;
-          }
-          
-          .nav-content {
-            height: 50px;
-          }
-          
-          .logo {
-            font-size: 20px;
-          }
-          
-          .mobile-menu {
-            max-height: ${isMobileMenuOpen ? '300px' : '0'};
-          }
-          
-          .mobile-menu-content {
-            padding: 12px;
-          }
-          
-          .mobile-nav-link {
-            padding: 10px 0;
-            font-size: 14px;
-          }
-        }
-
-        /* High DPI displays */
-        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-          .logo {
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-          }
-          
-          .nav-link {
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-          }
-        }
-
-        /* Animation for smooth scrolling */
-        html {
-          scroll-behavior: smooth;
-        }
-
-        /* Prevent body scroll when mobile menu is open */
-        ${isMobileMenuOpen ? 'body { overflow: hidden; }' : ''}
-
-        /* Focus states for accessibility */
-        .nav-link:focus,
-        .phone-link:focus,
-        .mobile-button:focus {
-          outline: 2px solid var(--color-primary-500);
-          outline-offset: 2px;
-        }
-
-        /* Hover states with better touch support */
-        @media (hover: hover) {
-          .nav-link:hover {
-            color: var(--color-primary-500);
-            background: rgba(255, 255, 255, 0.1);
-          }
-
-          .nav-link:hover::after {
-            transform: scaleX(1);
-          }
-
-          .mobile-button:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: scale(1.1);
-          }
-
-          .social-link:hover {
-            color: var(--color-primary-500);
-            opacity: 1;
-            transform: scale(1.2);
-            background: rgba(255, 255, 255, 0.2);
-          }
-
-          .logo:hover {
-            color: var(--color-primary-500);
-            transform: scale(1.05);
-          }
-
-          .phone-link:hover {
-            color: var(--text-inverse);
-            transform: scale(1.05);
-          }
-
-          .mobile-nav-link:hover {
-            color: var(--color-primary-500);
-            padding-left: 12px;
-          }
-        }
-
-        /* Touch devices - remove hover effects */
-        @media (hover: none) {
-          .nav-link:active {
-            color: var(--color-primary-500);
-            background: rgba(255, 255, 255, 0.1);
-          }
-
-          .mobile-button:active {
-            background: rgba(255, 255, 255, 0.2);
-          }
-        }
-
-        /* Print styles */
-        @media print {
-          .navbar {
-            display: none;
-          }
-        }
-
-        /* Reduced motion preferences */
-        @media (prefers-reduced-motion: reduce) {
-          * {
-            animation-duration: 0.01ms !important;
-            animation-iteration-count: 1 !important;
-            transition-duration: 0.01ms !important;
-          }
-          
-          .navbar {
-            transition: none;
-          }
-          
-          .mobile-menu {
-            transition: none;
-          }
-        }
-
-        /* Dark mode support for systems that prefer it */
-        @media (prefers-color-scheme: dark) {
-          .navbar {
-            background: ${isScrolled ? 'rgba(15, 23, 42, 0.95)' : 'var(--color-secondary-600)'};
-          }
-        }
-
-        /* Container query support for modern browsers */
-        @container (max-width: 768px) {
-          .contact-section {
-            display: none;
-          }
-        }
-      `}</style>
-
-      <nav className="navbar">
+      <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
         {/* Top Bar */}
         <div className="top-bar">
           <div className="top-bar-content">
-            <div className="top-bar-left">
-              <div className="top-bar-item">
-                <span>📍</span>
-                <span>Nairobi, Kenya</span>
+            <div className="top-bar-info">
+              <div className="info-item">
+                <MapPin size={12} />
+                <span className="info-text">Nairobi, Kenya</span>
               </div>
-              <div className="top-bar-item">
-                <span>✉️</span>
-                <span>ngumodaniel80@gmail.com</span>
-              </div>
-              <div className="top-bar-item">
-                <span className="top-bar-highlight">🚀 We help you grow your business</span>
+              <div className="info-item">
+                <Mail size={12} />
+                <span className="info-text">ngumodaniel80@gmail.com</span>
               </div>
             </div>
-            <div className="top-bar-right">
-              <a href="https://facebook.com" className="social-link" aria-label="Facebook">
-                🌐
-              </a>
-              <a href="https://twitter.com" className="social-link" aria-label="Twitter">
-                🐦
-              </a>
-              <a href="https://instagram.com" className="social-link" aria-label="Instagram">
-                📸
-              </a>
-              <a href="https://linkedin.com" className="social-link" aria-label="LinkedIn">
-                💼
-              </a>
+            <div className="top-bar-cta">
+              <span>🚀 We help you grow your business</span>
             </div>
           </div>
         </div>
 
         {/* Main Navbar */}
-        <div className="container">
-          <div className="nav-content">
-            <Link href="/" className="logo">DigiByte</Link>
+        <div className="nav-main">
+          <div className="nav-container">
+            <Link href="/" className="logo">
+              DigiByte
+            </Link>
             
-            <div className="desktop-nav">
+            {/* Desktop Navigation */}
+            <div className="nav-links">
               {navLinks.map((link) => (
                 <a
                   key={link.name}
@@ -704,53 +124,452 @@ const Navbar = () => {
               ))}
             </div>
 
-            <div className="contact-section">
-              <p className="contact-text">Have questions?</p>
-              <a href="tel:+254742580239" className="phone-link">
-                <Phone size={14} />
-                +254 742 580 239
-              </a>
+            {/* Contact Info */}
+            <div className="nav-contact">
+              <Phone size={16} />
+              <div className="contact-info">
+                <span className="contact-label">Call us:</span>
+                <a href="tel:+254742580239" className="contact-number">
+                  +254 742 580 239
+                </a>
+              </div>
             </div>
 
+            {/* Mobile Menu Button */}
             <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="mobile-button"
-              aria-label="Toggle mobile menu"
+              onClick={toggleMobileMenu}
+              className="mobile-toggle"
+              aria-label="Toggle menu"
               aria-expanded={isMobileMenuOpen}
             >
-              {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
         </div>
 
         {/* Mobile Menu */}
-        <div className="mobile-menu">
+        <div className={`mobile-menu ${isMobileMenuOpen ? 'open' : ''}`}>
           <div className="mobile-menu-content">
             {navLinks.map((link) => (
               <a
                 key={link.name}
                 href={link.href}
-                className="mobile-nav-link"
+                className="mobile-link"
                 onClick={(e) => handleNavClick(e, link.href)}
               >
                 {link.name}
               </a>
             ))}
             <div className="mobile-contact">
-              <a href="tel:+254742580239" className="phone-link">
+              <a href="tel:+254742580239" className="mobile-phone">
                 <Phone size={16} />
-                Call: +254 742 580 239
+                +254 742 580 239
               </a>
             </div>
           </div>
         </div>
 
         {/* Overlay */}
-        <div
-          className="overlay"
-          onClick={() => setIsMobileMenuOpen(false)}
-        />
+        {isMobileMenuOpen && (
+          <div className="overlay" onClick={() => setIsMobileMenuOpen(false)} />
+        )}
       </nav>
+
+      <style jsx>{`
+        .navbar {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          z-index: 50;
+          font-family: var(--font-sans);
+          will-change: transform;
+        }
+
+        .top-bar {
+          background: #111827;
+          color: #ffffff;
+          padding: 8px 0;
+          font-size: 13px;
+        }
+
+        .top-bar-content {
+          max-width: 1280px;
+          margin: 0 auto;
+          padding: 0 1rem;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .top-bar-info {
+          display: flex;
+          gap: 24px;
+          color: #ffffff;
+        }
+
+        .info-item {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          color: #ffffff;
+        }
+
+        .info-item svg {
+          color: #ffffff;
+        }
+
+        .top-bar-cta {
+          color: #ffffff;
+          font-weight: 500;
+        }
+
+        .nav-main {
+          background: var(--color-secondary-500);
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          will-change: background, backdrop-filter, box-shadow;
+        }
+
+        .navbar.scrolled .nav-main {
+          background: rgba(4, 140, 204, 0.95);
+          backdrop-filter: blur(10px);
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+          max-width: 1280px;
+          margin: 0 auto;
+          padding: 0 1rem;
+          height: 70px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+
+        .logo {
+          font-size: 28px;
+          font-weight: 800;
+          color: var(--text-inverse);
+          text-decoration: none;
+          font-family: var(--font-heading);
+          transition: all 0.3s ease;
+          flex-shrink: 0;
+        }
+
+        .logo:hover {
+          color: #ffd700;
+          transform: scale3d(1.05, 1.05, 1);
+        }
+
+        .nav-links {
+          display: none;
+          flex: 1;
+          justify-content: center;
+          gap: 32px;
+          margin: 0 2rem;
+        }
+
+        .nav-link {
+          color: var(--text-inverse);
+          text-decoration: none;
+          font-weight: 500;
+          font-size: 16px;
+          padding: 8px 16px;
+          border-radius: 8px;
+          transition: all 0.3s ease;
+          position: relative;
+          will-change: transform;
+        }
+
+        .nav-link::after {
+          content: '';
+          position: absolute;
+          bottom: 0;
+          left: 16px;
+          right: 16px;
+          height: 2px;
+          background: #ffd700;
+          transform: scaleX(0);
+          transition: transform 0.3s ease;
+        }
+
+        .nav-link:hover {
+          color: #ffd700;
+          background: rgba(255, 255, 255, 0.1);
+          transform: translateY(-1px);
+        }
+
+        .nav-link:hover::after {
+          transform: scaleX(1);
+        }
+
+        .nav-contact {
+          display: none;
+          align-items: center;
+          gap: 12px;
+          padding: 12px 20px;
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 12px;
+          backdrop-filter: blur(10px);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .contact-info {
+          display: flex;
+          flex-direction: column;
+        }
+
+        .contact-label {
+          font-size: 11px;
+          color: rgba(255, 255, 255, 0.8);
+          line-height: 1;
+        }
+
+        .contact-number {
+          font-size: 14px;
+          font-weight: 600;
+          color: #ffd700;
+          text-decoration: none;
+          line-height: 1;
+          transition: color 0.3s ease;
+        }
+
+        .contact-number:hover {
+          color: var(--text-inverse);
+        }
+
+        .mobile-toggle {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: none;
+          border: none;
+          color: var(--text-inverse);
+          cursor: pointer;
+          padding: 8px;
+          border-radius: 8px;
+          transition: all 0.3s ease;
+          touch-action: manipulation;
+        }
+
+        .mobile-toggle:hover {
+          background: rgba(255, 255, 255, 0.1);
+        }
+
+        .mobile-menu {
+          position: absolute;
+          top: 100%;
+          left: 0;
+          right: 0;
+          background: var(--color-secondary-500);
+          backdrop-filter: blur(10px);
+          border-top: 1px solid rgba(255, 255, 255, 0.1);
+          transform: translateY(-100%);
+          opacity: 0;
+          visibility: hidden;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+          will-change: transform, opacity;
+        }
+
+        .mobile-menu.open {
+          transform: translateY(0);
+          opacity: 1;
+          visibility: visible;
+        }
+
+        .mobile-menu-content {
+          padding: 24px;
+        }
+
+        .mobile-link {
+          display: block;
+          color: var(--text-inverse);
+          text-decoration: none;
+          font-size: 18px;
+          font-weight: 500;
+          padding: 16px 0;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+          transition: all 0.3s ease;
+        }
+
+        .mobile-link:last-of-type {
+          border-bottom: none;
+        }
+
+        .mobile-link:hover {
+          color: #ffd700;
+          padding-left: 16px;
+        }
+
+        .mobile-contact {
+          margin-top: 24px;
+          padding-top: 24px;
+          border-top: 1px solid rgba(255, 255, 255, 0.1);
+          text-align: center;
+        }
+
+        .mobile-phone {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          color: #ffd700;
+          text-decoration: none;
+          font-weight: 600;
+          font-size: 16px;
+          padding: 12px 24px;
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 25px;
+          transition: all 0.3s ease;
+          touch-action: manipulation;
+        }
+
+        .mobile-phone:hover {
+          color: var(--text-inverse);
+          background: rgba(255, 255, 255, 0.2);
+          transform: translateY(-2px);
+        }
+
+        .overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.5);
+          z-index: 40;
+          animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+
+        /* Mobile First Responsive Design */
+        .info-text {
+          display: none;
+        }
+
+        /* Small Mobile (up to 480px) */
+        @media (max-width: 480px) {
+          .top-bar {
+            padding: 6px 0;
+            font-size: 12px;
+          }
+
+          .top-bar-content {
+            padding: 0 0.75rem;
+          }
+
+          .top-bar-cta {
+            display: none;
+          }
+
+          .nav-container {
+            height: 60px;
+            padding: 0 0.75rem;
+          }
+
+          .logo {
+            font-size: 22px;
+          }
+        }
+
+        /* Large Mobile (481px - 768px) */
+        @media (min-width: 481px) and (max-width: 768px) {
+          .info-text {
+            display: inline;
+          }
+
+          .top-bar-info .info-item:nth-child(2) {
+            display: none;
+          }
+        }
+
+        /* Tablet (769px - 1023px) */
+        @media (min-width: 769px) and (max-width: 1023px) {
+          .info-text {
+            display: inline;
+          }
+
+          .nav-contact {
+            display: flex;
+          }
+
+          .top-bar-cta {
+            display: block;
+          }
+        }
+
+        /* Desktop (1024px and up) */
+        @media (min-width: 1024px) {
+          .info-text {
+            display: inline;
+          }
+
+          .nav-links {
+            display: flex;
+          }
+
+          .nav-contact {
+            display: flex;
+          }
+
+          .mobile-toggle {
+            display: none;
+          }
+
+          .top-bar-cta {
+            display: block;
+          }
+        }
+
+        /* Large Desktop (1200px and up) */
+        @media (min-width: 1200px) {
+          .nav-container,
+          .top-bar-content {
+            padding: 0 2rem;
+          }
+
+          .nav-links {
+            gap: 40px;
+          }
+        }
+
+        /* Accessibility */
+        .nav-link:focus,
+        .mobile-link:focus,
+        .mobile-toggle:focus,
+        .contact-number:focus {
+          outline: 2px solid #ffd700;
+          outline-offset: 2px;
+        }
+
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+          .nav-main,
+          .mobile-menu,
+          .nav-link,
+          .mobile-link,
+          .logo,
+          .mobile-phone {
+            transition: none !important;
+            animation: none !important;
+          }
+
+          .logo:hover {
+            transform: none;
+          }
+        }
+
+        /* High contrast mode */
+        @media (prefers-contrast: high) {
+          .nav-main {
+            border-bottom: 2px solid #ffffff;
+          }
+        }
+      `}</style>
     </>
   );
 };

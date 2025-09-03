@@ -7,10 +7,9 @@ import Navbar from "@/components/Navbar";
 import Portfolio from "@/components/Portfolio";
 import Services from "@/components/Services";
 
-
 export default function Home() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen" style={{ backgroundColor: '#ffffff' }}>
       <Navbar />
       <main>
         <section id="hero">
@@ -28,7 +27,7 @@ export default function Home() {
         <section id="contact">
           <Contact />
         </section>
-          <ChatWidget />
+        <ChatWidget />
       </main>
       <Footer />
     </div>
