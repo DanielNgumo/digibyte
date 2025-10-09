@@ -11,7 +11,7 @@ const Navbar = () => {
   // Optimized scroll handler with throttling
   useEffect(() => {
     let ticking = false;
-    
+
     const handleScroll = () => {
       if (!ticking) {
         requestAnimationFrame(() => {
@@ -61,19 +61,19 @@ const Navbar = () => {
 
   const handleNavClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
-    
+
     const targetId = href.substring(1);
     const targetElement = document.getElementById(targetId);
-    
+
     if (targetElement) {
       const offsetTop = targetElement.offsetTop - 100;
-      
+
       window.scrollTo({
         top: offsetTop,
         behavior: 'smooth'
       });
     }
-    
+
     setIsMobileMenuOpen(false);
   }, []);
 
@@ -107,9 +107,18 @@ const Navbar = () => {
         <div className="nav-main">
           <div className="nav-container">
             <Link href="/" className="logo">
-              DigiByte
+              <div className="logo-container">
+                <img 
+                  src="/logo.png" 
+                  alt="DigiKenya Logo" 
+                  className="logo-image" 
+                  width={40}
+                  height={40}
+                />
+                <span className="logo-text">DigiKenya</span>
+              </div>
             </Link>
-            
+
             {/* Desktop Navigation */}
             <div className="nav-links">
               {navLinks.map((link) => (
@@ -247,18 +256,40 @@ const Navbar = () => {
         }
 
         .logo {
-          font-size: 28px;
-          font-weight: 800;
-          color: var(--text-inverse);
           text-decoration: none;
-          font-family: var(--font-heading);
-          transition: all 0.3s ease;
           flex-shrink: 0;
         }
 
-        .logo:hover {
-          color: #ffd700;
+        .logo-container {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          transition: all 0.3s ease;
+        }
+
+        .logo:hover .logo-container {
           transform: scale3d(1.05, 1.05, 1);
+        }
+
+        .logo-image {
+          width: 40px;
+          height: 40px;
+          object-fit: contain;
+          flex-shrink: 0;
+          border-radius: 6px;
+        }
+
+        .logo-text {
+          font-size: 28px;
+          font-weight: 800;
+          color: var(--text-inverse);
+          font-family: var(--font-heading);
+          transition: color 0.3s ease;
+          white-space: nowrap;
+        }
+
+        .logo:hover .logo-text {
+          color: #ffd700;
         }
 
         .nav-links {
@@ -471,7 +502,12 @@ const Navbar = () => {
             padding: 0 0.75rem;
           }
 
-          .logo {
+          .logo-image {
+            width: 32px;
+            height: 32px;
+          }
+
+          .logo-text {
             font-size: 22px;
           }
         }
@@ -484,6 +520,15 @@ const Navbar = () => {
 
           .top-bar-info .info-item:nth-child(2) {
             display: none;
+          }
+
+          .logo-image {
+            width: 36px;
+            height: 36px;
+          }
+
+          .logo-text {
+            font-size: 24px;
           }
         }
 
@@ -499,6 +544,15 @@ const Navbar = () => {
 
           .top-bar-cta {
             display: block;
+          }
+
+          .logo-image {
+            width: 38px;
+            height: 38px;
+          }
+
+          .logo-text {
+            font-size: 26px;
           }
         }
 
@@ -522,6 +576,15 @@ const Navbar = () => {
 
           .top-bar-cta {
             display: block;
+          }
+
+          .logo-image {
+            width: 40px;
+            height: 40px;
+          }
+
+          .logo-text {
+            font-size: 28px;
           }
         }
 
@@ -552,13 +615,13 @@ const Navbar = () => {
           .mobile-menu,
           .nav-link,
           .mobile-link,
-          .logo,
+          .logo-container,
           .mobile-phone {
             transition: none !important;
             animation: none !important;
           }
 
-          .logo:hover {
+          .logo:hover .logo-container {
             transform: none;
           }
         }

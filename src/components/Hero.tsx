@@ -6,6 +6,7 @@ import { ArrowUp, ArrowLeft, ArrowRight } from 'lucide-react';
 const Hero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
+  const [stylesLoaded, setStylesLoaded] = useState(false);
   const totalSlides = 3;
 
   const slides = [
@@ -30,13 +31,40 @@ const Hero = () => {
   ];
 
   useEffect(() => {
-    setIsVisible(true);
+    // Small delay before checking styles
+    const timer = setTimeout(() => {
+      const checkStyles = () => {
+        try {
+          const rootStyles = getComputedStyle(document.documentElement);
+          const primaryColor = rootStyles.getPropertyValue('--color-primary-500').trim();
+          
+          if (primaryColor && primaryColor !== '') {
+            setStylesLoaded(true);
+            setIsVisible(true);
+          } else {
+            requestAnimationFrame(checkStyles);
+          }
+        } catch (e) {
+          // Fallback: just show after 2 seconds
+          setTimeout(() => {
+            setStylesLoaded(true);
+            setIsVisible(true);
+          }, 2000);
+        }
+      };
+      
+      checkStyles();
+    }, 100);
+    
     // Auto-advance slides every 5 seconds
     const interval = setInterval(() => {
       setCurrentSlide(prev => (prev + 1) % totalSlides);
     }, 5000);
     
-    return () => clearInterval(interval);
+    return () => {
+      clearTimeout(timer);
+      clearInterval(interval);
+    };
   }, [totalSlides]);
 
   const nextSlide = useCallback(() => {
@@ -69,9 +97,111 @@ const Hero = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
+  // Inline keyframes animation
+  const spinKeyframes = `
+    @keyframes loadingSpin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    @keyframes loadingBounce {
+      0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+      40% { transform: scale(1.2); opacity: 1; }
+    }
+  `;
+
   return (
-    <div className="hero-wrapper">
+    <>
+      {/* Inline keyframes */}
+      <style dangerouslySetInnerHTML={{ __html: spinKeyframes }} />
+      
+      {/* Loading Screen with Inline Styles */}
+      {!stylesLoaded && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          background: 'linear-gradient(135deg, #0c4a6e 0%, #164e63 100%)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 99999,
+          fontFamily: 'system-ui, -apple-system, sans-serif',
+        }}>
+          <div style={{
+            textAlign: 'center',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '1.5rem',
+          }}>
+            {/* Spinner */}
+            <div style={{
+              position: 'relative',
+              width: '80px',
+              height: '80px',
+            }}>
+              <div style={{
+                width: '80px',
+                height: '80px',
+                border: '4px solid rgba(255, 255, 255, 0.1)',
+                borderTop: '4px solid #f26d26',
+                borderRight: '4px solid #048ccc',
+                borderRadius: '50%',
+                animation: 'loadingSpin 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite',
+              }} />
+            </div>
+            
+            {/* Loading Text */}
+            <div style={{
+              fontFamily: "'Poppins', sans-serif",
+              fontSize: '1.5rem',
+              fontWeight: 600,
+              color: '#ffffff',
+              letterSpacing: '0.05em',
+            }}>
+              Loading
+            </div>
+            
+            {/* Dots */}
+            <div style={{
+              display: 'flex',
+              gap: '0.5rem',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              <span style={{
+                width: '8px',
+                height: '8px',
+                background: '#f26d26',
+                borderRadius: '50%',
+                animation: 'loadingBounce 1.4s ease-in-out infinite',
+                animationDelay: '0s',
+              }} />
+              <span style={{
+                width: '8px',
+                height: '8px',
+                background: '#048ccc',
+                borderRadius: '50%',
+                animation: 'loadingBounce 1.4s ease-in-out infinite',
+                animationDelay: '0.2s',
+              }} />
+              <span style={{
+                width: '8px',
+                height: '8px',
+                background: '#f26d26',
+                borderRadius: '50%',
+                animation: 'loadingBounce 1.4s ease-in-out infinite',
+                animationDelay: '0.4s',
+              }} />
+            </div>
+          </div>
+        </div>
+      )}
+
       <style jsx>{`
+        /* Hero Styles */
         .hero-wrapper {
           position: relative;
           width: 100vw;
@@ -80,6 +210,8 @@ const Hero = () => {
           margin-left: -50vw;
           margin-right: -50vw;
           overflow: hidden;
+          opacity: ${stylesLoaded ? 1 : 0};
+          transition: opacity 0.5s ease-in-out;
         }
 
         .hero-section {
@@ -632,82 +764,84 @@ const Hero = () => {
         }
       `}</style>
 
-      <section className="hero-section">
-        <div className="hero-carousel">
-          {slides.map((slide, index) => (
-            <div
-              key={index}
-              className="hero-slide"
-              style={{ backgroundImage: slide.background }}
-            >
-              <div className="hero-overlay"></div>
-              {index === currentSlide && (
-                <div className="hero-content">
-                  <div className="hero-tagline">{slide.tagline}</div>
-                  <h1 className="hero-headline">{slide.headline}</h1>
-                  <p className="hero-subtitle">{slide.subtitle}</p>
-                  <div className="hero-buttons">
-                    <button 
-                      className="hero-button hero-button-primary"
-                      onClick={handleReadMore}
-                      type="button"
-                    >
-                      Read More
-                    </button>
-                    <button 
-                      className="hero-button hero-button-secondary"
-                      onClick={handleContactUs}
-                      type="button"
-                    >
-                      Contact Us
-                    </button>
+      <div className="hero-wrapper">
+        <section className="hero-section">
+          <div className="hero-carousel">
+            {slides.map((slide, index) => (
+              <div
+                key={index}
+                className="hero-slide"
+                style={{ backgroundImage: slide.background }}
+              >
+                <div className="hero-overlay"></div>
+                {index === currentSlide && (
+                  <div className="hero-content">
+                    <div className="hero-tagline">{slide.tagline}</div>
+                    <h1 className="hero-headline">{slide.headline}</h1>
+                    <p className="hero-subtitle">{slide.subtitle}</p>
+                    <div className="hero-buttons">
+                      <button 
+                        className="hero-button hero-button-primary"
+                        onClick={handleReadMore}
+                        type="button"
+                      >
+                        Read More
+                      </button>
+                      <button 
+                        className="hero-button hero-button-secondary"
+                        onClick={handleContactUs}
+                        type="button"
+                      >
+                        Contact Us
+                      </button>
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-        
-        <button
-          className="hero-arrow hero-arrow-left"
-          onClick={prevSlide}
-          aria-label="Previous slide"
-          type="button"
-        >
-          <ArrowLeft size={20} />
-        </button>
-        
-        <button
-          className="hero-arrow hero-arrow-right"
-          onClick={nextSlide}
-          aria-label="Next slide"
-          type="button"
-        >
-          <ArrowRight size={20} />
-        </button>
-        
-        <div className="hero-indicators">
-          {slides.map((_, index) => (
-            <button
-              key={index}
-              className={`hero-indicator ${index === currentSlide ? 'active' : ''}`}
-              onClick={() => setCurrentSlide(index)}
-              aria-label={`Go to slide ${index + 1}`}
-              type="button"
-            />
-          ))}
-        </div>
-        
-        <button
-          className="hero-scroll-up"
-          onClick={handleScrollToTop}
-          type="button"
-          aria-label="Scroll to top"
-        >
-          <ArrowUp size={20} />
-        </button>
-      </section>
-    </div>
+                )}
+              </div>
+            ))}
+          </div>
+          
+          <button
+            className="hero-arrow hero-arrow-left"
+            onClick={prevSlide}
+            aria-label="Previous slide"
+            type="button"
+          >
+            <ArrowLeft size={20} />
+          </button>
+          
+          <button
+            className="hero-arrow hero-arrow-right"
+            onClick={nextSlide}
+            aria-label="Next slide"
+            type="button"
+          >
+            <ArrowRight size={20} />
+          </button>
+          
+          <div className="hero-indicators">
+            {slides.map((_, index) => (
+              <button
+                key={index}
+                className={`hero-indicator ${index === currentSlide ? 'active' : ''}`}
+                onClick={() => setCurrentSlide(index)}
+                aria-label={`Go to slide ${index + 1}`}
+                type="button"
+              />
+            ))}
+          </div>
+          
+          <button
+            className="hero-scroll-up"
+            onClick={handleScrollToTop}
+            type="button"
+            aria-label="Scroll to top"
+          >
+            <ArrowUp size={20} />
+          </button>
+        </section>
+      </div>
+    </>
   );
 };
 

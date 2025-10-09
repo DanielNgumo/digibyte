@@ -19,7 +19,7 @@ const Contact = () => {
       icon: <Mail size={24} />,
       title: "Email Us",
       content: "ngumodaniel80@gmail.com",
-      // subContent: "info@digitbye.com",
+      // subContent: "info@DigiKenya.com",
     },
     {
       icon: <Phone size={24} />,
@@ -64,7 +64,7 @@ const Contact = () => {
       `*Email:* ${formData.email}%0A` +
       `*Subject:* ${formData.subject}%0A%0A` +
       `*Message:*%0A${formData.message}%0A%0A` +
-      `----%0ASent from DigitBye Contact Form`;
+      `----%0ASent from DigiKenya Contact Form`;
 
     // Your WhatsApp number (in international format without + sign)
     const whatsappNumber = '254742580239';

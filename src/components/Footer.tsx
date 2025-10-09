@@ -499,7 +499,7 @@ const Footer = () => {
               <div style={{ ...styles.column, ...styles.brandSection }} className="brand-section">
                 <div style={styles.logo}>
                   <Code size={24} color="var(--color-primary-500)" />
-                  DigibtYe
+                  DigiKenya
                 </div>
                 <p style={styles.brandText}>
                   Transforming ideas into digital reality. We are your trusted partner 
@@ -560,11 +560,11 @@ const Footer = () => {
                 <h4 style={styles.columnTitle}>Contact Info</h4>
                 <div style={styles.contactItem}>
                   <Mail size={16} />
-                  <span>hello@digitbye.com</span>
+                  <span>ngumodaniel80@gmail.com</span>
                 </div>
                 <div style={styles.contactItem}>
                   <Phone size={16} />
-                  <span>+254 425 802 39</span>
+                  <span>+254 425 802 39 / 0712 350117 </span>
                 </div>
                 <div style={styles.contactItem}>
                   <MapPin size={16} />
@@ -572,7 +572,7 @@ const Footer = () => {
                 </div>
                 <div style={styles.contactItem}>
                   <ExternalLink size={16} />
-                  <span>ngumodaniel80@gmail.com</span>
+                  <span>𝒌𝒆𝒍𝒗𝒊𝒏𝒎𝒖𝒊𝒈𝒂727@𝒈𝒎𝒂𝒊𝒍.𝒄𝒐𝒎</span>
                 </div>
               </div>
 
@@ -585,7 +585,7 @@ const Footer = () => {
           <div style={styles.container} className="footer-container">
             <div style={styles.bottomContent} className="bottom-content">
               <div style={styles.copyright}>
-                © {currentYear} DigibtYe. All rights reserved.
+                © {currentYear} DigiKenya. All rights reserved.
               </div>
               <div style={styles.bottomLinks} className="bottom-links">
                 <a href="#" style={styles.bottomLink} className="bottom-link">
