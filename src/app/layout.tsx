@@ -18,7 +18,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "DigiKenya Digital Solutions - IT Solutions & Digital Transformation",
+  title: "TechNasi Digital Solutions - IT Solutions & Digital Transformation",
   description: "Leading IT solutions agency specializing in digital transformation, web development, and innovative technology services.",
 };
 

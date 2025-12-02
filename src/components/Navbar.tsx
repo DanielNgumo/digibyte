@@ -110,12 +110,12 @@ const Navbar = () => {
               <div className="logo-container">
                 <img 
                   src="/logo.png" 
-                  alt="DigiKenya Logo" 
+                  alt="TechNasi Logo" 
                   className="logo-image" 
                   width={40}
                   height={40}
                 />
-                <span className="logo-text">DigiKenya</span>
+                <span className="logo-text">TechNasi</span>
               </div>
             </Link>
 

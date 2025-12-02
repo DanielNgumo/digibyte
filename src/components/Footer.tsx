@@ -1,14 +1,14 @@
 "use client";
 
 import React from 'react';
-import { 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Facebook, 
-  Twitter, 
-  Instagram, 
-  Linkedin, 
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Facebook,
+  Twitter,
+  Instagram,
+  Linkedin,
   Github,
   ArrowUp,
   ExternalLink,
@@ -481,8 +481,8 @@ const Footer = () => {
       `}</style>
 
       <footer style={styles.footer}>
-        <button 
-          style={styles.scrollTopButton} 
+        <button
+          style={styles.scrollTopButton}
           className="scroll-top scroll-top-button"
           onClick={scrollToTop}
           aria-label="Scroll to top"
@@ -494,16 +494,16 @@ const Footer = () => {
         <div style={styles.mainFooter} className="footer-main">
           <div style={styles.container} className="footer-container">
             <div style={styles.footerGrid} className="footer-grid">
-              
+
               {/* Brand Section */}
               <div style={{ ...styles.column, ...styles.brandSection }} className="brand-section">
                 <div style={styles.logo}>
                   <Code size={24} color="var(--color-primary-500)" />
-                  DigiKenya
+                  TechNasi
                 </div>
                 <p style={styles.brandText}>
-                  Transforming ideas into digital reality. We are your trusted partner 
-                  in navigating the digital landscape with innovative solutions and 
+                  Transforming ideas into digital reality. We are your trusted partner
+                  in navigating the digital landscape with innovative solutions and
                   creative excellence.
                 </p>
                 <div style={styles.socialLinks} className="social-links">
@@ -580,22 +580,20 @@ const Footer = () => {
           </div>
         </div>
 
+
         {/* Bottom Footer */}
         <div style={styles.bottomFooter}>
           <div style={styles.container} className="footer-container">
             <div style={styles.bottomContent} className="bottom-content">
               <div style={styles.copyright}>
-                © {currentYear} DigiKenya. All rights reserved.
+                © {currentYear} TechNasi. All rights reserved.
               </div>
               <div style={styles.bottomLinks} className="bottom-links">
-                <a href="#" style={styles.bottomLink} className="bottom-link">
+                <a href="/privacy" style={styles.bottomLink} className="bottom-link">
                   Privacy Policy
                 </a>
-                <a href="#" style={styles.bottomLink} className="bottom-link">
+                <a href="/terms" style={styles.bottomLink} className="bottom-link">
                   Terms of Service
-                </a>
-                <a href="#" style={styles.bottomLink} className="bottom-link">
-                  Cookie Policy
                 </a>
               </div>
             </div>

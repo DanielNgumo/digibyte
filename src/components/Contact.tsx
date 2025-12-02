@@ -31,12 +31,12 @@ const Contact = () => {
       icon: <MapPin size={24} />,
       title: "Visit Us",
       content: "Nairobi, Kenya",
-      subContent: "CBD, Kenyatta Avenue",
+      subContent: "Juja, Green Field",
     },
     {
       icon: <Clock size={24} />,
       title: "Working Hours",
-      content: "Mon - Fri: 24Hrs",
+      content: "Mon - Sun: 24Hrs",
       subContent: "Sat: 9AM - 4PM",
     },
   ];
@@ -698,10 +698,10 @@ const Contact = () => {
                   )}
                 </button>
 
-                <div style={styles.whatsappNotice} className="whatsapp-notice">
+                {/* <div style={styles.whatsappNotice} className="whatsapp-notice">
                   <MessageSquare size={16} />
                   This form will open WhatsApp with your message pre-filled. Just click send in WhatsApp to deliver your message.
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

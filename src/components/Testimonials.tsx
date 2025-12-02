@@ -14,7 +14,7 @@ const Testimonials = () => {
       position: 'CEO, TechStart Inc.',
       image: 'https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=150&h=150&fit=crop&crop=face',
       rating: 5,
-      text: 'DigiKenya transformed our digital presence completely. Their team delivered a stunning website that increased our conversions by 300%. Absolutely incredible work!',
+      text: 'TechNasi transformed our digital presence completely. Their team delivered a stunning website that increased our conversions by 300%. Absolutely incredible work!',
       project: 'E-commerce Website'
     },
     {
@@ -23,7 +23,7 @@ const Testimonials = () => {
       position: 'Founder, GreenLife',
       image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
       rating: 5,
-      text: 'Working with DigiKenya was a game-changer. They understood our vision perfectly and delivered a mobile app that our customers love. Professional, reliable, and creative!',
+      text: 'Working with TechNasi was a game-changer. They understood our vision perfectly and delivered a mobile app that our customers love. Professional, reliable, and creative!',
       project: 'Mobile App Development'
     },
     {
@@ -32,7 +32,7 @@ const Testimonials = () => {
       position: 'Marketing Director, FashionHub',
       image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
       rating: 5,
-      text: 'The branding and design work exceeded all expectations. DigiKenya created a visual identity that perfectly captures our brand essence. Our customers noticed immediately!',
+      text: 'The branding and design work exceeded all expectations. TechNasi created a visual identity that perfectly captures our brand essence. Our customers noticed immediately!',
       project: 'Brand Identity & Design'
     },
     {
@@ -41,7 +41,7 @@ const Testimonials = () => {
       position: 'CTO, DataFlow Solutions',
       image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face',
       rating: 5,
-      text: 'Exceptional technical expertise and project management. DigiKenya delivered our complex web application on time and within budget. Highly recommend their services!',
+      text: 'Exceptional technical expertise and project management. TechNasi delivered our complex web application on time and within budget. Highly recommend their services!',
       project: 'Web Application'
     }
   ];

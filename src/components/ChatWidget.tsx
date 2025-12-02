@@ -62,7 +62,7 @@ const ChatWidget: React.FC = () => {
           <div className="bg-[#e91e63] text-white p-4 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-              <span className="font-semibold">PayNasi Support</span>
+              <span className="font-semibold">TechNasi Support</span>
             </div>
             <button onClick={toggleChat} className="text-white hover:text-pink-100">
               <X className="h-5 w-5" />
