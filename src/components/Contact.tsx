@@ -19,19 +19,11 @@ const Contact = () => {
       icon: <Mail size={24} />,
       title: "Email Us",
       content: "ngumodaniel80@gmail.com",
-      // subContent: "info@DigiKenya.com",
     },
     {
       icon: <Phone size={24} />,
       title: "Call Us",
       content: "+254 742 580 239",
-      // subContent: "+254 711 987 654",
-    },
-    {
-      icon: <MapPin size={24} />,
-      title: "Visit Us",
-      content: "Nairobi, Kenya",
-      subContent: "Juja, Green Field",
     },
     {
       icon: <Clock size={24} />,
@@ -89,8 +81,8 @@ const Contact = () => {
 
   const styles: { [key: string]: CSSProperties } = {
     section: {
-      padding: 'clamp(2rem, 8vw, 6rem) 0', // Responsive section padding
-      background: '#f8fafc',
+      padding: 'clamp(2rem, 8vw, 6rem) 0',
+      background: 'linear-gradient(135deg, #f8fafc 0%, #ffffff 50%, #f1f5f9 100%)',
       fontFamily: 'var(--font-sans)',
       position: 'relative',
       zIndex: 10,
@@ -98,79 +90,79 @@ const Contact = () => {
     container: {
       maxWidth: '1280px',
       margin: '0 auto',
-      padding: '0 clamp(1rem, 4vw, 2rem)', // Responsive container padding
+      padding: '0 clamp(70px, 8vw, 140px)',
       width: '100%',
       boxSizing: 'border-box',
     },
     header: {
       textAlign: 'center',
-      marginBottom: 'clamp(2rem, 6vw, 3rem)', // Responsive header margin
-      padding: '0 clamp(0.5rem, 2vw, 1rem)', // Inner padding for mobile
+      marginBottom: 'clamp(1.5rem, 4vw, 2rem)',
+      padding: '0 clamp(0.5rem, 2vw, 1rem)',
     },
     tagline: {
       color: 'var(--color-primary-500)',
-      fontSize: 'clamp(0.875rem, 2.5vw, 1rem)', // Responsive tagline
+      fontSize: 'clamp(0.875rem, 2.5vw, 1rem)',
       fontWeight: '600',
       fontFamily: 'var(--font-heading)',
-      marginBottom: 'clamp(0.5rem, 2vw, 1rem)', // Responsive margin
+      marginBottom: 'clamp(0.5rem, 2vw, 1rem)',
       textTransform: 'uppercase',
       letterSpacing: '0.1em',
       display: 'block',
     },
     title: {
-      fontSize: 'clamp(1.75rem, 6vw, 3rem)', // Responsive title
+      fontSize: 'clamp(1.75rem, 6vw, 3rem)',
       fontWeight: '700',
       fontFamily: 'var(--font-heading)',
       color: '#1f2937',
-      marginBottom: 'clamp(1rem, 3vw, 1.5rem)', // Responsive margin
+      marginBottom: 'clamp(1rem, 3vw, 1.5rem)',
       lineHeight: '1.2',
     },
     description: {
-      fontSize: 'clamp(1rem, 3vw, 1.125rem)', // Responsive description
+      fontSize: 'clamp(1rem, 3vw, 1.125rem)',
       color: '#6b7280',
-      maxWidth: '100%', // Full width on mobile
+      maxWidth: '100%',
       margin: '0 auto',
       lineHeight: '1.6',
     },
     contentGrid: {
       display: 'grid',
-      gridTemplateColumns: '1fr', // Mobile first - single column
-      gap: 'clamp(1.5rem, 4vw, 3rem)', // Responsive gap
+      gridTemplateColumns: '1fr',
+      gap: 'clamp(1.5rem, 4vw, 3rem)',
       alignItems: 'start',
     },
     contactInfo: {
       background: '#ffffff',
-      padding: 'clamp(1.25rem, 5vw, 2rem)', // Responsive padding
+      padding: 'clamp(1.25rem, 5vw, 2rem)',
       borderRadius: 'var(--radius-xl)',
-      border: '1px solid #e5e7eb',
-      boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+      border: 'none',
+      boxShadow: 'none',
     },
     infoTitle: {
-      fontSize: 'clamp(1.125rem, 4vw, 1.5rem)', // Responsive info title
+      fontSize: 'clamp(1.125rem, 4vw, 1.5rem)',
       fontWeight: '600',
       fontFamily: 'var(--font-heading)',
       color: '#1f2937',
-      marginBottom: 'clamp(1rem, 3vw, 1.5rem)', // Responsive margin
+      marginBottom: 'clamp(1rem, 3vw, 1.5rem)',
       display: 'flex',
       alignItems: 'center',
-      gap: 'clamp(0.5rem, 2vw, 1rem)', // Responsive gap
+      gap: 'clamp(0.5rem, 2vw, 1rem)',
     },
     infoGrid: {
       display: 'grid',
-      gap: 'clamp(1rem, 3vw, 1.5rem)', // Responsive grid gap
+      gap: 'clamp(1rem, 3vw, 1.5rem)',
     },
     infoItem: {
       display: 'flex',
       alignItems: 'flex-start',
-      gap: 'clamp(0.75rem, 3vw, 1rem)', // Responsive gap
-      padding: 'clamp(0.75rem, 3vw, 1rem)', // Responsive padding
+      gap: 'clamp(0.75rem, 3vw, 1rem)',
+      padding: 'clamp(0.75rem, 3vw, 1rem)',
       borderRadius: 'var(--radius-md)',
       transition: 'all var(--transition-default)',
     },
     iconWrapper: {
-      width: 'clamp(40px, 10vw, 48px)', // Responsive icon wrapper
-      height: 'clamp(40px, 10vw, 48px)', // Responsive icon wrapper
-      background: '#fef7f0',
+      width: 'clamp(40px, 10vw, 48px)',
+      height: 'clamp(40px, 10vw, 48px)',
+      background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1))',
       borderRadius: '50%',
       display: 'flex',
       alignItems: 'center',
@@ -182,52 +174,52 @@ const Contact = () => {
       flex: 1,
     },
     infoItemTitle: {
-      fontSize: 'clamp(0.875rem, 2.5vw, 1rem)', // Responsive item title
+      fontSize: 'clamp(0.875rem, 2.5vw, 1rem)',
       fontWeight: '600',
       color: '#1f2937',
       marginBottom: '4px',
     },
     infoItemContent: {
-      fontSize: 'clamp(0.8rem, 2vw, 0.975rem)', // Responsive content
+      fontSize: 'clamp(0.8rem, 2vw, 0.975rem)',
       color: '#6b7280',
       marginBottom: '2px',
       lineHeight: '1.4',
     },
     formWrapper: {
       background: '#ffffff',
-      padding: 'clamp(1.25rem, 5vw, 2rem)', // Responsive padding
+      padding: 'clamp(1.25rem, 5vw, 2rem)',
       borderRadius: 'var(--radius-xl)',
-      border: '1px solid #e5e7eb',
-      boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+      border: 'none',
+      boxShadow: 'none',
     },
     formTitle: {
-      fontSize: 'clamp(1.125rem, 4vw, 1.5rem)', // Responsive form title
+      fontSize: 'clamp(1.125rem, 4vw, 1.5rem)',
       fontWeight: '600',
       fontFamily: 'var(--font-heading)',
       color: '#1f2937',
-      marginBottom: 'clamp(1rem, 3vw, 1.5rem)', // Responsive margin
+      marginBottom: 'clamp(1rem, 3vw, 1.5rem)',
       display: 'flex',
       alignItems: 'center',
-      gap: 'clamp(0.5rem, 2vw, 1rem)', // Responsive gap
+      gap: 'clamp(0.5rem, 2vw, 1rem)',
     },
     form: {
       display: 'grid',
-      gap: 'clamp(1rem, 3vw, 1.5rem)', // Responsive form gap
+      gap: 'clamp(1rem, 3vw, 1.5rem)',
     },
     inputGroup: {
       display: 'grid',
-      gap: 'clamp(0.5rem, 2vw, 0.75rem)', // Responsive input group gap
+      gap: 'clamp(0.5rem, 2vw, 0.75rem)',
     },
     label: {
-      fontSize: 'clamp(0.8rem, 2vw, 0.875rem)', // Responsive label
+      fontSize: 'clamp(0.8rem, 2vw, 0.875rem)',
       fontWeight: '500',
       color: '#374151',
     },
     input: {
-      padding: 'clamp(10px, 3vw, 12px) clamp(12px, 3vw, 16px)', // Responsive input padding
+      padding: 'clamp(10px, 3vw, 12px) clamp(12px, 3vw, 16px)',
       borderRadius: 'var(--radius-md)',
       border: '1px solid #d1d5db',
-      fontSize: 'clamp(0.875rem, 2.5vw, 1rem)', // Responsive input font size
+      fontSize: 'clamp(0.875rem, 2.5vw, 1rem)',
       color: '#1f2937',
       background: '#ffffff',
       transition: 'all var(--transition-default)',
@@ -236,50 +228,37 @@ const Contact = () => {
       boxSizing: 'border-box',
     },
     textarea: {
-      padding: 'clamp(10px, 3vw, 12px) clamp(12px, 3vw, 16px)', // Responsive textarea padding
+      padding: 'clamp(10px, 3vw, 12px) clamp(12px, 3vw, 16px)',
       borderRadius: 'var(--radius-md)',
       border: '1px solid #d1d5db',
-      fontSize: 'clamp(0.875rem, 2.5vw, 1rem)', // Responsive textarea font size
+      fontSize: 'clamp(0.875rem, 2.5vw, 1rem)',
       color: '#1f2937',
       background: '#ffffff',
       transition: 'all var(--transition-default)',
       outline: 'none',
-      minHeight: 'clamp(100px, 20vw, 120px)', // Responsive textarea height
+      minHeight: 'clamp(100px, 20vw, 120px)',
       resize: 'vertical',
       fontFamily: 'var(--font-sans)',
       width: '100%',
       boxSizing: 'border-box',
     },
     submitButton: {
-      background: 'var(--color-primary-500)',
+      background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
       color: '#ffffff',
-      padding: 'clamp(10px, 3vw, 12px) clamp(20px, 4vw, 24px)', // Responsive button padding
+      padding: '0.5rem 1rem',
       borderRadius: 'var(--radius-md)',
       border: 'none',
-      fontSize: 'clamp(0.875rem, 2.5vw, 1rem)', // Responsive button font size
-      fontWeight: '600',
+      fontSize: '0.875rem',
+      fontWeight: '500',
       cursor: 'pointer',
-      transition: 'all var(--transition-default)',
-      display: 'flex',
+      transition: 'all 0.2s ease',
+      display: 'inline-flex',
       alignItems: 'center',
       justifyContent: 'center',
-      gap: 'clamp(0.5rem, 2vw, 0.75rem)', // Responsive gap
-      marginTop: 'clamp(1rem, 3vw, 1.5rem)', // Responsive margin
-      width: '100%',
-      minHeight: '44px', // Minimum touch target
-    },
-    whatsappNotice: {
-      background: '#dcfce7',
-      border: '1px solid #bbf7d0',
-      borderRadius: 'var(--radius-md)',
-      padding: 'clamp(0.75rem, 3vw, 1rem)', // Responsive padding
-      marginTop: 'clamp(1rem, 3vw, 1.5rem)', // Responsive margin
-      fontSize: 'clamp(0.75rem, 2vw, 0.875rem)', // Responsive font size
-      color: '#166534',
-      display: 'flex',
-      alignItems: 'flex-start',
-      gap: 'clamp(0.5rem, 2vw, 0.75rem)', // Responsive gap
-      lineHeight: '1.4',
+      gap: '0.375rem',
+      marginTop: 'clamp(1rem, 3vw, 1.5rem)',
+      minHeight: '44px',
+      boxShadow: '0 2px 8px rgba(59, 130, 246, 0.3)',
     },
   };
 
@@ -292,8 +271,12 @@ const Contact = () => {
           gap: clamp(1.5rem, 4vw, 2rem);
         }
 
-        /* Small Mobile (up to 480px) */
-        @media (max-width: 480px) {
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+          .contact-section .container {
+            padding: 0 clamp(1rem, 4vw, 2rem) !important;
+          }
+
           .contact-header {
             margin-bottom: 1.5rem;
             padding: 0 0.5rem;
@@ -388,15 +371,15 @@ const Contact = () => {
         /* Focus and Hover States */
         .input-field:focus {
           border-color: var(--color-primary-500);
-          box-shadow: 0 0 0 3px rgba(242, 109, 38, 0.1);
+          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
         
         /* Hover Effects - Only on devices that support hover */
         @media (hover: hover) and (pointer: fine) {
           .submit-button:hover:not(:disabled) {
-            background: var(--color-primary-600);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(242, 109, 38, 0.3);
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.5);
           }
           
           .info-item:hover {
@@ -407,7 +390,7 @@ const Contact = () => {
         /* Touch devices */
         @media (hover: none) and (pointer: coarse) {
           .submit-button:active:not(:disabled) {
-            background: var(--color-primary-600);
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
             transform: translateY(-1px);
           }
         }
@@ -481,7 +464,7 @@ const Contact = () => {
         /* Dark mode adjustments */
         @media (prefers-color-scheme: dark) {
           .contact-section {
-            background: var(--background-secondary, #1f2937);
+            background: linear-gradient(135deg, #1f2937 0%, #111827 50%, #1f2937 100%);
           }
           
           .contact-title {
@@ -542,10 +525,6 @@ const Contact = () => {
             display: none;
           }
           
-          .whatsapp-notice {
-            display: none;
-          }
-          
           .content-grid {
             grid-template-columns: 1fr;
             gap: 1rem;
@@ -558,11 +537,11 @@ const Contact = () => {
           <div style={styles.header} className="contact-header">
             <span style={styles.tagline} className="contact-tagline">Contact Us</span>
             <h2 style={styles.title} className="contact-title">
-              Lets Start Your Project
+              Let&apos;s Start Your Project
             </h2>
             <p style={styles.description} className="contact-description">
               Ready to transform your digital presence? Get in touch with us today 
-              and lets discuss how we can help bring your vision to life.
+              and let&apos;s discuss how we can help bring your vision to life.
             </p>
           </div>
 
@@ -581,7 +560,7 @@ const Contact = () => {
               <div style={styles.infoGrid}>
                 {contactInfo.map((info, index) => (
                   <div key={index} style={styles.infoItem} className="info-item">
-                    <div style={styles.iconWrapper}>
+                    <div style={styles.iconWrapper} className="icon-wrapper">
                       {React.cloneElement(info.icon, {
                         size: 'clamp(18, 4vw, 24)',
                         style: { 
@@ -593,7 +572,9 @@ const Contact = () => {
                     <div style={styles.infoContent}>
                       <div style={styles.infoItemTitle} className="info-item-title">{info.title}</div>
                       <div style={styles.infoItemContent} className="info-item-content">{info.content}</div>
-                      <div style={styles.infoItemContent} className="info-item-content">{info.subContent}</div>
+                      {info.subContent && (
+                        <div style={styles.infoItemContent} className="info-item-content">{info.subContent}</div>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -688,20 +669,15 @@ const Contact = () => {
                         borderRadius: '50%',
                         animation: 'spin 1s linear infinite'
                       }} />
-                      Opening WhatsApp...
+                      Sending...
                     </>
                   ) : (
                     <>
                       <Send size={16} />
-                      Send via WhatsApp
+                      Send
                     </>
                   )}
                 </button>
-
-                {/* <div style={styles.whatsappNotice} className="whatsapp-notice">
-                  <MessageSquare size={16} />
-                  This form will open WhatsApp with your message pre-filled. Just click send in WhatsApp to deliver your message.
-                </div> */}
               </div>
             </div>
           </div>

@@ -11,8 +11,8 @@ const Hero = () => {
   const slides = [
     {
       tagline: "Best IT Solutions",
-      headline: "An Innovative IT Solutions Agency",
-      subtitle: "Lorem ipsum dolor sit amet elit. Sed efficitur quis purus ut interdum. Pellentesque aliquet dolor eget urna ultricies tincidunt.",
+      headline: "Modernised Graphic Designs",
+      subtitle: "delivering logos, brand identity, and user interface designs that improve visibility.",
       background: "url('/images/slide1.jpg')",
     },
     {

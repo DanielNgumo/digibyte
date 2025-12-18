@@ -1,10 +1,15 @@
 "use client";
 
-import React from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { Palette, Smartphone, Globe, Code, Database, Shield } from 'lucide-react';
-import { CSSProperties } from 'react';
 
-const Services = () => {
+export default function Services() {
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const startXRef = useRef(0);
+  const scrollStartRef = useRef(0);
+
   const services = [
     {
       icon: <Palette size={32} />,
@@ -44,480 +49,386 @@ const Services = () => {
     },
   ];
 
-  const styles: { [key: string]: CSSProperties } = {
-    section: {
-      padding: 'clamp(2rem, 8vw, 6rem) 0', // Responsive section padding
-      background: '#f8fafc',
-      fontFamily: 'var(--font-sans)',
-      position: 'relative',
-      zIndex: 10,
-    },
-    container: {
-      maxWidth: '1280px',
-      margin: '0 auto',
-      padding: '0 clamp(1rem, 4vw, 2rem)', // Responsive container padding
-      width: '100%',
-      boxSizing: 'border-box',
-    },
-    header: {
-      textAlign: 'center',
-      marginBottom: 'clamp(2rem, 6vw, 4rem)', // Responsive header margin
-      padding: '0 clamp(0.5rem, 2vw, 1rem)', // Inner padding for mobile
-    },
-    tagline: {
-      color: 'var(--color-primary-500)',
-      fontSize: 'clamp(0.875rem, 2.5vw, 1rem)', // Responsive tagline
-      fontWeight: '600',
-      fontFamily: 'var(--font-heading)',
-      marginBottom: 'clamp(0.5rem, 2vw, 1rem)', // Responsive margin
-      textTransform: 'uppercase',
-      letterSpacing: '0.1em',
-      display: 'block',
-    },
-    title: {
-      fontSize: 'clamp(1.75rem, 6vw, 3rem)', // Better mobile scaling
-      fontWeight: '700',
-      fontFamily: 'var(--font-heading)',
-      color: '#1f2937',
-      marginBottom: 'clamp(1rem, 3vw, 1.5rem)', // Responsive margin
-      lineHeight: '1.2',
-    },
-    description: {
-      fontSize: 'clamp(1rem, 3vw, 1.125rem)', // Responsive description
-      color: '#6b7280',
-      maxWidth: '100%', // Full width on mobile
-      margin: '0 auto',
-      lineHeight: '1.6',
-    },
-    servicesGrid: {
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', // Smaller minimum for mobile
-      gap: 'clamp(1rem, 4vw, 2rem)', // Responsive grid gap
-      marginTop: 'clamp(2rem, 6vw, 3rem)', // Responsive top margin
-    },
-    serviceCard: {
-      background: '#ffffff',
-      padding: 'clamp(1.25rem, 5vw, 2rem)', // Responsive card padding
-      borderRadius: 'var(--radius-xl)',
-      border: '1px solid #e5e7eb',
-      transition: 'all var(--transition-default)',
-      cursor: 'pointer',
-      boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-      position: 'relative',
-      zIndex: 1,
-      height: 'auto', // Allow flexible height
-      display: 'flex',
-      flexDirection: 'column',
-    },
-    iconWrapper: {
-      width: 'clamp(48px, 12vw, 72px)', // Responsive icon container
-      height: 'clamp(48px, 12vw, 72px)', // Responsive icon container
-      background: '#fef7f0',
-      borderRadius: '50%',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginBottom: 'clamp(1rem, 3vw, 1.5rem)', // Responsive margin
-      color: 'var(--color-primary-500)',
-      transition: 'all var(--transition-default)',
-      flexShrink: 0, // Prevent shrinking
-    },
-    serviceTitle: {
-      fontSize: 'clamp(1.125rem, 4vw, 1.5rem)', // Responsive title
-      fontWeight: '600',
-      fontFamily: 'var(--font-heading)',
-      color: '#1f2937',
-      marginBottom: 'clamp(0.75rem, 2vw, 1rem)', // Responsive margin
-      display: 'block',
-      lineHeight: '1.3',
-    },
-    serviceDescription: {
-      fontSize: 'clamp(0.875rem, 3vw, 1rem)', // Responsive description
-      color: '#6b7280',
-      lineHeight: '1.6',
-      marginBottom: 'clamp(1rem, 3vw, 1.5rem)', // Responsive margin
-      flex: '1', // Allow description to grow
-    },
-    featuresList: {
-      display: 'flex',
-      flexWrap: 'wrap',
-      gap: 'clamp(0.5rem, 2vw, 0.75rem)', // Responsive gap
-      marginTop: 'auto', // Push to bottom of card
-    },
-    featureTag: {
-      background: '#f1f5f9',
-      color: '#475569',
-      padding: 'clamp(3px, 1vw, 6px) clamp(8px, 2vw, 12px)', // Responsive padding
-      borderRadius: 'var(--radius-md)',
-      fontSize: 'clamp(0.75rem, 2vw, 0.875rem)', // Responsive font size
-      fontWeight: '500',
-      border: '1px solid #e2e8f0',
-      lineHeight: '1.2',
-      textAlign: 'center',
-    },
+  const handleScroll = () => {
+    if (!scrollContainerRef.current) return;
+    
+    const container = scrollContainerRef.current;
+    const cardWidth = 300; // Fixed card width + gap
+    const scrollLeft = container.scrollLeft;
+    const containerCenter = scrollLeft + container.offsetWidth / 2;
+    
+    let closestIndex = 0;
+    let closestDistance = Infinity;
+    
+    services.forEach((_, index) => {
+      // Calculate card position based on fixed width and padding
+      const cardCenter = 2 * 16 + (index * (cardWidth + 16)) + cardWidth / 2;
+      const distance = Math.abs(cardCenter - containerCenter);
+      
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        closestIndex = index;
+      }
+    });
+    
+    setActiveIndex(closestIndex);
   };
+
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const handleMouseDown = (e: MouseEvent) => {
+      setIsDragging(true);
+      startXRef.current = e.clientX;
+      scrollStartRef.current = container.scrollLeft;
+      container.style.scrollBehavior = 'auto';
+      container.classList.add('dragging');
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isDragging) return;
+      
+      const x = e.clientX - startXRef.current;
+      container.scrollLeft = scrollStartRef.current - x;
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+      container.style.scrollBehavior = 'smooth';
+      container.classList.remove('dragging');
+    };
+
+    const handleMouseLeave = () => {
+      setIsDragging(false);
+      container.style.scrollBehavior = 'smooth';
+      container.classList.remove('dragging');
+    };
+
+    container.addEventListener('mousedown', handleMouseDown);
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+    container.addEventListener('mouseleave', handleMouseLeave);
+
+    return () => {
+      container.removeEventListener('mousedown', handleMouseDown);
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      container.removeEventListener('mouseleave', handleMouseLeave);
+    };
+  }, [isDragging]);
 
   return (
     <>
-      <style jsx>{`
-        /* Mobile First Responsive Styles */
-        .services-grid {
-          grid-template-columns: 1fr;
-          gap: 1.5rem;
-        }
-        
-        .service-card {
-          min-height: auto;
+      <style>{`
+        .services-carousel-section {
+          padding: clamp(3rem, 8vw, 6rem) 0;
+          background: #f8fafc;
+          font-family: 'Inter', system-ui, sans-serif;
         }
 
-        /* Small Mobile (up to 480px) */
-        @media (max-width: 480px) {
-          .services-header {
-            margin-bottom: 2rem;
-            padding: 0 0.5rem;
+        .services-carousel-header {
+          text-align: center;
+          margin-bottom: clamp(2rem, 6vw, 4rem);
+          padding: 0 clamp(0.5rem, 2vw, 1rem);
+        }
+
+        .services-carousel-tagline {
+          color: #f26d26;
+          font-size: clamp(0.875rem, 2.5vw, 1rem);
+          font-weight: 600;
+          font-family: 'Poppins', system-ui, sans-serif;
+          margin-bottom: clamp(0.5rem, 2vw, 1rem);
+          text-transform: uppercase;
+          letter-spacing: 0.1em;
+          display: block;
+        }
+
+        .services-carousel-title {
+          font-size: clamp(1.75rem, 6vw, 3rem);
+          font-weight: 700;
+          font-family: 'Poppins', system-ui, sans-serif;
+          color: #1f2937;
+          margin-bottom: clamp(1rem, 3vw, 1.5rem);
+          line-height: 1.2;
+        }
+
+        .services-carousel-description {
+          font-size: clamp(1rem, 3vw, 1.125rem);
+          color: #6b7280;
+          max-width: 600px;
+          margin: 0 auto;
+          line-height: 1.6;
+        }
+
+        .carousel-container {
+          max-width: 1280px;
+          margin: 0 auto;
+          padding: 0 clamp(1rem, 4vw, 2rem);
+          width: 100%;
+          box-sizing: border-box;
+        }
+
+        .carousel-wrapper {
+          overflow-x: auto;
+          scroll-behavior: smooth;
+          scrollbar-width: none;
+          -ms-overflow-style: none;
+          padding: 2rem 0;
+          cursor: grab;
+          user-select: none;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+        }
+
+        .carousel-wrapper::-webkit-scrollbar {
+          display: none;
+        }
+
+        .carousel-wrapper.dragging {
+          cursor: grabbing;
+          user-select: none;
+        }
+
+        .carousel-track {
+          display: flex;
+          gap: 1rem;
+          padding: 0 2rem;
+          width: fit-content;
+          user-select: none;
+          -webkit-user-select: none;
+        }
+
+        .service-card-carousel {
+          flex: 0 0 300px;
+          min-width: 300px;
+          height: 420px;
+          background: #ffffff;
+          border: 1px solid #e5e7eb;
+          border-radius: 16px;
+          padding: clamp(1.5rem, 4vw, 2rem);
+          display: flex;
+          flex-direction: column;
+          box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+          transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+          opacity: 0.6;
+          transform: scale(0.85) translateY(40px);
+          pointer-events: none;
+          user-select: none;
+        }
+
+        .service-card-carousel.active {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+          box-shadow: 0 20px 40px rgba(242, 109, 38, 0.15);
+          border-color: #f26d26;
+        }
+
+        .service-card-carousel.side {
+          opacity: 0.5;
+        }
+
+        .icon-wrapper-carousel {
+          width: 64px;
+          height: 64px;
+          background: #fef3e8;
+          border-radius: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #f26d26;
+          margin-bottom: 1.5rem;
+          flex-shrink: 0;
+          transition: all 0.3s ease;
+        }
+
+        .service-card-carousel.active .icon-wrapper-carousel {
+          background: #f26d26;
+          color: white;
+          transform: scale(1.1);
+        }
+
+        .service-card-title-carousel {
+          font-size: 1.25rem;
+          font-weight: 600;
+          font-family: 'Poppins', system-ui, sans-serif;
+          color: #1f2937;
+          margin-bottom: 0.75rem;
+          line-height: 1.3;
+        }
+
+        .service-card-carousel.active .service-card-title-carousel {
+          color: #f26d26;
+        }
+
+        .service-card-description-carousel {
+          font-size: 0.95rem;
+          color: #6b7280;
+          line-height: 1.6;
+          margin-bottom: 1rem;
+          flex: 1;
+        }
+
+        .features-list-carousel {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.5rem;
+          margin-top: auto;
+        }
+
+        .feature-tag-carousel {
+          background: #f1f5f9;
+          color: #475569;
+          padding: 4px 10px;
+          border-radius: 6px;
+          font-size: 0.8rem;
+          font-weight: 500;
+          border: 1px solid #e2e8f0;
+          line-height: 1.2;
+        }
+
+        .carousel-indicators {
+          display: flex;
+          justify-content: center;
+          gap: 0.5rem;
+          margin-top: 2rem;
+        }
+
+        .indicator {
+          width: 10px;
+          height: 10px;
+          border-radius: 50%;
+          background: #d1d5db;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          border: 2px solid transparent;
+        }
+
+        .indicator.active {
+          background: #f26d26;
+          width: 30px;
+          border-radius: 5px;
+        }
+
+        @media (max-width: 1024px) {
+          .service-card-carousel {
+            flex: 0 0 45%;
+            min-width: 280px;
+            height: 380px;
           }
-          
-          .services-grid {
-            grid-template-columns: 1fr;
-            gap: 1rem;
-          }
-          
-          .service-card {
-            padding: 1rem;
-            margin: 0 0.25rem;
-          }
-          
-          .features-list {
-            gap: 0.375rem;
-          }
-          
-          .feature-tag {
-            font-size: 0.75rem;
-            padding: 2px 6px;
-          }
-          
-          .icon-wrapper svg {
-            width: clamp(20px, 6vw, 24px) !important;
-            height: clamp(20px, 6vw, 24px) !important;
+
+          .carousel-track {
+            padding: 0 1rem;
           }
         }
 
-        /* Large Mobile (481px - 640px) */
-        @media (min-width: 481px) and (max-width: 640px) {
-          .services-grid {
-            grid-template-columns: 1fr;
-            gap: 1.25rem;
-          }
-          
-          .service-card {
+        @media (max-width: 640px) {
+          .service-card-carousel {
+            flex: 0 0 80%;
+            min-width: 280px;
+            height: 360px;
             padding: 1.25rem;
           }
-          
-          .icon-wrapper svg {
-            width: clamp(24px, 7vw, 28px) !important;
-            height: clamp(24px, 7vw, 28px) !important;
+
+          .carousel-track {
+            padding: 0 0.5rem;
+            gap: 1rem;
+          }
+
+          .carousel-wrapper {
+            padding: 1.5rem 0;
           }
         }
 
-        /* Tablet (641px - 768px) */
-        @media (min-width: 641px) and (max-width: 768px) {
-          .services-grid {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
-          }
-          
-          .service-card {
-            padding: 1.5rem;
-          }
-          
-          .icon-wrapper svg {
-            width: clamp(28px, 8vw, 32px) !important;
-            height: clamp(28px, 8vw, 32px) !important;
-          }
-        }
-
-        /* Small Desktop / Large Tablet (769px - 1024px) */
-        @media (min-width: 769px) and (max-width: 1024px) {
-          .services-header {
-            max-width: 700px;
-            margin: 0 auto 3rem auto;
-          }
-          
-          .services-grid {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 2rem;
-          }
-          
-          .service-card {
-            padding: 1.75rem;
-          }
-          
-          .icon-wrapper svg {
-            width: 32px !important;
-            height: 32px !important;
-          }
-        }
-
-        /* Desktop (1025px - 1439px) */
-        @media (min-width: 1025px) and (max-width: 1439px) {
-          .services-header {
-            max-width: 800px;
-            margin: 0 auto 4rem auto;
-          }
-          
-          .services-grid {
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-          }
-          
-          .service-card {
-            padding: 2rem;
-          }
-          
-          .icon-wrapper svg {
-            width: 32px !important;
-            height: 32px !important;
-          }
-        }
-
-        /* Large Desktop (1440px and up) */
-        @media (min-width: 1440px) {
-          .services-header {
-            max-width: 900px;
-            margin: 0 auto 4rem auto;
-          }
-          
-          .services-grid {
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2.5rem;
-          }
-          
-          .service-card {
-            padding: 2.5rem;
-          }
-        }
-
-        /* Hover Effects - Only on devices that support hover */
-        @media (hover: hover) and (pointer: fine) {
-          .service-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-            border-color: var(--color-primary-500);
-          }
-          
-          .service-card:hover .icon-wrapper {
-            background: var(--color-primary-500);
-            color: #ffffff;
-            transform: scale(1.05);
-          }
-          
-          .service-card:hover .service-title {
-            color: var(--color-primary-500);
-          }
-        }
-
-        /* Touch devices - subtle hover alternative */
-        @media (hover: none) and (pointer: coarse) {
-          .service-card:active {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.1);
-          }
-        }
-
-        /* Focus states for accessibility */
-        .service-card:focus {
-          outline: 2px solid var(--color-primary-500);
-          outline-offset: 2px;
-        }
-
-        /* Override any global styles */
-        .services-section * {
-          color: inherit !important;
-        }
-        
-        .services-tagline {
-          color: var(--color-primary-500) !important;
-        }
-        
-        .services-title {
-          color: #1f2937 !important;
-        }
-        
-        .services-description {
-          color: #6b7280 !important;
-        }
-        
-        .service-card-title {
-          color: #1f2937 !important;
-        }
-        
-        .service-card-description {
-          color: #6b7280 !important;
-        }
-
-        /* High contrast mode support */
-        @media (prefers-contrast: high) {
-          .service-card {
-            border: 2px solid #1f2937;
-          }
-          
-          .icon-wrapper {
-            border: 1px solid var(--color-primary-500);
-          }
-          
-          .feature-tag {
-            border: 1px solid #475569;
-          }
-        }
-
-        /* Reduced motion support */
         @media (prefers-reduced-motion: reduce) {
-          .service-card,
-          .icon-wrapper {
+          .carousel-wrapper {
+            scroll-behavior: auto;
+          }
+
+          .service-card-carousel,
+          .icon-wrapper-carousel {
             transition: none !important;
-          }
-          
-          .service-card:hover {
-            transform: none !important;
-          }
-          
-          .service-card:hover .icon-wrapper {
-            transform: none !important;
-          }
-        }
-
-        /* Landscape orientation adjustments for mobile */
-        @media (max-height: 600px) and (orientation: landscape) {
-          .services-section {
-            padding: clamp(1rem, 4vw, 2rem) 0;
-          }
-          
-          .services-header {
-            margin-bottom: 1.5rem;
-          }
-          
-          .services-grid {
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-          }
-          
-          .service-card {
-            padding: 1rem;
-          }
-        }
-
-        /* Dark mode adjustments */
-        @media (prefers-color-scheme: dark) {
-          .services-section {
-            background: var(--background-secondary, #1f2937);
-          }
-          
-          .services-title {
-            color: #ffffff !important;
-          }
-          
-          .services-description {
-            color: #d1d5db !important;
-          }
-          
-          .service-card-title {
-            color: #ffffff !important;
-          }
-          
-          .service-card-description {
-            color: #d1d5db !important;
-          }
-          
-          .service-card {
-            background: var(--card, #374151);
-            border-color: var(--border-light, #4b5563);
-          }
-          
-          .feature-tag {
-            background: #374151;
-            color: #d1d5db;
-            border-color: #4b5563;
-          }
-        }
-
-        /* Print styles */
-        @media print {
-          .service-card {
-            break-inside: avoid;
-            page-break-inside: avoid;
-          }
-          
-          .services-grid {
-            grid-template-columns: 1fr;
-            gap: 1rem;
-          }
-        }
-
-        /* Ultra-wide screens (2560px and up) */
-        @media (min-width: 2560px) {
-          .services-container {
-            max-width: 1600px;
-          }
-          
-          .services-grid {
-            grid-template-columns: repeat(4, 1fr);
-            gap: 3rem;
           }
         }
       `}</style>
 
-      <section style={styles.section} id="services" className="services-section">
-        <div style={styles.container} className="services-container">
-          <div style={styles.header} className="services-header">
-            <span style={styles.tagline} className="services-tagline">Our Services</span>
-            <h2 style={styles.title} className="services-title">
+      <section className="services-carousel-section" id="services">
+        <div className="carousel-container">
+          <div className="services-carousel-header">
+            <span className="services-carousel-tagline">Our Services</span>
+            <h2 className="services-carousel-title">
               Comprehensive IT Solutions
             </h2>
-            <p style={styles.description} className="services-description">
+            <p className="services-carousel-description">
               We offer a full range of technology services to help your business 
               succeed in the digital world. From design to development, we ve got you covered.
             </p>
           </div>
 
-          <div style={styles.servicesGrid} className="services-grid">
-            {services.map((service, index) => (
-              <div 
-                key={index} 
-                style={styles.serviceCard}
-                className="service-card"
-                tabIndex={0}
+          <div 
+            className="carousel-wrapper"
+            ref={scrollContainerRef}
+            onScroll={handleScroll}
+          >
+            <div className="carousel-track">
+              {services.map((service, index) => (
+                <div
+                  key={index}
+                  className={`service-card-carousel ${
+                    index === activeIndex ? 'active' : 'side'
+                  }`}
+                  role="article"
+                  aria-label={`${service.title} service`}
+                >
+                  <div className="icon-wrapper-carousel">
+                    {React.cloneElement(service.icon, {
+                      size: 32,
+                      strokeWidth: 2
+                    })}
+                  </div>
+                  <h3 className="service-card-title-carousel">
+                    {service.title}
+                  </h3>
+                  <p className="service-card-description-carousel">
+                    {service.description}
+                  </p>
+                  <div className="features-list-carousel">
+                    {service.features.map((feature, featureIndex) => (
+                      <span key={featureIndex} className="feature-tag-carousel">
+                        {feature}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="carousel-indicators">
+            {services.map((_, index) => (
+              <div
+                key={index}
+                className={`indicator ${index === activeIndex ? 'active' : ''}`}
+                onClick={() => {
+                  if (scrollContainerRef.current) {
+                    const cardWidth = 300;
+                    const gap = 16;
+                    const scrollPosition = index * (cardWidth + gap) + 2 * 16 - (scrollContainerRef.current.offsetWidth / 2 - cardWidth / 2);
+                    scrollContainerRef.current.scrollTo({
+                      left: scrollPosition,
+                      behavior: 'smooth'
+                    });
+                  }
+                }}
                 role="button"
-                aria-label={`${service.title} service`}
-              >
-                <div style={styles.iconWrapper} className="icon-wrapper">
-                  {React.cloneElement(service.icon, {
-                    size: 'clamp(20, 6vw, 32)',
-                    style: { 
-                      width: 'clamp(20px, 6vw, 32px)', 
-                      height: 'clamp(20px, 6vw, 32px)' 
-                    }
-                  })}
-                </div>
-                <h3 style={styles.serviceTitle} className="service-card-title service-title">
-                  {service.title}
-                </h3>
-                <p style={styles.serviceDescription} className="service-card-description">
-                  {service.description}
-                </p>
-                <div style={styles.featuresList} className="features-list">
-                  {service.features.map((feature, featureIndex) => (
-                    <span key={featureIndex} style={styles.featureTag} className="feature-tag">
-                      {feature}
-                    </span>
-                  ))}
-                </div>
-              </div>
+                tabIndex={0}
+                aria-label={`Go to service ${index + 1}`}
+              />
             ))}
           </div>
         </div>
       </section>
     </>
   );
-};
-
-export default Services;
+}
