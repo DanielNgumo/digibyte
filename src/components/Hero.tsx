@@ -6,7 +6,6 @@ import { ArrowUp, ArrowLeft, ArrowRight } from 'lucide-react';
 const Hero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
-  const [stylesLoaded, setStylesLoaded] = useState(false);
   const totalSlides = 3;
 
   const slides = [
@@ -31,30 +30,7 @@ const Hero = () => {
   ];
 
   useEffect(() => {
-    // Small delay before checking styles
-    const timer = setTimeout(() => {
-      const checkStyles = () => {
-        try {
-          const rootStyles = getComputedStyle(document.documentElement);
-          const primaryColor = rootStyles.getPropertyValue('--color-primary-500').trim();
-          
-          if (primaryColor && primaryColor !== '') {
-            setStylesLoaded(true);
-            setIsVisible(true);
-          } else {
-            requestAnimationFrame(checkStyles);
-          }
-        } catch (e) {
-          // Fallback: just show after 2 seconds
-          setTimeout(() => {
-            setStylesLoaded(true);
-            setIsVisible(true);
-          }, 2000);
-        }
-      };
-      
-      checkStyles();
-    }, 100);
+    setIsVisible(true);
     
     // Auto-advance slides every 5 seconds
     const interval = setInterval(() => {
@@ -62,7 +38,6 @@ const Hero = () => {
     }, 5000);
     
     return () => {
-      clearTimeout(timer);
       clearInterval(interval);
     };
   }, [totalSlides]);
@@ -74,15 +49,6 @@ const Hero = () => {
   const prevSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
   }, [totalSlides]);
-
-  const handleReadMore = useCallback(() => {
-    const servicesSection = document.getElementById('services');
-    if (servicesSection) {
-      servicesSection.scrollIntoView({ behavior: 'smooth' });
-    } else {
-      window.scrollBy({ top: window.innerHeight, behavior: 'smooth' });
-    }
-  }, []);
 
   const handleContactUs = useCallback(() => {
     const contactSection = document.getElementById('contact');
@@ -97,109 +63,8 @@ const Hero = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
-  // Inline keyframes animation
-  const spinKeyframes = `
-    @keyframes loadingSpin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    @keyframes loadingBounce {
-      0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
-      40% { transform: scale(1.2); opacity: 1; }
-    }
-  `;
-
   return (
     <>
-      {/* Inline keyframes */}
-      <style dangerouslySetInnerHTML={{ __html: spinKeyframes }} />
-      
-      {/* Loading Screen with Inline Styles */}
-      {!stylesLoaded && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          background: 'linear-gradient(135deg, #0c4a6e 0%, #164e63 100%)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 99999,
-          fontFamily: 'system-ui, -apple-system, sans-serif',
-        }}>
-          <div style={{
-            textAlign: 'center',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '1.5rem',
-          }}>
-            {/* Spinner */}
-            <div style={{
-              position: 'relative',
-              width: '80px',
-              height: '80px',
-            }}>
-              <div style={{
-                width: '80px',
-                height: '80px',
-                border: '4px solid rgba(255, 255, 255, 0.1)',
-                borderTop: '4px solid #f26d26',
-                borderRight: '4px solid #048ccc',
-                borderRadius: '50%',
-                animation: 'loadingSpin 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite',
-              }} />
-            </div>
-            
-            {/* Loading Text */}
-            <div style={{
-              fontFamily: "'Poppins', sans-serif",
-              fontSize: '1.5rem',
-              fontWeight: 600,
-              color: '#ffffff',
-              letterSpacing: '0.05em',
-            }}>
-              Loading
-            </div>
-            
-            {/* Dots */}
-            <div style={{
-              display: 'flex',
-              gap: '0.5rem',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-              <span style={{
-                width: '8px',
-                height: '8px',
-                background: '#f26d26',
-                borderRadius: '50%',
-                animation: 'loadingBounce 1.4s ease-in-out infinite',
-                animationDelay: '0s',
-              }} />
-              <span style={{
-                width: '8px',
-                height: '8px',
-                background: '#048ccc',
-                borderRadius: '50%',
-                animation: 'loadingBounce 1.4s ease-in-out infinite',
-                animationDelay: '0.2s',
-              }} />
-              <span style={{
-                width: '8px',
-                height: '8px',
-                background: '#f26d26',
-                borderRadius: '50%',
-                animation: 'loadingBounce 1.4s ease-in-out infinite',
-                animationDelay: '0.4s',
-              }} />
-            </div>
-          </div>
-        </div>
-      )}
-
       <style jsx>{`
         /* Hero Styles */
         .hero-wrapper {
@@ -210,8 +75,6 @@ const Hero = () => {
           margin-left: -50vw;
           margin-right: -50vw;
           overflow: hidden;
-          opacity: ${stylesLoaded ? 1 : 0};
-          transition: opacity 0.5s ease-in-out;
         }
 
         .hero-section {
@@ -339,12 +202,6 @@ const Hero = () => {
           background: #f26d26;
           color: white;
           box-shadow: 0 4px 14px 0 rgba(242, 109, 38, 0.25);
-        }
-
-        .hero-button-secondary {
-          background: #048ccc;
-          color: white;
-          box-shadow: 0 4px 14px 0 rgba(4, 140, 204, 0.25);
         }
 
         .hero-arrow {
@@ -696,12 +553,6 @@ const Hero = () => {
             box-shadow: 0 6px 20px 0 rgba(242, 109, 38, 0.4);
           }
           
-          .hero-button-secondary:hover {
-            transform: translateY(-2px);
-            background: #0369a1;
-            box-shadow: 0 6px 20px 0 rgba(4, 140, 204, 0.4);
-          }
-          
           .hero-arrow:hover {
             background: rgba(0, 0, 0, 0.7);
             transform: translateY(-50%) scale(1.05);
@@ -782,13 +633,6 @@ const Hero = () => {
                     <div className="hero-buttons">
                       <button 
                         className="hero-button hero-button-primary"
-                        onClick={handleReadMore}
-                        type="button"
-                      >
-                        Read More
-                      </button>
-                      <button 
-                        className="hero-button hero-button-secondary"
                         onClick={handleContactUs}
                         type="button"
                       >
