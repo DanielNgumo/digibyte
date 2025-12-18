@@ -9,7 +9,17 @@ const Portfolio = () => {
   const [selectedProject, setSelectedProject] = useState<number | null>(1);
 
   const projects = useMemo(() => [
-
+    {
+      id: 1,
+      title: "Paynasi",
+      category: "web",
+      description: "Responsive payment app website with server-side rendering for SEO using Next.js.",
+      image: "/images/paynasi.png",
+      tags: ["Next.js", "TypeScript", "APIs"],
+      liveUrl: "#",
+      codeUrl: "#",
+      icon: <Globe size={32} />
+    },
     {
       id: 2,
       title: "Latisec",
@@ -17,7 +27,7 @@ const Portfolio = () => {
       description: "Cybersecurity website with secure API integration using Angular and PHP.",
       image: "/images/latisec.png",
       tags: ["Angular", "PHP", "APIs"],
-      liveUrl: "https://latisec.com/",
+      liveUrl: "#",
       codeUrl: "#",
       icon: <Code size={32} />
     },
@@ -28,7 +38,7 @@ const Portfolio = () => {
       description: "Aquatic services website with interactive UI using React and RESTful APIs.",
       image: "/images/wateramba.png",
       tags: ["React", "APIs", "JavaScript"],
-      liveUrl: "https://wateramba.com/",
+      liveUrl: "#",
       codeUrl: "#",
       icon: <Globe size={32} />
     },
@@ -39,7 +49,7 @@ const Portfolio = () => {
       description: "Transportation-of-goods app with real-time geolocation using Flutter.",
       image: "/images/tranzit.png",
       tags: ["Flutter", "Geolocation", "APIs"],
-      liveUrl: "https://tranzit.cloud/",
+      liveUrl: "#",
       codeUrl: "#",
       icon: <Smartphone size={32} />
     },
@@ -50,32 +60,21 @@ const Portfolio = () => {
       description: "E-learning website with server-side rendering for SEO using Angular 17.",
       image: "/images/ibuka.png",
       tags: ["Angular", "TypeScript", "SSR"],
-      liveUrl: "https://ibukatech.com/",
+      liveUrl: "#",
       codeUrl: "#",
       icon: <Code size={32} />
     },
     {
       id: 6,
-      title: "HCA Academy",
+      title: "Cargo Connect",
       category: "web",
-      description: "Maintenance of the website.",
+      description: "Cargo logistics PWA with real-time pricing and tracking using Laravel and React.",
       image: "/images/cargo.png",
       tags: ["Laravel", "React", "PWA"],
-      liveUrl: "https://hcacademy.co.ke/",
+      liveUrl: "#",
       codeUrl: "#",
       icon: <Globe size={32} />
     },
-    {
-      id: 1,
-      title: "Paynasi",
-      category: "web",
-      description: "Responsive payment app website with server-side rendering for SEO using Next.js.",
-      image: "/images/paynasi.png",
-      tags: ["Next.js", "TypeScript", "APIs"],
-      liveUrl: "https://paynasi-43tv.vercel.app/",
-      codeUrl: "#",
-      icon: <Globe size={32} />
-    }
   ], []);
 
   const filteredProjects = useMemo(() => {
@@ -86,8 +85,8 @@ const Portfolio = () => {
     setSelectedProject(selectedProject === projectId ? null : projectId);
   };
 
-  const selectedProjectData = selectedProject
-    ? filteredProjects.find(p => p.id === selectedProject)
+  const selectedProjectData = selectedProject 
+    ? filteredProjects.find(p => p.id === selectedProject) 
     : null;
 
   const styles: { [key: string]: CSSProperties } = {
@@ -229,7 +228,7 @@ const Portfolio = () => {
       display: 'grid',
       gridTemplateColumns: '1fr 1fr',
       gap: 'clamp(2rem, 4vw, 3rem)',
-      background: '#ffffff',
+      background: '#1f2937',
       borderRadius: 'var(--radius-xl)',
       padding: 'clamp(1.5rem, 4vw, 2.5rem)',
       border: 'none',
@@ -253,13 +252,13 @@ const Portfolio = () => {
       height: '400px',
       borderRadius: 'var(--radius-lg)',
       overflow: 'hidden',
-      border: '1px solid #e5e7eb',
+      border: '1px solid #4b5563',
     },
     projectTitle: {
       fontSize: 'clamp(1.5rem, 4vw, 2rem)',
       fontWeight: '700',
       fontFamily: 'var(--font-heading)',
-      color: '#1f2937',
+      color: '#ffffff',
       marginBottom: '1rem',
       display: 'flex',
       alignItems: 'center',
@@ -267,7 +266,7 @@ const Portfolio = () => {
     },
     projectDescription: {
       fontSize: 'clamp(0.975rem, 2.5vw, 1.125rem)',
-      color: '#6b7280',
+      color: '#d1d5db',
       lineHeight: '1.6',
       marginBottom: '1.5rem',
     },
@@ -278,13 +277,13 @@ const Portfolio = () => {
       marginBottom: '1.5rem',
     },
     tag: {
-      background: '#f1f5f9',
-      color: '#475569',
+      background: '#374151',
+      color: '#d1d5db',
       padding: '4px 12px',
       borderRadius: 'var(--radius-md)',
       fontSize: '0.875rem',
       fontWeight: '500',
-      border: '1px solid #e2e8f0',
+      border: '1px solid #4b5563',
     },
     projectActions: {
       display: 'flex',
@@ -316,7 +315,7 @@ const Portfolio = () => {
     },
   };
 
-  const progressWidth = selectedProject
+  const progressWidth = selectedProject 
     ? `${((filteredProjects.findIndex(p => p.id === selectedProject) + 1) / filteredProjects.length) * 100}%`
     : '0%';
 
@@ -456,19 +455,6 @@ const Portfolio = () => {
             color: #d1d5db !important;
           }
           
-          .project-details {
-            background: var(--card, #374151);
-            border-color: var(--border-light, #4b5563);
-          }
-          
-          .project-title {
-            color: #ffffff !important;
-          }
-          
-          .project-description {
-            color: #d1d5db !important;
-          }
-          
           .timeline-line {
             background: #4b5563;
           }
@@ -484,16 +470,6 @@ const Portfolio = () => {
 
           .active-label {
             color: var(--color-primary-400) !important;
-          }
-          
-          .tag {
-            background: #374151;
-            color: #d1d5db;
-            border-color: #4b5563;
-          }
-
-          .image-container {
-            border-color: #4b5563;
           }
         }
 
@@ -533,7 +509,7 @@ const Portfolio = () => {
               Recent Projects
             </h2>
             <p style={styles.description} className="portfolio-description">
-              Take a look at some of our recent work and see how we&apos;ve helped
+              Take a look at some of our recent work and see how we&apos;ve helped 
               businesses transform their digital presence.
             </p>
           </div>
@@ -542,14 +518,14 @@ const Portfolio = () => {
             <div style={styles.timelineWrapper} className="timeline-wrapper">
               <div style={styles.timelineTrack} className="timeline-track">
                 <div style={styles.timelineLine} className="timeline-line">
-                  <div
+                  <div 
                     style={{
                       ...styles.timelineProgress,
                       width: progressWidth
                     }}
                   />
                 </div>
-
+                
                 <div style={styles.timelinePoints}>
                   {filteredProjects.map((project, index) => (
                     <div
@@ -566,14 +542,14 @@ const Portfolio = () => {
                       role="button"
                       aria-pressed={selectedProject === project.id}
                     >
-                      <div
+                      <div 
                         style={{
                           ...styles.pointDot,
                           ...(selectedProject === project.id ? styles.activeDot : {})
                         }}
                         className="point-dot"
                       />
-                      <span
+                      <span 
                         style={{
                           ...styles.pointLabel,
                           ...(selectedProject === project.id ? styles.activeLabel : {})
@@ -607,17 +583,17 @@ const Portfolio = () => {
                   ))}
                 </div>
                 <div style={styles.projectActions}>
-                  <a
+                  <a 
                     href={selectedProjectData.liveUrl}
-                    style={{ ...styles.actionBtn, ...styles.primaryBtn }}
+                    style={{...styles.actionBtn, ...styles.primaryBtn}}
                     className="action-btn primary"
                   >
                     <Eye size={16} />
                     View Live
                   </a>
-                  <a
+                  <a 
                     href={selectedProjectData.codeUrl}
-                    style={{ ...styles.actionBtn, ...styles.secondaryBtn }}
+                    style={{...styles.actionBtn, ...styles.secondaryBtn}}
                     className="action-btn secondary"
                   >
                     <ExternalLink size={16} />
@@ -625,7 +601,7 @@ const Portfolio = () => {
                   </a>
                 </div>
               </div>
-
+              
               <div style={styles.projectImage} className="project-image">
                 <div style={styles.imageContainer} className="image-container">
                   <Image
