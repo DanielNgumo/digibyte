@@ -1,54 +1,14 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { ArrowUp, ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowDown, Sparkles } from 'lucide-react';
 
 const Hero = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
-  const totalSlides = 3;
-
-  const slides = [
-    {
-      tagline: "Best IT Solutions",
-      headline: "Modernised Graphic Designs",
-      subtitle: "delivering logos, brand identity, and user interface designs that improve visibility.",
-      background: "url('/images/slide1.jpg')",
-    },
-    {
-      tagline: "Advanced Tech Services",
-      headline: "Leading Digital Transformation",
-      subtitle: "Explore cutting-edge solutions to boost your business efficiency and growth. Join us today!",
-      background: "url('/images/slide2.jpg')",
-    },
-    {
-      tagline: "Expert IT Support",
-      headline: "Your Trusted IT Partner",
-      subtitle: "Reliable support and innovative strategies for all your IT needs. Let's collaborate!",
-      background: "url('/images/slide3.jpg')",
-    },
-  ];
 
   useEffect(() => {
     setIsVisible(true);
-    
-    // Auto-advance slides every 5 seconds
-    const interval = setInterval(() => {
-      setCurrentSlide(prev => (prev + 1) % totalSlides);
-    }, 5000);
-    
-    return () => {
-      clearInterval(interval);
-    };
-  }, [totalSlides]);
-
-  const nextSlide = useCallback(() => {
-    setCurrentSlide((prev) => (prev + 1) % totalSlides);
-  }, [totalSlides]);
-
-  const prevSlide = useCallback(() => {
-    setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
-  }, [totalSlides]);
+  }, []);
 
   const handleContactUs = useCallback(() => {
     const contactSection = document.getElementById('contact');
@@ -59,633 +19,252 @@ const Hero = () => {
     }
   }, []);
 
-  const handleScrollToTop = useCallback(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  const handleScrollDown = useCallback(() => {
+    window.scrollBy({ top: window.innerHeight, behavior: 'smooth' });
   }, []);
 
+  const heroWrapperStyle: React.CSSProperties = {
+    position: 'relative',
+    width: '100vw',
+    left: '50%',
+    right: '50%',
+    marginLeft: '-50vw',
+    marginRight: '-50vw',
+    overflow: 'hidden',
+  };
+
+  const heroSectionStyle: React.CSSProperties = {
+    position: 'relative',
+    minHeight: '100vh',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: '120px',
+    paddingBottom: '60px',
+    color: 'white',
+    overflow: 'hidden',
+    fontFamily: "'Inter', system-ui, sans-serif",
+    width: '100vw',
+    margin: 0,
+    backgroundImage: "url('/images/slide1.jpg')",
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    backgroundAttachment: 'fixed',
+  };
+
+  const overlayStyle: React.CSSProperties = {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background: 'linear-gradient(135deg, rgba(12, 74, 110, 0.95) 0%, rgba(242, 109, 38, 0.85) 100%)',
+    zIndex: 1,
+  };
+
+  const heroContentStyle: React.CSSProperties = {
+    textAlign: 'center',
+    maxWidth: '1100px',
+    width: '100%',
+    padding: '0 1rem',
+    position: 'relative',
+    zIndex: 2,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+  };
+
+  const getAnimatedStyle = (delay: number): React.CSSProperties => ({
+    opacity: isVisible ? 1 : 0,
+    transform: isVisible ? 'translateY(0)' : 'translateY(30px)',
+    transition: `all 1s cubic-bezier(0.4, 0, 0.2, 1) ${delay}s`,
+  });
+
   return (
-    <>
-      <style jsx>{`
-        /* Hero Styles */
-        .hero-wrapper {
-          position: relative;
-          width: 100vw;
-          left: 50%;
-          right: 50%;
-          margin-left: -50vw;
-          margin-right: -50vw;
-          overflow: hidden;
-        }
-
-        .hero-section {
-          position: relative;
-          min-height: 100vh;
-          background: #0c4a6e;
-          display: flex;
-          align-items: center;
-          padding-top: 80px;
-          color: white;
-          overflow: hidden;
-          font-family: 'Inter', system-ui, sans-serif;
-          width: 100vw;
-          margin: 0;
-        }
-
-        .hero-container {
-          max-width: 1280px;
-          margin: 0 auto;
-          padding: 0 1rem;
-          position: relative;
-          z-index: 10;
-          width: 100%;
-        }
-
-        .hero-carousel {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100vw;
-          height: 100vh;
-          display: flex;
-          transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-          transform: translateX(-${currentSlide * 100}vw);
-        }
-
-        .hero-slide {
-          flex: 0 0 100vw;
-          width: 100vw;
-          height: 100vh;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background-size: cover;
-          background-position: center;
-          background-repeat: no-repeat;
-          position: relative;
-        }
-
-        .hero-content {
-          text-align: center;
-          max-width: 1280px;
-          width: 100%;
-          padding: 0 2rem;
-          position: relative;
-          z-index: 2;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          min-height: calc(100vh - 160px);
-        }
-
-        .hero-tagline {
-          color: #f26d26;
-          font-size: 1rem;
-          font-weight: 600;
-          margin-bottom: 0.5rem;
-          font-family: 'Poppins', sans-serif;
-          opacity: ${isVisible ? 1 : 0};
-          transform: ${isVisible ? 'translateY(0)' : 'translateY(20px)'};
-          transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.1s;
-        }
-
-        .hero-headline {
-          font-size: 2rem;
-          font-weight: 800;
-          line-height: 1.1;
-          margin-bottom: 1rem;
-          font-family: 'Poppins', sans-serif;
-          color: #ffffff;
-          text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9), 0 0 16px rgba(0, 0, 0, 0.7);
-          opacity: ${isVisible ? 1 : 0};
-          transform: ${isVisible ? 'translateY(0)' : 'translateY(30px)'};
-          transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
-        }
-
-        .hero-subtitle {
-          font-size: 1rem;
-          color: #f3f4f6;
-          line-height: 1.5;
-          margin-bottom: 2rem;
-          max-width: 600px;
-          opacity: ${isVisible ? 1 : 0};
-          transform: ${isVisible ? 'translateY(0)' : 'translateY(30px)'};
-          transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
-        }
-
-        .hero-buttons {
-          display: flex;
-          justify-content: center;
-          gap: 1rem;
-          margin-bottom: 2rem;
-          flex-wrap: wrap;
-          opacity: ${isVisible ? 1 : 0};
-          transform: ${isVisible ? 'translateY(0)' : 'translateY(30px)'};
-          transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.4s;
-        }
-
-        .hero-button {
-          padding: 0.75rem 1.5rem;
-          border-radius: 1.5rem;
-          font-size: 1rem;
-          font-weight: 600;
-          text-decoration: none;
-          border: none;
-          cursor: pointer;
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-          min-width: 140px;
-          text-align: center;
-          display: inline-block;
-        }
-
-        .hero-button-primary {
-          background: #f26d26;
-          color: white;
-          box-shadow: 0 4px 14px 0 rgba(242, 109, 38, 0.25);
-        }
-
-        .hero-arrow {
-          position: absolute;
-          top: 50%;
-          transform: translateY(-50%);
-          background: rgba(0, 0, 0, 0.5);
-          color: white;
-          border: none;
-          border-radius: 50%;
-          width: 50px;
-          height: 50px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          z-index: 20;
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-          backdrop-filter: blur(10px);
-        }
-
-        .hero-arrow-left {
-          left: 1rem;
-        }
-
-        .hero-arrow-right {
-          right: 1rem;
-        }
-
-        .hero-scroll-up {
-          position: absolute;
-          bottom: 2rem;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 50px;
-          height: 50px;
-          background: #f26d26;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.5s;
-          opacity: ${isVisible ? 1 : 0};
-          border: none;
-          box-shadow: 0 4px 14px 0 rgba(242, 109, 38, 0.25);
-          z-index: 20;
-        }
-
-        .hero-overlay {
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: linear-gradient(45deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.4));
-          z-index: 1;
-        }
-
-        .hero-indicators {
-          position: absolute;
-          bottom: 4rem;
-          left: 50%;
-          transform: translateX(-50%);
-          display: flex;
-          gap: 0.5rem;
-          z-index: 20;
-        }
-
-        .hero-indicator {
-          width: 12px;
-          height: 12px;
-          border-radius: 50%;
-          background: rgba(255, 255, 255, 0.5);
-          cursor: pointer;
-          transition: all 0.3s ease;
-          border: none;
-        }
-
-        .hero-indicator.active {
-          background: #f26d26;
-          transform: scale(1.2);
-        }
-
-        /* Mobile First Responsive Design */
+    <div style={heroWrapperStyle}>
+      <section style={heroSectionStyle}>
+        <div style={overlayStyle}></div>
         
-        /* Small Mobile (up to 375px) */
-        @media (max-width: 375px) {
-          .hero-content {
-            padding: 0 1rem;
-          }
-          
-          .hero-tagline {
-            font-size: 0.875rem;
-            margin-bottom: 0.25rem;
-          }
-          
-          .hero-headline {
-            font-size: 1.5rem;
-            margin-bottom: 0.75rem;
-          }
-          
-          .hero-subtitle {
-            font-size: 0.875rem;
-            margin-bottom: 1.5rem;
-          }
-          
-          .hero-buttons {
-            flex-direction: column;
-            align-items: center;
-            gap: 0.75rem;
-          }
-          
-          .hero-button {
-            width: 90%;
-            max-width: 280px;
-            padding: 0.75rem 1rem;
-            font-size: 0.9rem;
-          }
+        <div style={heroContentStyle}>
+          {/* Icon/Badge */}
+          <div 
+            className="mb-4 sm:mb-6 md:mb-8 px-4"
+            style={{
+              ...getAnimatedStyle(0.1),
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              padding: '0.5rem 1rem',
+              background: 'rgba(255, 255, 255, 0.15)',
+              backdropFilter: 'blur(10px)',
+              borderRadius: '2rem',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+            }}
+          >
+            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" color="#f26d26" />
+            <span className="text-xs sm:text-sm md:text-base font-semibold" style={{ color: '#ffffff' }}>
+              Transforming Ideas Into Digital Reality
+            </span>
+          </div>
 
-          .hero-arrow {
-            width: 40px;
-            height: 40px;
-          }
+          {/* Main Headline */}
+          <h1 
+            className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-tight mb-3 sm:mb-4 md:mb-6 px-2"
+            style={{
+              fontFamily: "'Poppins', sans-serif",
+              color: '#ffffff',
+              textShadow: '2px 2px 20px rgba(0, 0, 0, 0.5)',
+              ...getAnimatedStyle(0.2)
+            }}
+          >
+            Innovative IT Solutions for
+            <span style={{ 
+              display: 'block',
+              background: 'linear-gradient(to right, #ffffff, #f26d26)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              marginTop: '0.25rem',
+            }}>
+              Modern Businesses
+            </span>
+          </h1>
 
-          .hero-arrow-left {
-            left: 0.5rem;
-          }
+          {/* Subtitle */}
+          <p 
+            className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl leading-relaxed mb-6 sm:mb-8 md:mb-10 max-w-3xl px-4"
+            style={{
+              color: '#f3f4f6',
+              fontWeight: '300',
+              ...getAnimatedStyle(0.3)
+            }}
+          >
+            We craft stunning graphic designs, build powerful digital experiences, 
+            and provide expert IT solutions that elevate your brand and drive growth.
+          </p>
 
-          .hero-arrow-right {
-            right: 0.5rem;
-          }
-
-          .hero-scroll-up {
-            width: 40px;
-            height: 40px;
-            bottom: 1rem;
-          }
-
-          .hero-indicators {
-            bottom: 3rem;
-          }
-          
-          .hero-indicator {
-            width: 10px;
-            height: 10px;
-          }
-        }
-
-        /* Large Mobile (376px - 480px) */
-        @media (min-width: 376px) and (max-width: 480px) {
-          .hero-content {
-            padding: 0 1.5rem;
-          }
-          
-          .hero-tagline {
-            font-size: 0.9375rem;
-          }
-          
-          .hero-headline {
-            font-size: 1.75rem;
-            margin-bottom: 0.875rem;
-          }
-          
-          .hero-subtitle {
-            font-size: 0.9375rem;
-            margin-bottom: 1.75rem;
-          }
-          
-          .hero-buttons {
-            flex-direction: column;
-            align-items: center;
-            gap: 0.875rem;
-          }
-          
-          .hero-button {
-            width: 85%;
-            max-width: 250px;
-            padding: 0.875rem 1.25rem;
-          }
-        }
-
-        /* Small Tablet (481px - 640px) */
-        @media (min-width: 481px) and (max-width: 640px) {
-          .hero-content {
-            padding: 0 2rem;
-          }
-          
-          .hero-tagline {
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
-          }
-          
-          .hero-headline {
-            font-size: 2.25rem;
-            margin-bottom: 1rem;
-          }
-          
-          .hero-subtitle {
-            font-size: 1rem;
-            margin-bottom: 1.875rem;
-          }
-          
-          .hero-buttons {
-            flex-direction: row;
-            gap: 1rem;
-          }
-          
-          .hero-button {
-            width: auto;
-            min-width: 140px;
-            padding: 0.875rem 1.5rem;
-          }
-        }
-
-        /* Tablet (641px - 768px) */
-        @media (min-width: 641px) and (max-width: 768px) {
-          .hero-content {
-            padding: 0 2rem;
-          }
-          
-          .hero-tagline {
-            font-size: 1.125rem;
-            margin-bottom: 0.625rem;
-          }
-          
-          .hero-headline {
-            font-size: 2.625rem;
-            margin-bottom: 1.125rem;
-          }
-          
-          .hero-subtitle {
-            font-size: 1.125rem;
-            margin-bottom: 2rem;
-          }
-          
-          .hero-buttons {
-            gap: 1.25rem;
-          }
-          
-          .hero-button {
-            min-width: 160px;
-            padding: 1rem 1.75rem;
-            font-size: 1rem;
-          }
-        }
-
-        /* Large Tablet / Small Desktop (769px - 1024px) */
-        @media (min-width: 769px) and (max-width: 1024px) {
-          .hero-content {
-            padding: 0 2rem;
-          }
-          
-          .hero-tagline {
-            font-size: 1.25rem;
-            margin-bottom: 0.75rem;
-          }
-          
-          .hero-headline {
-            font-size: 3rem;
-            margin-bottom: 1.25rem;
-          }
-          
-          .hero-subtitle {
-            font-size: 1.25rem;
-            margin-bottom: 2.25rem;
-          }
-          
-          .hero-buttons {
-            gap: 1.5rem;
-          }
-          
-          .hero-button {
-            min-width: 180px;
-            padding: 1.125rem 2rem;
-            font-size: 1.0625rem;
-          }
-        }
-
-        /* Desktop (1025px - 1439px) */
-        @media (min-width: 1025px) and (max-width: 1439px) {
-          .hero-content {
-            padding: 0 2rem;
-          }
-          
-          .hero-tagline {
-            font-size: 1.375rem;
-            margin-bottom: 0.875rem;
-          }
-          
-          .hero-headline {
-            font-size: 3.5rem;
-            margin-bottom: 1.5rem;
-          }
-          
-          .hero-subtitle {
-            font-size: 1.375rem;
-            margin-bottom: 2.5rem;
-          }
-          
-          .hero-buttons {
-            gap: 1.75rem;
-          }
-          
-          .hero-button {
-            min-width: 200px;
-            padding: 1.25rem 2.25rem;
-            font-size: 1.125rem;
-          }
-        }
-
-        /* Large Desktop (1440px and up) */
-        @media (min-width: 1440px) {
-          .hero-content {
-            padding: 0 2rem;
-          }
-          
-          .hero-tagline {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-          }
-          
-          .hero-headline {
-            font-size: 4rem;
-            margin-bottom: 1.75rem;
-          }
-          
-          .hero-subtitle {
-            font-size: 1.5rem;
-            margin-bottom: 3rem;
-          }
-          
-          .hero-buttons {
-            gap: 2rem;
-          }
-          
-          .hero-button {
-            min-width: 220px;
-            padding: 1.5rem 2.5rem;
-            font-size: 1.1875rem;
-          }
-        }
-
-        /* Hover effects (only on devices that support hover) */
-        @media (hover: hover) and (pointer: fine) {
-          .hero-button-primary:hover {
-            transform: translateY(-2px);
-            background: #e55a0f;
-            box-shadow: 0 6px 20px 0 rgba(242, 109, 38, 0.4);
-          }
-          
-          .hero-arrow:hover {
-            background: rgba(0, 0, 0, 0.7);
-            transform: translateY(-50%) scale(1.05);
-          }
-          
-          .hero-scroll-up:hover {
-            transform: translateX(-50%) translateY(-3px);
-            background: #e55a0f;
-            box-shadow: 0 6px 20px 0 rgba(242, 109, 38, 0.4);
-          }
-
-          .hero-indicator:hover {
-            transform: scale(1.1);
-          }
-        }
-
-        /* Landscape mobile adjustments */
-        @media (max-height: 600px) and (orientation: landscape) {
-          .hero-section {
-            min-height: 100vh;
-            padding-top: 60px;
-          }
-          
-          .hero-content {
-            padding: 0 1rem;
-          }
-          
-          .hero-carousel {
-            height: 100vh;
-          }
-
-          .hero-slide {
-            height: 100vh;
-          }
-        }
-
-        /* Accessibility */
-        .hero-button:focus,
-        .hero-arrow:focus,
-        .hero-scroll-up:focus,
-        .hero-indicator:focus {
-          outline: 2px solid #f26d26;
-          outline-offset: 2px;
-        }
-
-        @media (prefers-contrast: high) {
-          .hero-arrow {
-            background: rgba(0, 0, 0, 0.8);
-            border: 1px solid white;
-          }
-        }
-
-        /* Reduced motion */
-        @media (prefers-reduced-motion: reduce) {
-          * {
-            animation-duration: 0.01ms !important;
-            animation-iteration-count: 1 !important;
-            transition-duration: 0.01ms !important;
-          }
-        }
-      `}</style>
-
-      <div className="hero-wrapper">
-        <section className="hero-section">
-          <div className="hero-carousel">
-            {slides.map((slide, index) => (
+          {/* Features Grid */}
+          <div 
+            className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 md:gap-6 mb-6 sm:mb-8 md:mb-10 w-full max-w-4xl px-4"
+            style={getAnimatedStyle(0.4)}
+          >
+            {[
+              { title: 'Graphic Design', desc: 'Logos, branding & UI/UX' },
+              { title: 'Web Development', desc: 'Modern, responsive websites' },
+              { title: 'IT Support', desc: 'Reliable tech solutions' }
+            ].map((item, index) => (
               <div
                 key={index}
-                className="hero-slide"
-                style={{ backgroundImage: slide.background }}
+                className="p-4 sm:p-5 md:p-6 rounded-xl sm:rounded-2xl"
+                style={{
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  transition: 'all 0.3s ease',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
+                  e.currentTarget.style.transform = 'translateY(-5px)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
               >
-                <div className="hero-overlay"></div>
-                {index === currentSlide && (
-                  <div className="hero-content">
-                    <div className="hero-tagline">{slide.tagline}</div>
-                    <h1 className="hero-headline">{slide.headline}</h1>
-                    <p className="hero-subtitle">{slide.subtitle}</p>
-                    <div className="hero-buttons">
-                      <button 
-                        className="hero-button hero-button-primary"
-                        onClick={handleContactUs}
-                        type="button"
-                      >
-                        Contact Us
-                      </button>
-                    </div>
-                  </div>
-                )}
+                <h3 className="text-sm sm:text-base md:text-lg font-bold mb-1 sm:mb-2" style={{ color: '#ffffff' }}>
+                  {item.title}
+                </h3>
+                <p className="text-xs sm:text-sm" style={{ color: '#e5e7eb' }}>
+                  {item.desc}
+                </p>
               </div>
             ))}
           </div>
-          
-          <button
-            className="hero-arrow hero-arrow-left"
-            onClick={prevSlide}
-            aria-label="Previous slide"
-            type="button"
+
+          {/* CTA Buttons */}
+          <div 
+            className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 mb-6 sm:mb-8 w-full px-4"
+            style={getAnimatedStyle(0.5)}
           >
-            <ArrowLeft size={20} />
-          </button>
-          
-          <button
-            className="hero-arrow hero-arrow-right"
-            onClick={nextSlide}
-            aria-label="Next slide"
-            type="button"
-          >
-            <ArrowRight size={20} />
-          </button>
-          
-          <div className="hero-indicators">
-            {slides.map((_, index) => (
-              <button
-                key={index}
-                className={`hero-indicator ${index === currentSlide ? 'active' : ''}`}
-                onClick={() => setCurrentSlide(index)}
-                aria-label={`Go to slide ${index + 1}`}
-                type="button"
-              />
-            ))}
+            <button 
+              className="px-6 sm:px-8 md:px-10 lg:px-12 py-3 sm:py-3.5 md:py-4 rounded-full text-sm sm:text-base md:text-lg font-bold w-full sm:w-auto sm:min-w-[180px] transition-all duration-300"
+              style={{
+                background: '#f26d26',
+                color: 'white',
+                boxShadow: '0 10px 30px rgba(242, 109, 38, 0.4)',
+                border: 'none',
+                cursor: 'pointer',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-3px) scale(1.05)';
+                e.currentTarget.style.boxShadow = '0 15px 40px rgba(242, 109, 38, 0.5)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                e.currentTarget.style.boxShadow = '0 10px 30px rgba(242, 109, 38, 0.4)';
+              }}
+              onClick={handleContactUs}
+              type="button"
+            >
+              Get Started Today
+            </button>
+            <button 
+              className="px-6 sm:px-8 md:px-10 lg:px-12 py-3 sm:py-3.5 md:py-4 rounded-full text-sm sm:text-base md:text-lg font-bold w-full sm:w-auto sm:min-w-[180px] transition-all duration-300"
+              style={{
+                background: 'transparent',
+                color: 'white',
+                border: '2px solid rgba(255, 255, 255, 0.5)',
+                cursor: 'pointer',
+                backdropFilter: 'blur(10px)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.8)';
+                e.currentTarget.style.transform = 'translateY(-3px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'transparent';
+                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.5)';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
+              onClick={() => window.location.href = '#services'}
+              type="button"
+            >
+              Our Services
+            </button>
           </div>
-          
-          <button
-            className="hero-scroll-up"
-            onClick={handleScrollToTop}
-            type="button"
-            aria-label="Scroll to top"
-          >
-            <ArrowUp size={20} />
-          </button>
-        </section>
-      </div>
-    </>
+        </div>
+
+        {/* Scroll Down Indicator */}
+        <button
+          className="absolute bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 sm:gap-2 z-20 transition-all duration-300"
+          style={{
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            color: 'white',
+            opacity: isVisible ? 0.7 : 0,
+            transitionDelay: '0.6s',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.opacity = '1';
+            e.currentTarget.style.transform = 'translateX(-50%) translateY(5px)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.opacity = '0.7';
+            e.currentTarget.style.transform = 'translateX(-50%) translateY(0)';
+          }}
+          onClick={handleScrollDown}
+          type="button"
+          aria-label="Scroll down"
+        >
+          <span className="text-xs sm:text-sm font-medium">Explore More</span>
+          <ArrowDown className="w-5 h-5 sm:w-6 sm:h-6 animate-bounce" />
+        </button>
+      </section>
+    </div>
   );
 };
 

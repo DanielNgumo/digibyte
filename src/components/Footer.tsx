@@ -37,11 +37,8 @@ const Footer = () => {
   ];
 
   const socialLinks = [
-    { name: 'Facebook', icon: <Facebook size={20} />, href: '#' },
-    { name: 'Twitter', icon: <Twitter size={20} />, href: '#' },
-    { name: 'Instagram', icon: <Instagram size={20} />, href: '#' },
-    { name: 'LinkedIn', icon: <Linkedin size={20} />, href: '#' },
-    { name: 'GitHub', icon: <Github size={20} />, href: '#' },
+    { name: 'LinkedIn', icon: <Linkedin size={20} />, href: 'https://www.linkedin.com/in/daniel-ngumo-20960127b/' },
+    { name: 'GitHub', icon: <Github size={20} />, href: 'https://github.com/DanielNgumo' },
   ];
 
   const scrollToTop = () => {
@@ -56,82 +53,82 @@ const Footer = () => {
       position: 'relative',
     },
     mainFooter: {
-      padding: 'clamp(2rem, 6vw, 4rem) 0 clamp(1.5rem, 4vw, 2rem) 0', // Responsive padding
+      padding: 'clamp(2rem, 6vw, 4rem) 0 clamp(1.5rem, 4vw, 2rem) 0',
     },
     container: {
       maxWidth: '1280px',
       margin: '0 auto',
-      padding: '0 clamp(1rem, 4vw, 2rem)', // Responsive container padding
+      padding: '0 clamp(1rem, 4vw, 2rem)',
       width: '100%',
       boxSizing: 'border-box',
     },
     footerGrid: {
       display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', // Smaller minimum for mobile
-      gap: 'clamp(1.5rem, 4vw, 2rem)', // Responsive grid gap
-      marginBottom: 'clamp(1.5rem, 4vw, 2rem)', // Responsive margin
+      gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+      gap: 'clamp(1.5rem, 4vw, 2rem)',
+      marginBottom: 'clamp(1.5rem, 4vw, 2rem)',
     },
     column: {
       display: 'flex',
       flexDirection: 'column',
     },
     brandSection: {
-      maxWidth: '100%', // Full width on mobile
+      maxWidth: '100%',
     },
     logo: {
-      fontSize: 'clamp(1.25rem, 4vw, 1.5rem)', // Responsive logo size
+      fontSize: 'clamp(1.25rem, 4vw, 1.5rem)',
       fontWeight: '700',
       fontFamily: 'var(--font-heading)',
       color: '#ffffff',
-      marginBottom: 'clamp(0.75rem, 3vw, 1rem)', // Responsive margin
+      marginBottom: 'clamp(0.75rem, 3vw, 1rem)',
       display: 'flex',
       alignItems: 'center',
-      gap: 'clamp(0.5rem, 2vw, 0.75rem)', // Responsive gap
+      gap: 'clamp(0.5rem, 2vw, 0.75rem)',
     },
     brandText: {
-      fontSize: 'clamp(0.875rem, 2.5vw, 1rem)', // Responsive brand text
+      fontSize: 'clamp(0.875rem, 2.5vw, 1rem)',
       color: '#d1d5db',
       lineHeight: '1.6',
-      marginBottom: 'clamp(1rem, 3vw, 1.5rem)', // Responsive margin
+      marginBottom: 'clamp(1rem, 3vw, 1.5rem)',
     },
     columnTitle: {
-      fontSize: 'clamp(1rem, 3vw, 1.125rem)', // Responsive column title
+      fontSize: 'clamp(1rem, 3vw, 1.125rem)',
       fontWeight: '600',
       fontFamily: 'var(--font-heading)',
       color: '#ffffff',
-      marginBottom: 'clamp(0.75rem, 2vw, 1rem)', // Responsive margin
+      marginBottom: 'clamp(0.75rem, 2vw, 1rem)',
     },
     linkList: {
       display: 'flex',
       flexDirection: 'column',
-      gap: 'clamp(0.5rem, 2vw, 0.75rem)', // Responsive link gap
+      gap: 'clamp(0.5rem, 2vw, 0.75rem)',
     },
     link: {
       color: '#d1d5db',
       textDecoration: 'none',
-      fontSize: 'clamp(0.875rem, 2vw, 0.975rem)', // Responsive link size
-      transition: 'all var(--transition-default)',
+      fontSize: 'clamp(0.875rem, 2vw, 0.975rem)',
+      transition: 'all 0.3s ease',
       cursor: 'pointer',
       lineHeight: '1.4',
     },
     contactItem: {
       display: 'flex',
       alignItems: 'center',
-      gap: 'clamp(0.5rem, 2vw, 0.75rem)', // Responsive gap
-      marginBottom: 'clamp(0.5rem, 2vw, 0.75rem)', // Responsive margin
+      gap: 'clamp(0.5rem, 2vw, 0.75rem)',
+      marginBottom: 'clamp(0.5rem, 2vw, 0.75rem)',
       color: '#d1d5db',
-      fontSize: 'clamp(0.875rem, 2vw, 0.975rem)', // Responsive font size
+      fontSize: 'clamp(0.875rem, 2vw, 0.975rem)',
       lineHeight: '1.4',
     },
     socialLinks: {
       display: 'flex',
-      gap: 'clamp(0.75rem, 3vw, 1rem)', // Responsive social gap
-      marginTop: 'clamp(1rem, 3vw, 1.5rem)', // Responsive margin
-      flexWrap: 'wrap', // Allow wrapping on very small screens
+      gap: 'clamp(0.75rem, 3vw, 1rem)',
+      marginTop: 'clamp(1rem, 3vw, 1.5rem)',
+      flexWrap: 'wrap',
     },
     socialLink: {
-      width: 'clamp(36px, 8vw, 40px)', // Responsive social button size
-      height: 'clamp(36px, 8vw, 40px)', // Responsive social button size
+      width: 'clamp(36px, 8vw, 40px)',
+      height: 'clamp(36px, 8vw, 40px)',
       background: '#374151',
       borderRadius: '50%',
       display: 'flex',
@@ -139,71 +136,78 @@ const Footer = () => {
       justifyContent: 'center',
       color: '#d1d5db',
       textDecoration: 'none',
-      transition: 'all var(--transition-default)',
+      transition: 'all 0.3s ease',
       cursor: 'pointer',
-      flexShrink: 0, // Prevent shrinking
+      flexShrink: 0,
+      border: 'none',
     },
     bottomFooter: {
       borderTop: '1px solid #374151',
-      padding: 'clamp(1rem, 3vw, 1.5rem) 0', // Responsive bottom padding
+      padding: 'clamp(1rem, 3vw, 1.5rem) 0',
     },
     bottomContent: {
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
       flexWrap: 'wrap',
-      gap: 'clamp(0.75rem, 3vw, 1rem)', // Responsive gap
+      gap: 'clamp(0.75rem, 3vw, 1rem)',
     },
     copyright: {
-      fontSize: 'clamp(0.75rem, 2vw, 0.875rem)', // Responsive copyright size
+      fontSize: 'clamp(0.75rem, 2vw, 0.875rem)',
       color: '#9ca3af',
       lineHeight: '1.4',
     },
     bottomLinks: {
       display: 'flex',
-      gap: 'clamp(1rem, 3vw, 1.5rem)', // Responsive bottom links gap
-      flexWrap: 'wrap', // Allow wrapping
+      gap: 'clamp(1rem, 3vw, 1.5rem)',
+      flexWrap: 'wrap',
     },
     bottomLink: {
       color: '#9ca3af',
       textDecoration: 'none',
-      fontSize: 'clamp(0.75rem, 2vw, 0.875rem)', // Responsive bottom link size
-      transition: 'all var(--transition-default)',
-      whiteSpace: 'nowrap', // Prevent text wrapping within links
+      fontSize: 'clamp(0.75rem, 2vw, 0.875rem)',
+      transition: 'all 0.3s ease',
+      whiteSpace: 'nowrap',
     },
     scrollTopButton: {
       position: 'absolute',
-      top: '-25px', // Fixed position to ensure full visibility
-      right: 'clamp(1rem, 4vw, 2rem)', // Responsive right position
-      width: '50px', // Fixed size for consistent appearance
-      height: '50px', // Fixed size for consistent appearance
-      background: 'var(--color-primary-500)',
+      top: '-25px',
+      right: 'clamp(1rem, 4vw, 2rem)',
+      width: '50px',
+      height: '50px',
+      background: '#f26d26',
       borderRadius: '50%',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       color: '#ffffff',
       cursor: 'pointer',
-      transition: 'all var(--transition-default)',
+      transition: 'all 0.3s ease',
       border: 'none',
       boxShadow: '0 4px 12px rgba(242, 109, 38, 0.3)',
-      touchAction: 'manipulation', // Better touch handling
-      zIndex: 1000, // Ensure it's above other elements
+      touchAction: 'manipulation',
+      zIndex: 1000,
     },
   };
 
   return (
     <>
       <style jsx>{`
-        /* Mobile First Responsive Styles */
+        * {
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Base/Mobile First Styles */
         .footer-grid {
           grid-template-columns: 1fr;
           text-align: left;
-          gap: 2rem;
+          gap: 1.5rem;
         }
         
         .brand-section {
           max-width: 100%;
+          text-align: left;
         }
         
         .social-links {
@@ -212,56 +216,98 @@ const Footer = () => {
         
         .bottom-content {
           flex-direction: column;
-          text-align: center;
+          text-align: left;
           gap: 1rem;
         }
         
         .bottom-links {
-          justify-content: center;
+          justify-content: flex-start;
         }
 
-        /* Small Mobile (up to 480px) */
-        @media (max-width: 480px) {
+        /* Extra Small Devices (up to 320px) */
+        @media (max-width: 320px) {
+          .footer-container {
+            padding: 0 0.75rem;
+          }
+          
+          .footer-grid {
+            gap: 1rem;
+          }
+          
+          .social-links {
+            gap: 0.5rem;
+          }
+          
+          .bottom-links {
+            gap: 0.25rem;
+            flex-direction: column;
+          }
+          
+          .scroll-top-button {
+            right: 0.75rem;
+            width: 45px;
+            height: 45px;
+          }
+        }
+
+        /* Small Mobile (321px - 480px) */
+        @media (min-width: 321px) and (max-width: 480px) {
           .footer-container {
             padding: 0 1rem;
           }
           
           .footer-grid {
-            text-align: center;
+            text-align: left;
             gap: 1.5rem;
+            grid-template-columns: 1fr;
+          }
+          
+          .brand-section {
+            text-align: left;
           }
           
           .social-links {
-            justify-content: center;
+            justify-content: flex-start;
             gap: 0.75rem;
           }
           
           .bottom-links {
             flex-direction: column;
             gap: 0.5rem;
-            align-items: center;
+            align-items: flex-start;
           }
           
           .scroll-top-button {
             right: 1rem;
+            width: 48px;
+            height: 48px;
           }
         }
 
         /* Large Mobile (481px - 640px) */
         @media (min-width: 481px) and (max-width: 640px) {
           .footer-grid {
-            grid-template-columns: 1fr;
-            text-align: center;
-            gap: 2rem;
+            grid-template-columns: repeat(2, 1fr);
+            text-align: left;
+            gap: 1.5rem;
+          }
+          
+          .brand-section {
+            grid-column: 1 / -1;
+            text-align: left;
           }
           
           .social-links {
-            justify-content: center;
+            justify-content: flex-start;
           }
           
           .bottom-content {
             flex-direction: column;
-            text-align: center;
+            text-align: left;
+          }
+          
+          .bottom-links {
+            justify-content: flex-start;
           }
         }
 
@@ -275,30 +321,38 @@ const Footer = () => {
           
           .brand-section {
             grid-column: 1 / -1;
-            text-align: center;
+            text-align: left;
             max-width: 100%;
-            margin-bottom: 1rem;
+            margin-bottom: 0;
           }
           
           .social-links {
-            justify-content: center;
+            justify-content: flex-start;
           }
           
           .bottom-content {
             flex-direction: column;
-            text-align: center;
+            text-align: left;
+            gap: 1rem;
+          }
+          
+          .bottom-links {
+            justify-content: flex-start;
           }
         }
 
         /* Small Desktop (769px - 1024px) */
         @media (min-width: 769px) and (max-width: 1024px) {
           .footer-grid {
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             text-align: left;
+            gap: 2rem;
           }
           
           .brand-section {
-            max-width: 300px;
+            grid-column: 1 / -1;
+            max-width: 100%;
+            text-align: left;
           }
           
           .social-links {
@@ -309,18 +363,25 @@ const Footer = () => {
             flex-direction: row;
             justify-content: space-between;
             text-align: left;
+            gap: 1rem;
+          }
+          
+          .bottom-links {
+            justify-content: flex-end;
           }
         }
 
-        /* Desktop (1025px and up) */
-        @media (min-width: 1025px) {
+        /* Desktop (1025px - 1439px) */
+        @media (min-width: 1025px) and (max-width: 1439px) {
           .footer-grid {
             grid-template-columns: repeat(4, 1fr);
             text-align: left;
+            gap: 2.5rem;
           }
           
           .brand-section {
-            max-width: 300px;
+            max-width: 100%;
+            text-align: left;
           }
           
           .social-links {
@@ -331,54 +392,101 @@ const Footer = () => {
             flex-direction: row;
             justify-content: space-between;
             text-align: left;
+          }
+          
+          .bottom-links {
+            justify-content: flex-end;
           }
         }
 
         /* Large Desktop (1440px and up) */
         @media (min-width: 1440px) {
           .footer-grid {
+            grid-template-columns: repeat(4, 1fr);
+            text-align: left;
             gap: 3rem;
+          }
+          
+          .brand-section {
+            max-width: 100%;
+            text-align: left;
+          }
+          
+          .social-links {
+            justify-content: flex-start;
+          }
+          
+          .bottom-content {
+            flex-direction: row;
+            justify-content: space-between;
+            text-align: left;
+          }
+        }
+
+        /* Landscape Mobile (small height) */
+        @media (max-height: 500px) and (orientation: landscape) {
+          .footer-main {
+            padding: 1rem 0;
+          }
+          
+          .footer-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem;
+          }
+          
+          .brand-section {
+            grid-column: 1 / -1;
           }
         }
 
         /* Hover Effects - Only on devices that support hover */
         @media (hover: hover) and (pointer: fine) {
+          .footer-link {
+            position: relative;
+          }
+          
           .footer-link:hover {
-            color: var(--color-primary-500);
+            color: #f26d26;
             transform: translateX(4px);
           }
           
+          .social-link {
+            position: relative;
+          }
+          
           .social-link:hover {
-            background: var(--color-primary-500);
+            background: #f26d26;
             color: #ffffff;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(242, 109, 38, 0.4);
           }
           
           .bottom-link:hover {
-            color: var(--color-primary-500);
+            color: #f26d26;
           }
           
           .scroll-top:hover {
-            background: var(--color-primary-600);
-            transform: translateY(-2px);
+            background: #e56320;
+            transform: translateY(-3px);
             box-shadow: 0 6px 16px rgba(242, 109, 38, 0.4);
           }
         }
 
-        /* Touch devices */
+        /* Touch devices - Active state */
         @media (hover: none) and (pointer: coarse) {
           .footer-link:active {
-            color: var(--color-primary-500);
+            color: #f26d26;
           }
           
           .social-link:active {
-            background: var(--color-primary-500);
+            background: #f26d26;
             color: #ffffff;
           }
           
           .scroll-top:active {
-            background: var(--color-primary-600);
-            transform: translateY(-1px);
+            background: #e56320;
+            transform: translateY(-2px);
           }
         }
 
@@ -387,14 +495,14 @@ const Footer = () => {
         .social-link:focus,
         .bottom-link:focus,
         .scroll-top:focus {
-          outline: 2px solid var(--color-primary-500);
+          outline: 2px solid #f26d26;
           outline-offset: 2px;
         }
 
         /* High contrast mode support */
         @media (prefers-contrast: high) {
           .social-link {
-            border: 1px solid #d1d5db;
+            border: 2px solid #d1d5db;
           }
           
           .scroll-top-button {
@@ -415,10 +523,6 @@ const Footer = () => {
           .scroll-top:hover {
             transform: none !important;
           }
-          
-          .scroll-top-button {
-            scroll-behavior: auto !important;
-          }
         }
 
         /* Print styles */
@@ -432,7 +536,7 @@ const Footer = () => {
           }
           
           .footer-grid {
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(2, 1fr);
             gap: 1rem;
           }
           
@@ -441,46 +545,15 @@ const Footer = () => {
           }
         }
 
-        /* Landscape orientation for mobile */
-        @media (max-height: 600px) and (orientation: landscape) {
-          .footer-main {
-            padding: clamp(1rem, 4vw, 2rem) 0;
-          }
-          
-          .footer-grid {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-          }
-          
-          .brand-section {
-            grid-column: 1 / -1;
-          }
-        }
-
-        /* Loading animation for scroll button */
-        @keyframes spin {
-          to {
-            transform: rotate(360deg);
-          }
-        }
-
-        /* Extra small devices optimization */
-        @media (max-width: 320px) {
-          .footer-container {
-            padding: 0 0.75rem;
-          }
-          
-          .social-links {
-            gap: 0.5rem;
-          }
-          
-          .bottom-links {
-            gap: 0.25rem;
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+          .footer {
+            background: #1f2937;
           }
         }
       `}</style>
 
-      <footer style={styles.footer}>
+      <footer style={styles.footer} className="footer">
         <button
           style={styles.scrollTopButton}
           className="scroll-top scroll-top-button"
@@ -498,8 +571,8 @@ const Footer = () => {
               {/* Brand Section */}
               <div style={{ ...styles.column, ...styles.brandSection }} className="brand-section">
                 <div style={styles.logo}>
-                  <Code size={24} color="var(--color-primary-500)" />
-                  TechNasi
+                  <Code size={24} color="#f26d26" />
+                  <span>TechNasi</span>
                 </div>
                 <p style={styles.brandText}>
                   Transforming ideas into digital reality. We are your trusted partner
@@ -564,22 +637,17 @@ const Footer = () => {
                 </div>
                 <div style={styles.contactItem}>
                   <Phone size={16} />
-                  <span>+254 425 802 39 / 0712 350117 </span>
+                  <span>+254 425 802 39</span>
                 </div>
                 <div style={styles.contactItem}>
                   <MapPin size={16} />
                   <span>Nairobi, Kenya</span>
-                </div>
-                <div style={styles.contactItem}>
-                  <ExternalLink size={16} />
-                  <span>𝒌𝒆𝒍𝒗𝒊𝒏𝒎𝒖𝒊𝒈𝒂727@𝒈𝒎𝒂𝒊𝒍.𝒄𝒐𝒎</span>
                 </div>
               </div>
 
             </div>
           </div>
         </div>
-
 
         {/* Bottom Footer */}
         <div style={styles.bottomFooter}>

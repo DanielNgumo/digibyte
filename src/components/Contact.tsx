@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Send, Clock, MessageSquare } from 'lucide-react';
+import { Mail, Phone, Clock, Send, MessageSquare } from 'lucide-react';
 import { CSSProperties } from 'react';
 
 const Contact = () => {
@@ -42,7 +42,6 @@ const Contact = () => {
   };
 
   const handleSubmit = () => {
-    // Validate required fields
     if (!formData.name || !formData.email || !formData.subject || !formData.message) {
       alert('Please fill in all fields before sending.');
       return;
@@ -50,7 +49,6 @@ const Contact = () => {
 
     setIsSubmitting(true);
     
-    // Format the message for WhatsApp
     const whatsappMessage = `*New Contact Form Submission*%0A%0A` +
       `*Name:* ${formData.name}%0A` +
       `*Email:* ${formData.email}%0A` +
@@ -58,23 +56,13 @@ const Contact = () => {
       `*Message:*%0A${formData.message}%0A%0A` +
       `----%0ASent from DigiKenya Contact Form`;
 
-    // Your WhatsApp number (in international format without + sign)
     const whatsappNumber = '254742580239';
-    
-    // Create WhatsApp URL
     const whatsappURL = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
     
-    // Simulate brief loading then open WhatsApp
     setTimeout(() => {
       setIsSubmitting(false);
-      
-      // Open WhatsApp in a new tab/window
       window.open(whatsappURL, '_blank');
-      
-      // Clear the form after successful "submission"
       setFormData({ name: '', email: '', subject: '', message: '' });
-      
-      // Show success message
       alert('Redirecting to WhatsApp! Your message will be sent when you click send in WhatsApp.');
     }, 1000);
   };
@@ -82,7 +70,7 @@ const Contact = () => {
   const styles: { [key: string]: CSSProperties } = {
     section: {
       padding: 'clamp(2rem, 8vw, 6rem) 0',
-      background: 'linear-gradient(135deg, #f8fafc 0%, #ffffff 50%, #f1f5f9 100%)',
+      background: 'linear-gradient(135deg, #f8fafc 0%, #ffffff 50%, #f1f5f9 100%)', // Original gradient restored
       fontFamily: 'var(--font-sans)',
       position: 'relative',
       zIndex: 10,
@@ -90,445 +78,251 @@ const Contact = () => {
     container: {
       maxWidth: '1280px',
       margin: '0 auto',
-      padding: '0 clamp(70px, 8vw, 140px)',
+      padding: '0 clamp(1rem, 4vw, 2rem)',
       width: '100%',
       boxSizing: 'border-box',
     },
     header: {
-      textAlign: 'center',
+      textAlign: 'left',
       marginBottom: 'clamp(1.5rem, 4vw, 2rem)',
-      padding: '0 clamp(0.5rem, 2vw, 1rem)',
+      padding: '0',
     },
     tagline: {
-      color: 'var(--color-primary-500)',
-      fontSize: 'clamp(0.875rem, 2.5vw, 1rem)',
+      color: '#f26d26',
+      fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)',
       fontWeight: '600',
       fontFamily: 'var(--font-heading)',
-      marginBottom: 'clamp(0.5rem, 2vw, 1rem)',
+      marginBottom: 'clamp(0.5rem, 2vw, 0.75rem)',
       textTransform: 'uppercase',
       letterSpacing: '0.1em',
       display: 'block',
     },
     title: {
-      fontSize: 'clamp(1.75rem, 6vw, 3rem)',
+      fontSize: 'clamp(1.5rem, 5vw, 2.5rem)',
       fontWeight: '700',
       fontFamily: 'var(--font-heading)',
       color: '#1f2937',
-      marginBottom: 'clamp(1rem, 3vw, 1.5rem)',
+      marginBottom: 'clamp(0.75rem, 3vw, 1rem)',
       lineHeight: '1.2',
     },
     description: {
-      fontSize: 'clamp(1rem, 3vw, 1.125rem)',
-      color: '#6b7280',
+      fontSize: 'clamp(0.875rem, 2.5vw, 1rem)',
+      color: '#4b5563', // Better contrast
       maxWidth: '100%',
-      margin: '0 auto',
+      margin: '0',
       lineHeight: '1.6',
     },
     contentGrid: {
       display: 'grid',
       gridTemplateColumns: '1fr',
-      gap: 'clamp(1.5rem, 4vw, 3rem)',
+      gap: 'clamp(1.5rem, 4vw, 2rem)',
       alignItems: 'start',
     },
     contactInfo: {
       background: '#ffffff',
-      padding: 'clamp(1.25rem, 5vw, 2rem)',
-      borderRadius: 'var(--radius-xl)',
-      border: 'none',
-      boxShadow: 'none',
+      padding: 'clamp(1.25rem, 4vw, 1.75rem)',
+      borderRadius: '0.5rem',
+      border: '1px solid #e5e7eb',
+      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
     },
     infoTitle: {
-      fontSize: 'clamp(1.125rem, 4vw, 1.5rem)',
+      fontSize: 'clamp(1rem, 3vw, 1.25rem)',
       fontWeight: '600',
       fontFamily: 'var(--font-heading)',
       color: '#1f2937',
-      marginBottom: 'clamp(1rem, 3vw, 1.5rem)',
+      marginBottom: 'clamp(0.75rem, 3vw, 1rem)',
       display: 'flex',
       alignItems: 'center',
-      gap: 'clamp(0.5rem, 2vw, 1rem)',
+      gap: 'clamp(0.5rem, 2vw, 0.75rem)',
     },
     infoGrid: {
       display: 'grid',
-      gap: 'clamp(1rem, 3vw, 1.5rem)',
+      gap: 'clamp(0.75rem, 3vw, 1rem)',
     },
     infoItem: {
       display: 'flex',
       alignItems: 'flex-start',
-      gap: 'clamp(0.75rem, 3vw, 1rem)',
-      padding: 'clamp(0.75rem, 3vw, 1rem)',
-      borderRadius: 'var(--radius-md)',
-      transition: 'all var(--transition-default)',
+      gap: 'clamp(0.75rem, 2vw, 1rem)',
+      padding: 'clamp(0.75rem, 2vw, 1rem)',
+      borderRadius: '0.375rem',
+      transition: 'all 0.3s ease',
     },
     iconWrapper: {
-      width: 'clamp(40px, 10vw, 48px)',
-      height: 'clamp(40px, 10vw, 48px)',
-      background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1))',
+      width: 'clamp(36px, 8vw, 44px)',
+      height: 'clamp(36px, 8vw, 44px)',
+      background: 'rgba(242, 109, 38, 0.1)',
       borderRadius: '50%',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      color: 'var(--color-primary-500)',
+      color: '#f26d26',
       flexShrink: 0,
     },
     infoContent: {
       flex: 1,
     },
     infoItemTitle: {
-      fontSize: 'clamp(0.875rem, 2.5vw, 1rem)',
+      fontSize: 'clamp(0.8rem, 2.5vw, 0.95rem)',
       fontWeight: '600',
       color: '#1f2937',
-      marginBottom: '4px',
+      marginBottom: '0.25rem',
     },
     infoItemContent: {
-      fontSize: 'clamp(0.8rem, 2vw, 0.975rem)',
-      color: '#6b7280',
-      marginBottom: '2px',
+      fontSize: 'clamp(0.75rem, 2vw, 0.9rem)',
+      color: '#4b5563', // Better contrast
+      marginBottom: '0.125rem',
       lineHeight: '1.4',
     },
     formWrapper: {
       background: '#ffffff',
-      padding: 'clamp(1.25rem, 5vw, 2rem)',
-      borderRadius: 'var(--radius-xl)',
-      border: 'none',
-      boxShadow: 'none',
+      padding: 'clamp(1.25rem, 4vw, 1.75rem)',
+      borderRadius: '0.5rem',
+      border: '1px solid #e5e7eb',
+      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
     },
     formTitle: {
-      fontSize: 'clamp(1.125rem, 4vw, 1.5rem)',
+      fontSize: 'clamp(1rem, 3vw, 1.25rem)',
       fontWeight: '600',
       fontFamily: 'var(--font-heading)',
       color: '#1f2937',
-      marginBottom: 'clamp(1rem, 3vw, 1.5rem)',
+      marginBottom: 'clamp(0.75rem, 3vw, 1rem)',
       display: 'flex',
       alignItems: 'center',
-      gap: 'clamp(0.5rem, 2vw, 1rem)',
+      gap: 'clamp(0.5rem, 2vw, 0.75rem)',
     },
     form: {
       display: 'grid',
-      gap: 'clamp(1rem, 3vw, 1.5rem)',
+      gap: 'clamp(0.875rem, 3vw, 1.25rem)',
     },
     inputGroup: {
       display: 'grid',
-      gap: 'clamp(0.5rem, 2vw, 0.75rem)',
+      gap: 'clamp(0.375rem, 2vw, 0.5rem)',
     },
     label: {
-      fontSize: 'clamp(0.8rem, 2vw, 0.875rem)',
+      fontSize: 'clamp(0.75rem, 2vw, 0.8rem)',
       fontWeight: '500',
-      color: '#374151',
+      color: '#1f2937', // Stronger contrast
     },
     input: {
-      padding: 'clamp(10px, 3vw, 12px) clamp(12px, 3vw, 16px)',
-      borderRadius: 'var(--radius-md)',
+      padding: 'clamp(0.625rem, 2vw, 0.75rem) clamp(0.75rem, 2vw, 1rem)',
+      borderRadius: '0.375rem',
       border: '1px solid #d1d5db',
-      fontSize: 'clamp(0.875rem, 2.5vw, 1rem)',
+      fontSize: 'clamp(0.8rem, 2vw, 0.9rem)',
       color: '#1f2937',
       background: '#ffffff',
-      transition: 'all var(--transition-default)',
+      transition: 'all 0.3s ease',
       outline: 'none',
       width: '100%',
       boxSizing: 'border-box',
     },
     textarea: {
-      padding: 'clamp(10px, 3vw, 12px) clamp(12px, 3vw, 16px)',
-      borderRadius: 'var(--radius-md)',
+      padding: 'clamp(0.625rem, 2vw, 0.75rem) clamp(0.75rem, 2vw, 1rem)',
+      borderRadius: '0.375rem',
       border: '1px solid #d1d5db',
-      fontSize: 'clamp(0.875rem, 2.5vw, 1rem)',
+      fontSize: 'clamp(0.8rem, 2vw, 0.9rem)',
       color: '#1f2937',
       background: '#ffffff',
-      transition: 'all var(--transition-default)',
+      transition: 'all 0.3s ease',
       outline: 'none',
-      minHeight: 'clamp(100px, 20vw, 120px)',
+      minHeight: 'clamp(100px, 30vw, 140px)',
       resize: 'vertical',
       fontFamily: 'var(--font-sans)',
       width: '100%',
       boxSizing: 'border-box',
     },
     submitButton: {
-      background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
+      background: '#f26d26',
       color: '#ffffff',
-      padding: '0.5rem 1rem',
-      borderRadius: 'var(--radius-md)',
+      padding: 'clamp(0.625rem, 2vw, 0.75rem) clamp(1rem, 3vw, 1.5rem)',
+      borderRadius: '0.375rem',
       border: 'none',
-      fontSize: '0.875rem',
+      fontSize: 'clamp(0.8rem, 2vw, 0.9rem)',
       fontWeight: '500',
       cursor: 'pointer',
-      transition: 'all 0.2s ease',
+      transition: 'all 0.3s ease',
       display: 'inline-flex',
       alignItems: 'center',
       justifyContent: 'center',
       gap: '0.375rem',
-      marginTop: 'clamp(1rem, 3vw, 1.5rem)',
+      marginTop: 'clamp(0.75rem, 3vw, 1rem)',
       minHeight: '44px',
-      boxShadow: '0 2px 8px rgba(59, 130, 246, 0.3)',
+      boxShadow: '0 2px 8px rgba(242, 109, 38, 0.3)',
     },
   };
 
   return (
     <>
       <style jsx>{`
-        /* Mobile First Responsive Styles */
+        * {
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Base responsive grid */
         .content-grid {
           grid-template-columns: 1fr !important;
-          gap: clamp(1.5rem, 4vw, 2rem);
+          gap: clamp(1rem, 3vw, 1.5rem);
         }
 
-        /* Mobile adjustments */
-        @media (max-width: 768px) {
-          .contact-section .container {
-            padding: 0 clamp(1rem, 4vw, 2rem) !important;
-          }
-
-          .contact-header {
-            margin-bottom: 1.5rem;
-            padding: 0 0.5rem;
-          }
-          
-          .contact-info,
-          .form-wrapper {
-            padding: 1rem;
-          }
-          
-          .info-item {
-            flex-direction: row;
-            align-items: flex-start;
-            gap: 0.75rem;
-          }
-          
-          .icon-wrapper {
-            width: 36px;
-            height: 36px;
-          }
-          
-          .icon-wrapper svg {
-            width: 18px !important;
-            height: 18px !important;
-          }
-        }
-
-        /* Large Mobile (481px - 640px) */
-        @media (min-width: 481px) and (max-width: 640px) {
-          .content-grid {
-            grid-template-columns: 1fr !important;
-            gap: 2rem;
-          }
-          
-          .contact-info,
-          .form-wrapper {
-            padding: 1.25rem;
-          }
-        }
-
-        /* Tablet (641px - 768px) */
-        @media (min-width: 641px) and (max-width: 768px) {
-          .content-grid {
-            grid-template-columns: 1fr !important;
-            gap: 2rem;
-          }
-          
-          .contact-info,
-          .form-wrapper {
-            padding: 1.5rem;
-          }
-        }
-
-        /* Small Desktop (769px - 1024px) */
-        @media (min-width: 769px) and (max-width: 1024px) {
-          .content-grid {
-            grid-template-columns: 1fr 1fr !important;
-            gap: 2rem;
-          }
-          
-          .contact-header {
-            max-width: 700px;
-            margin: 0 auto 2.5rem auto;
-          }
-        }
-
-        /* Desktop (1025px and up) */
-        @media (min-width: 1025px) {
-          .content-grid {
-            grid-template-columns: 1fr 1fr !important;
-            gap: 3rem;
-          }
-          
-          .contact-header {
-            max-width: 800px;
-            margin: 0 auto 3rem auto;
-          }
-          
-          .contact-info,
-          .form-wrapper {
-            padding: 2rem;
-          }
-        }
-
-        /* Large Desktop (1440px and up) */
-        @media (min-width: 1440px) {
-          .contact-header {
-            max-width: 900px;
-          }
-        }
-
-        /* Focus and Hover States */
+        /* Input focus */
         .input-field:focus {
-          border-color: var(--color-primary-500);
-          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+          border-color: #f26d26;
+          box-shadow: 0 0 0 3px rgba(242, 109, 38, 0.1);
+          background-color: #fffbf7;
         }
-        
-        /* Hover Effects - Only on devices that support hover */
+
+        /* Hover effects (desktop) */
         @media (hover: hover) and (pointer: fine) {
           .submit-button:hover:not(:disabled) {
-            background: linear-gradient(135deg, #2563eb, #7c3aed);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.5);
+            background: #e56320;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(242, 109, 38, 0.4);
           }
-          
+
           .info-item:hover {
+            background: #f8fafc;
+            border-radius: 0.375rem;
+          }
+        }
+
+        /* Active effects (touch) */
+        @media (hover: none) and (pointer: coarse) {
+          .submit-button:active:not(:disabled) {
+            background: #e56320;
+            transform: translateY(-1px);
+          }
+
+          .info-item:active {
             background: #f8fafc;
           }
         }
 
-        /* Touch devices */
-        @media (hover: none) and (pointer: coarse) {
-          .submit-button:active:not(:disabled) {
-            background: linear-gradient(135deg, #2563eb, #7c3aed);
-            transform: translateY(-1px);
-          }
-        }
-        
         .submit-button:disabled {
           background: #9ca3af !important;
           cursor: not-allowed;
           transform: none !important;
           box-shadow: none !important;
+          opacity: 0.7;
         }
 
-        /* Focus states for accessibility */
         .submit-button:focus,
         .input-field:focus {
-          outline: 2px solid var(--color-primary-500);
+          outline: 2px solid #f26d26;
           outline-offset: 2px;
         }
 
-        /* Override global styles */
-        .contact-section * {
-          color: inherit !important;
-        }
-        
-        .contact-tagline {
-          color: var(--color-primary-500) !important;
-        }
-        
-        .contact-title {
-          color: #1f2937 !important;
-        }
-        
-        .contact-description {
-          color: #6b7280 !important;
+        /* Larger screens: switch to 2-column grid */
+        @media (min-width: 769px) {
+          .content-grid {
+            grid-template-columns: 1fr 1fr !important;
+            gap: clamp(2rem, 5vw, 3rem);
+            align-items: start;
+          }
         }
 
-        /* Loading spinner animation */
         @keyframes spin {
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
-        }
-
-        /* High contrast mode support */
-        @media (prefers-contrast: high) {
-          .contact-info,
-          .form-wrapper {
-            border: 2px solid #1f2937;
-          }
-          
-          .input-field {
-            border: 2px solid #6b7280;
-          }
-          
-          .icon-wrapper {
-            border: 1px solid var(--color-primary-500);
-          }
-        }
-
-        /* Reduced motion support */
-        @media (prefers-reduced-motion: reduce) {
-          .submit-button,
-          .info-item,
-          .input-field {
-            transition: none !important;
-          }
-          
-          .submit-button:hover {
-            transform: none !important;
-          }
-        }
-
-        /* Dark mode adjustments */
-        @media (prefers-color-scheme: dark) {
-          .contact-section {
-            background: linear-gradient(135deg, #1f2937 0%, #111827 50%, #1f2937 100%);
-          }
-          
-          .contact-title {
-            color: #ffffff !important;
-          }
-          
-          .contact-description {
-            color: #d1d5db !important;
-          }
-          
-          .contact-info,
-          .form-wrapper {
-            background: var(--card, #374151);
-            border-color: var(--border-light, #4b5563);
-          }
-          
-          .input-field {
-            background: #374151;
-            color: #ffffff;
-            border-color: #4b5563;
-          }
-          
-          .input-field::placeholder {
-            color: #9ca3af;
-          }
-          
-          .label {
-            color: #d1d5db !important;
-          }
-          
-          .info-item-title {
-            color: #ffffff !important;
-          }
-          
-          .info-item-content {
-            color: #d1d5db !important;
-          }
-        }
-
-        /* Landscape orientation for mobile */
-        @media (max-height: 600px) and (orientation: landscape) {
-          .contact-section {
-            padding: clamp(1rem, 4vw, 2rem) 0;
-          }
-          
-          .contact-header {
-            margin-bottom: 1.5rem;
-          }
-          
-          .textarea {
-            min-height: 80px;
-          }
-        }
-
-        /* Print styles */
-        @media print {
-          .submit-button {
-            display: none;
-          }
-          
-          .content-grid {
-            grid-template-columns: 1fr;
-            gap: 1rem;
-          }
         }
       `}</style>
 
@@ -549,24 +343,16 @@ const Contact = () => {
             <div style={styles.contactInfo} className="contact-info">
               <h3 style={styles.infoTitle}>
                 {React.cloneElement(<MessageSquare size={24} />, {
-                  size: 'clamp(20, 5vw, 24)',
-                  style: { 
-                    width: 'clamp(20px, 5vw, 24px)', 
-                    height: 'clamp(20px, 5vw, 24px)' 
-                  }
+                  style: { width: 'clamp(18px, 5vw, 24px)', height: 'clamp(18px, 5vw, 24px)' }
                 })}
                 Get In Touch
               </h3>
-              <div style={styles.infoGrid}>
+              <div style={styles.infoGrid} className="infoGrid">
                 {contactInfo.map((info, index) => (
                   <div key={index} style={styles.infoItem} className="info-item">
                     <div style={styles.iconWrapper} className="icon-wrapper">
                       {React.cloneElement(info.icon, {
-                        size: 'clamp(18, 4vw, 24)',
-                        style: { 
-                          width: 'clamp(18px, 4vw, 24px)', 
-                          height: 'clamp(18px, 4vw, 24px)' 
-                        }
+                        style: { width: 'clamp(16px, 4vw, 22px)', height: 'clamp(16px, 4vw, 22px)' }
                       })}
                     </div>
                     <div style={styles.infoContent}>
@@ -584,16 +370,12 @@ const Contact = () => {
             <div style={styles.formWrapper} className="form-wrapper">
               <h3 style={styles.formTitle}>
                 {React.cloneElement(<Send size={24} />, {
-                  size: 'clamp(20, 5vw, 24)',
-                  style: { 
-                    width: 'clamp(20px, 5vw, 24px)', 
-                    height: 'clamp(20px, 5vw, 24px)' 
-                  }
+                  style: { width: 'clamp(18px, 5vw, 24px)', height: 'clamp(18px, 5vw, 24px)' }
                 })}
                 Send Message
               </h3>
-              <div style={styles.form}>
-                <div style={styles.inputGroup}>
+              <div style={styles.form} className="form">
+                <div style={styles.inputGroup} className="input-group">
                   <label style={styles.label} htmlFor="name" className="label">Full Name</label>
                   <input
                     type="text"
@@ -608,7 +390,7 @@ const Contact = () => {
                   />
                 </div>
 
-                <div style={styles.inputGroup}>
+                <div style={styles.inputGroup} className="input-group">
                   <label style={styles.label} htmlFor="email" className="label">Email Address</label>
                   <input
                     type="email"
@@ -623,7 +405,7 @@ const Contact = () => {
                   />
                 </div>
 
-                <div style={styles.inputGroup}>
+                <div style={styles.inputGroup} className="input-group">
                   <label style={styles.label} htmlFor="subject" className="label">Subject</label>
                   <input
                     type="text"
@@ -638,7 +420,7 @@ const Contact = () => {
                   />
                 </div>
 
-                <div style={styles.inputGroup}>
+                <div style={styles.inputGroup} className="input-group">
                   <label style={styles.label} htmlFor="message" className="label">Message</label>
                   <textarea
                     id="message"
@@ -662,8 +444,8 @@ const Contact = () => {
                   {isSubmitting ? (
                     <>
                       <div style={{
-                        width: '16px',
-                        height: '16px',
+                        width: '14px',
+                        height: '14px',
                         border: '2px solid #ffffff',
                         borderTop: '2px solid transparent',
                         borderRadius: '50%',

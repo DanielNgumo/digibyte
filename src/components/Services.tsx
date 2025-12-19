@@ -53,7 +53,7 @@ export default function Services() {
     if (!scrollContainerRef.current) return;
     
     const container = scrollContainerRef.current;
-    const cardWidth = 300; // Fixed card width + gap
+    const cardWidth = 300;
     const scrollLeft = container.scrollLeft;
     const containerCenter = scrollLeft + container.offsetWidth / 2;
     
@@ -61,7 +61,6 @@ export default function Services() {
     let closestDistance = Infinity;
     
     services.forEach((_, index) => {
-      // Calculate card position based on fixed width and padding
       const cardCenter = 2 * 16 + (index * (cardWidth + 16)) + cardWidth / 2;
       const distance = Math.abs(cardCenter - containerCenter);
       
@@ -122,20 +121,20 @@ export default function Services() {
     <>
       <style>{`
         .services-carousel-section {
-          padding: clamp(3rem, 8vw, 6rem) 0;
-          background: #f8fafc;
+          padding: clamp(2rem, 8vw, 6rem) 0;
+          background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
           font-family: 'Inter', system-ui, sans-serif;
         }
 
         .services-carousel-header {
           text-align: center;
-          margin-bottom: clamp(2rem, 6vw, 4rem);
-          padding: 0 clamp(0.5rem, 2vw, 1rem);
+          margin-bottom: clamp(1.5rem, 6vw, 4rem);
+          padding: 0 clamp(0.75rem, 4vw, 2rem);
         }
 
         .services-carousel-tagline {
           color: #f26d26;
-          font-size: clamp(0.875rem, 2.5vw, 1rem);
+          font-size: clamp(0.75rem, 2.5vw, 1rem);
           font-weight: 600;
           font-family: 'Poppins', system-ui, sans-serif;
           margin-bottom: clamp(0.5rem, 2vw, 1rem);
@@ -145,16 +144,16 @@ export default function Services() {
         }
 
         .services-carousel-title {
-          font-size: clamp(1.75rem, 6vw, 3rem);
+          font-size: clamp(1.5rem, 6vw, 3rem);
           font-weight: 700;
           font-family: 'Poppins', system-ui, sans-serif;
           color: #1f2937;
-          margin-bottom: clamp(1rem, 3vw, 1.5rem);
+          margin-bottom: clamp(0.75rem, 3vw, 1.5rem);
           line-height: 1.2;
         }
 
         .services-carousel-description {
-          font-size: clamp(1rem, 3vw, 1.125rem);
+          font-size: clamp(0.9rem, 2.5vw, 1.125rem);
           color: #6b7280;
           max-width: 600px;
           margin: 0 auto;
@@ -164,7 +163,7 @@ export default function Services() {
         .carousel-container {
           max-width: 1280px;
           margin: 0 auto;
-          padding: 0 clamp(1rem, 4vw, 2rem);
+          padding: 0 clamp(0.75rem, 4vw, 2rem);
           width: 100%;
           box-sizing: border-box;
         }
@@ -174,7 +173,7 @@ export default function Services() {
           scroll-behavior: smooth;
           scrollbar-width: none;
           -ms-overflow-style: none;
-          padding: 2rem 0;
+          padding: clamp(1rem, 4vw, 2rem) 0;
           cursor: grab;
           user-select: none;
           -webkit-user-select: none;
@@ -193,21 +192,22 @@ export default function Services() {
 
         .carousel-track {
           display: flex;
-          gap: 1rem;
-          padding: 0 2rem;
+          gap: clamp(0.75rem, 2vw, 1.5rem);
+          padding: 0 clamp(1rem, 3vw, 2rem);
           width: fit-content;
           user-select: none;
           -webkit-user-select: none;
         }
 
         .service-card-carousel {
-          flex: 0 0 300px;
-          min-width: 300px;
-          height: 420px;
+          flex: 0 0 clamp(250px, 80vw, 320px);
+          min-width: clamp(250px, 80vw, 320px);
+          height: auto;
+          min-height: clamp(350px, 60vw, 450px);
           background: #ffffff;
           border: 1px solid #e5e7eb;
-          border-radius: 16px;
-          padding: clamp(1.5rem, 4vw, 2rem);
+          border-radius: clamp(0.75rem, 2vw, 1.25rem);
+          padding: clamp(1rem, 3vw, 1.75rem);
           display: flex;
           flex-direction: column;
           box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
@@ -230,15 +230,15 @@ export default function Services() {
         }
 
         .icon-wrapper-carousel {
-          width: 64px;
-          height: 64px;
+          width: clamp(48px, 10vw, 64px);
+          height: clamp(48px, 10vw, 64px);
           background: #fef3e8;
-          border-radius: 12px;
+          border-radius: clamp(0.625rem, 2vw, 1rem);
           display: flex;
           align-items: center;
           justify-content: center;
           color: #f26d26;
-          margin-bottom: 1.5rem;
+          margin-bottom: clamp(1rem, 2vw, 1.5rem);
           flex-shrink: 0;
           transition: all 0.3s ease;
         }
@@ -250,11 +250,11 @@ export default function Services() {
         }
 
         .service-card-title-carousel {
-          font-size: 1.25rem;
+          font-size: clamp(1rem, 3vw, 1.375rem);
           font-weight: 600;
           font-family: 'Poppins', system-ui, sans-serif;
           color: #1f2937;
-          margin-bottom: 0.75rem;
+          margin-bottom: clamp(0.5rem, 1.5vw, 0.875rem);
           line-height: 1.3;
         }
 
@@ -263,41 +263,43 @@ export default function Services() {
         }
 
         .service-card-description-carousel {
-          font-size: 0.95rem;
+          font-size: clamp(0.85rem, 2vw, 1rem);
           color: #6b7280;
-          line-height: 1.6;
-          margin-bottom: 1rem;
+          line-height: 1.5;
+          margin-bottom: clamp(0.75rem, 2vw, 1.25rem);
           flex: 1;
         }
 
         .features-list-carousel {
           display: flex;
           flex-wrap: wrap;
-          gap: 0.5rem;
+          gap: clamp(0.4rem, 1.5vw, 0.75rem);
           margin-top: auto;
         }
 
         .feature-tag-carousel {
           background: #f1f5f9;
           color: #475569;
-          padding: 4px 10px;
-          border-radius: 6px;
-          font-size: 0.8rem;
+          padding: clamp(0.3rem, 1vw, 0.5rem) clamp(0.6rem, 1.5vw, 0.875rem);
+          border-radius: clamp(0.375rem, 1vw, 0.5rem);
+          font-size: clamp(0.7rem, 1.5vw, 0.875rem);
           font-weight: 500;
           border: 1px solid #e2e8f0;
           line-height: 1.2;
+          white-space: nowrap;
         }
 
         .carousel-indicators {
           display: flex;
           justify-content: center;
-          gap: 0.5rem;
-          margin-top: 2rem;
+          gap: clamp(0.375rem, 1.5vw, 0.75rem);
+          margin-top: clamp(1.5rem, 4vw, 2.5rem);
+          flex-wrap: wrap;
         }
 
         .indicator {
-          width: 10px;
-          height: 10px;
+          width: clamp(8px, 2vw, 10px);
+          height: clamp(8px, 2vw, 10px);
           border-radius: 50%;
           background: #d1d5db;
           cursor: pointer;
@@ -307,48 +309,317 @@ export default function Services() {
 
         .indicator.active {
           background: #f26d26;
-          width: 30px;
+          width: clamp(24px, 6vw, 30px);
           border-radius: 5px;
         }
 
-        @media (max-width: 1024px) {
-          .service-card-carousel {
-            flex: 0 0 45%;
-            min-width: 280px;
-            height: 380px;
+        /* Extra Small (up to 320px) */
+        @media (max-width: 320px) {
+          .services-carousel-section {
+            padding: 1.5rem 0;
           }
 
-          .carousel-track {
-            padding: 0 1rem;
-          }
-        }
-
-        @media (max-width: 640px) {
-          .service-card-carousel {
-            flex: 0 0 80%;
-            min-width: 280px;
-            height: 360px;
-            padding: 1.25rem;
+          .carousel-wrapper {
+            padding: 1rem 0;
           }
 
           .carousel-track {
             padding: 0 0.5rem;
-            gap: 1rem;
+            gap: 0.75rem;
           }
 
-          .carousel-wrapper {
-            padding: 1.5rem 0;
+          .service-card-carousel {
+            flex: 0 0 85vw;
+            min-width: 85vw;
+            height: auto;
+            min-height: 340px;
+            padding: 1rem;
+          }
+
+          .services-carousel-title {
+            font-size: 1.375rem;
+          }
+
+          .services-carousel-description {
+            font-size: 0.875rem;
           }
         }
 
+        /* Small Mobile (321px - 480px) */
+        @media (min-width: 321px) and (max-width: 480px) {
+          .services-carousel-section {
+            padding: 2rem 0;
+          }
+
+          .carousel-wrapper {
+            padding: 1.25rem 0;
+          }
+
+          .carousel-track {
+            padding: 0 0.75rem;
+            gap: 1rem;
+          }
+
+          .service-card-carousel {
+            flex: 0 0 80vw;
+            min-width: 80vw;
+            height: auto;
+            min-height: 350px;
+            padding: 1.25rem;
+          }
+
+          .services-carousel-description {
+            font-size: 0.9rem;
+          }
+        }
+
+        /* Large Mobile (481px - 640px) */
+        @media (min-width: 481px) and (max-width: 640px) {
+          .services-carousel-section {
+            padding: 2.5rem 0;
+          }
+
+          .carousel-track {
+            padding: 0 1rem;
+            gap: 1rem;
+          }
+
+          .service-card-carousel {
+            flex: 0 0 70vw;
+            min-width: 260px;
+            height: auto;
+            min-height: 360px;
+            padding: 1.25rem;
+          }
+        }
+
+        /* Tablet (641px - 768px) */
+        @media (min-width: 641px) and (max-width: 768px) {
+          .services-carousel-section {
+            padding: 3.5rem 0;
+          }
+
+          .carousel-track {
+            padding: 0 1.5rem;
+            gap: 1.25rem;
+          }
+
+          .service-card-carousel {
+            flex: 0 0 50%;
+            min-width: 280px;
+            height: auto;
+            min-height: 380px;
+            padding: 1.5rem;
+          }
+
+          .services-carousel-title {
+            font-size: 2.25rem;
+          }
+        }
+
+        /* Small Desktop (769px - 1024px) */
+        @media (min-width: 769px) and (max-width: 1024px) {
+          .services-carousel-section {
+            padding: 4rem 0;
+          }
+
+          .carousel-track {
+            padding: 0 1.5rem;
+            gap: 1.25rem;
+          }
+
+          .service-card-carousel {
+            flex: 0 0 45%;
+            min-width: 280px;
+            height: auto;
+            min-height: 380px;
+            padding: 1.5rem;
+          }
+        }
+
+        /* Desktop (1025px - 1439px) */
+        @media (min-width: 1025px) and (max-width: 1439px) {
+          .services-carousel-section {
+            padding: 5rem 0;
+          }
+
+          .carousel-track {
+            padding: 0 2rem;
+            gap: 1.5rem;
+          }
+
+          .service-card-carousel {
+            flex: 0 0 300px;
+            min-width: 300px;
+            height: auto;
+            min-height: 420px;
+            padding: 1.75rem;
+          }
+        }
+
+        /* Large Desktop (1440px and up) */
+        @media (min-width: 1440px) {
+          .services-carousel-section {
+            padding: 6rem 0;
+          }
+
+          .carousel-track {
+            padding: 0 2rem;
+            gap: 1.5rem;
+          }
+
+          .service-card-carousel {
+            flex: 0 0 320px;
+            min-width: 320px;
+            height: auto;
+            min-height: 450px;
+            padding: 2rem;
+          }
+        }
+
+        /* Landscape Mobile */
+        @media (max-height: 600px) and (orientation: landscape) {
+          .services-carousel-section {
+            padding: 1.5rem 0;
+          }
+
+          .carousel-wrapper {
+            padding: 1rem 0;
+          }
+
+          .services-carousel-header {
+            margin-bottom: 1.5rem;
+          }
+
+          .service-card-carousel {
+            min-height: 300px;
+          }
+
+          .carousel-indicators {
+            margin-top: 1rem;
+          }
+        }
+
+        /* Hover Effects - Desktop Only */
+        @media (hover: hover) and (pointer: fine) {
+          .indicator:hover {
+            background: #f26d26;
+            transform: scale(1.1);
+          }
+
+          .carousel-wrapper {
+            cursor: grab;
+          }
+
+          .carousel-wrapper.dragging {
+            cursor: grabbing;
+          }
+        }
+
+        /* Touch devices */
+        @media (hover: none) and (pointer: coarse) {
+          .carousel-wrapper {
+            cursor: default;
+          }
+
+          .indicator:active {
+            transform: scale(1.15);
+          }
+        }
+
+        /* Focus states */
+        .indicator:focus {
+          outline: 2px solid #f26d26;
+          outline-offset: 2px;
+        }
+
+        /* High contrast mode */
+        @media (prefers-contrast: high) {
+          .service-card-carousel {
+            border: 2px solid #1f2937;
+          }
+
+          .feature-tag-carousel {
+            border: 2px solid #475569;
+          }
+        }
+
+        /* Reduced motion */
         @media (prefers-reduced-motion: reduce) {
           .carousel-wrapper {
             scroll-behavior: auto;
           }
 
           .service-card-carousel,
-          .icon-wrapper-carousel {
+          .icon-wrapper-carousel,
+          .indicator {
             transition: none !important;
+          }
+        }
+
+        /* Dark mode */
+        @media (prefers-color-scheme: dark) {
+          .services-carousel-section {
+            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+          }
+
+          .services-carousel-title {
+            color: #ffffff;
+          }
+
+          .services-carousel-description {
+            color: #d1d5db;
+          }
+
+          .service-card-carousel {
+            background: #374151;
+            border-color: #4b5563;
+          }
+
+          .service-card-carousel.active {
+            border-color: #f26d26;
+          }
+
+          .service-card-title-carousel {
+            color: #ffffff;
+          }
+
+          .service-card-description-carousel {
+            color: #d1d5db;
+          }
+
+          .feature-tag-carousel {
+            background: #4b5563;
+            color: #e5e7eb;
+            border-color: #6b7280;
+          }
+
+          .icon-wrapper-carousel {
+            background: rgba(242, 109, 38, 0.2);
+          }
+        }
+
+        /* Print styles */
+        @media print {
+          .carousel-wrapper {
+            overflow: visible;
+          }
+
+          .carousel-track {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            width: 100%;
+            padding: 0;
+          }
+
+          .service-card-carousel {
+            flex: 1;
+            transform: none !important;
+            opacity: 1 !important;
+          }
+
+          .carousel-indicators {
+            display: none;
           }
         }
       `}</style>

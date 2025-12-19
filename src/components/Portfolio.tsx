@@ -2,8 +2,8 @@
 
 import React, { useState, useMemo } from 'react';
 import { ExternalLink, Eye, Code, Smartphone, Globe } from 'lucide-react';
+import Image from 'next/image'; // ← Essential import for images
 import { CSSProperties } from 'react';
-import Image from 'next/image';
 
 const Portfolio = () => {
   const [selectedProject, setSelectedProject] = useState<number | null>(1);
@@ -77,9 +77,7 @@ const Portfolio = () => {
     },
   ], []);
 
-  const filteredProjects = useMemo(() => {
-    return projects;
-  }, [projects]);
+  const filteredProjects = useMemo(() => projects, [projects]);
 
   const handleProjectClick = (projectId: number) => {
     setSelectedProject(selectedProject === projectId ? null : projectId);
@@ -100,7 +98,7 @@ const Portfolio = () => {
     container: {
       maxWidth: '1280px',
       margin: '0 auto',
-      padding: '0 clamp(70px, 8vw, 140px)',
+      padding: '0 clamp(1rem, 4vw, 2rem)',
       width: '100%',
       boxSizing: 'border-box',
     },
@@ -110,34 +108,34 @@ const Portfolio = () => {
       padding: '0 clamp(0.5rem, 2vw, 1rem)',
     },
     tagline: {
-      color: 'var(--color-primary-500)',
-      fontSize: 'clamp(0.875rem, 2.5vw, 1rem)',
+      color: '#f26d26',
+      fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)',
       fontWeight: '600',
       fontFamily: 'var(--font-heading)',
-      marginBottom: 'clamp(0.5rem, 2vw, 1rem)',
+      marginBottom: 'clamp(0.5rem, 2vw, 0.75rem)',
       textTransform: 'uppercase',
       letterSpacing: '0.1em',
       display: 'block',
     },
     title: {
-      fontSize: 'clamp(1.75rem, 6vw, 3rem)',
+      fontSize: 'clamp(1.5rem, 6vw, 2.75rem)',
       fontWeight: '700',
       fontFamily: 'var(--font-heading)',
       color: '#1f2937',
-      marginBottom: 'clamp(1rem, 3vw, 1.5rem)',
+      marginBottom: 'clamp(0.75rem, 3vw, 1rem)',
       lineHeight: '1.2',
     },
     description: {
-      fontSize: 'clamp(1rem, 3vw, 1.125rem)',
-      color: '#6b7280',
+      fontSize: 'clamp(0.9rem, 2.5vw, 1.125rem)',
+      color: '#4b5563',
       maxWidth: '100%',
       margin: '0 auto',
       lineHeight: '1.6',
     },
     timelineContainer: {
       position: 'relative',
-      padding: '1rem 0 2rem',
-      marginBottom: '1.5rem',
+      padding: 'clamp(1rem, 3vw, 2rem) 0 clamp(1.5rem, 4vw, 2rem)',
+      marginBottom: 'clamp(1.5rem, 4vw, 2rem)',
     },
     timelineWrapper: {
       position: 'relative',
@@ -151,13 +149,13 @@ const Portfolio = () => {
       display: 'flex',
       alignItems: 'center',
       minWidth: '100%',
-      padding: '0 2rem',
+      padding: '0 clamp(1rem, 3vw, 2rem)',
     },
     timelineLine: {
       position: 'absolute',
       top: '50%',
-      left: '2rem',
-      right: '2rem',
+      left: 'clamp(1rem, 3vw, 2rem)',
+      right: 'clamp(1rem, 3vw, 2rem)',
       height: '2px',
       background: '#e5e7eb',
       transform: 'translateY(-50%)',
@@ -189,48 +187,49 @@ const Portfolio = () => {
       alignItems: 'center',
       cursor: 'pointer',
       flex: '0 0 auto',
-      minWidth: '80px',
+      minWidth: 'clamp(50px, 15vw, 90px)',
       transition: 'all 0.3s ease',
     },
     pointDot: {
-      width: '16px',
-      height: '16px',
+      width: 'clamp(12px, 3vw, 16px)',
+      height: 'clamp(12px, 3vw, 16px)',
       borderRadius: '50%',
       background: '#ffffff',
       border: '3px solid #e5e7eb',
       transition: 'all 0.3s ease',
-      marginBottom: '0.75rem',
+      marginBottom: 'clamp(0.5rem, 2vw, 0.75rem)',
       zIndex: 3,
     },
     activeDot: {
-      width: '20px',
-      height: '20px',
+      width: 'clamp(16px, 4vw, 20px)',
+      height: 'clamp(16px, 4vw, 20px)',
       border: '3px solid transparent',
       background: 'linear-gradient(135deg, #3b82f6, #8b5cf6) padding-box, linear-gradient(135deg, #3b82f6, #8b5cf6) border-box',
       boxShadow: '0 0 0 4px rgba(59, 130, 246, 0.2), 0 0 15px rgba(139, 92, 246, 0.4)',
     },
     pointLabel: {
-      fontSize: 'clamp(0.75rem, 2vw, 0.875rem)',
+      fontSize: 'clamp(0.6rem, 1.5vw, 0.875rem)',
       fontWeight: '600',
-      color: '#6b7280',
+      color: '#64748b',
       textAlign: 'center',
       transition: 'all 0.3s ease',
-      whiteSpace: 'nowrap',
-      maxWidth: '120px',
+      whiteSpace: 'normal',
+      maxWidth: 'clamp(80px, 20vw, 120px)',
       overflow: 'hidden',
       textOverflow: 'ellipsis',
+      lineHeight: '1.2',
     },
     activeLabel: {
-      color: 'var(--color-primary-500)',
+      color: '#f26d26',
       fontWeight: '700',
     },
     projectDetails: {
       display: 'grid',
       gridTemplateColumns: '1fr 1fr',
-      gap: 'clamp(2rem, 4vw, 3rem)',
+      gap: 'clamp(1.5rem, 4vw, 3rem)',
       background: '#1f2937',
-      borderRadius: 'var(--radius-xl)',
-      padding: 'clamp(1.5rem, 4vw, 2.5rem)',
+      borderRadius: 'clamp(0.75rem, 2vw, 1.25rem)',
+      padding: 'clamp(1.25rem, 4vw, 2.5rem)',
       border: 'none',
       boxShadow: 'none',
       marginTop: '0.5rem',
@@ -249,54 +248,55 @@ const Portfolio = () => {
     imageContainer: {
       position: 'relative',
       width: '100%',
-      height: '400px',
-      borderRadius: 'var(--radius-lg)',
+      height: 'clamp(250px, 50vw, 400px)',
+      borderRadius: 'clamp(0.5rem, 1.5vw, 1rem)',
       overflow: 'hidden',
       border: '1px solid #4b5563',
     },
     projectTitle: {
-      fontSize: 'clamp(1.5rem, 4vw, 2rem)',
+      fontSize: 'clamp(1.25rem, 4vw, 2rem)',
       fontWeight: '700',
       fontFamily: 'var(--font-heading)',
       color: '#ffffff',
-      marginBottom: '1rem',
+      marginBottom: 'clamp(0.75rem, 2vw, 1rem)',
       display: 'flex',
       alignItems: 'center',
-      gap: '0.75rem',
+      gap: 'clamp(0.5rem, 1.5vw, 0.75rem)',
     },
     projectDescription: {
-      fontSize: 'clamp(0.975rem, 2.5vw, 1.125rem)',
+      fontSize: 'clamp(0.9rem, 2vw, 1.125rem)',
       color: '#d1d5db',
       lineHeight: '1.6',
-      marginBottom: '1.5rem',
+      marginBottom: 'clamp(1rem, 2vw, 1.5rem)',
     },
     tagsList: {
       display: 'flex',
       flexWrap: 'wrap',
-      gap: '0.5rem',
-      marginBottom: '1.5rem',
+      gap: 'clamp(0.4rem, 1.5vw, 0.75rem)',
+      marginBottom: 'clamp(1rem, 2vw, 1.5rem)',
     },
     tag: {
       background: '#374151',
       color: '#d1d5db',
-      padding: '4px 12px',
-      borderRadius: 'var(--radius-md)',
-      fontSize: '0.875rem',
+      padding: 'clamp(0.3rem, 1vw, 0.5rem) clamp(0.75rem, 1.5vw, 1rem)',
+      borderRadius: 'clamp(0.375rem, 1vw, 0.5rem)',
+      fontSize: 'clamp(0.75rem, 1.5vw, 0.875rem)',
       fontWeight: '500',
       border: '1px solid #4b5563',
     },
     projectActions: {
       display: 'flex',
-      gap: '1rem',
+      gap: 'clamp(0.5rem, 2vw, 1rem)',
       marginTop: 'auto',
+      flexWrap: 'wrap',
     },
     actionBtn: {
       display: 'inline-flex',
       alignItems: 'center',
       gap: '0.375rem',
-      padding: '0.5rem 1rem',
-      borderRadius: 'var(--radius-md)',
-      fontSize: '0.875rem',
+      padding: 'clamp(0.5rem, 1.5vw, 0.75rem) clamp(0.75rem, 2vw, 1.25rem)',
+      borderRadius: 'clamp(0.375rem, 1vw, 0.5rem)',
+      fontSize: 'clamp(0.8rem, 1.5vw, 0.875rem)',
       fontWeight: '500',
       cursor: 'pointer',
       transition: 'all 0.2s ease',
@@ -323,186 +323,56 @@ const Portfolio = () => {
     <>
       <style jsx>{`
         @keyframes slideIn {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
         }
 
         @keyframes gradientShift {
-          0% {
-            background-position: 0% 50%;
-          }
-          50% {
-            background-position: 100% 50%;
-          }
-          100% {
-            background-position: 0% 50%;
-          }
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
         }
 
-        /* Scrollbar styling for timeline */
-        .timeline-wrapper::-webkit-scrollbar {
-          height: 6px;
+        @media (max-width: 320px) {
+          .project-details { grid-template-columns: 1fr; padding: 1rem; }
+          .image-container { height: 220px; }
         }
 
-        .timeline-wrapper::-webkit-scrollbar-track {
-          background: #f1f5f9;
-          border-radius: 3px;
+        @media (min-width: 321px) and (max-width: 480px) {
+          .project-details { grid-template-columns: 1fr; padding: 1.25rem; }
+          .project-image { order: -1; }
+          .image-container { height: 250px; }
         }
 
-        .timeline-wrapper::-webkit-scrollbar-thumb {
-          background: #cbd5e1;
-          border-radius: 3px;
+        @media (min-width: 481px) and (max-width: 640px) {
+          .project-details { grid-template-columns: 1fr; }
+          .image-container { height: 280px; }
         }
 
-        .timeline-wrapper::-webkit-scrollbar-thumb:hover {
-          background: #94a3b8;
+        @media (min-width: 641px) and (max-width: 768px) {
+          .project-details { grid-template-columns: 1fr; }
+          .image-container { height: 320px; }
         }
 
-        /* Mobile adjustments */
-        @media (max-width: 768px) {
-          .portfolio-section .container {
-            padding: 0 clamp(1rem, 4vw, 2rem) !important;
-          }
-
-          .project-details {
-            grid-template-columns: 1fr !important;
-          }
-
-          .project-image {
-            order: -1;
-          }
-
-          .image-container {
-            height: 250px !important;
-          }
-
-          .timeline-track {
-            padding: 0 1rem !important;
-          }
-
-          .timeline-line {
-            left: 1rem !important;
-            right: 1rem !important;
-          }
-
-          .timeline-point {
-            min-width: 60px !important;
-          }
-
-          .point-label {
-            font-size: 0.625rem !important;
-            max-width: 80px !important;
-          }
+        @media (min-width: 769px) {
+          .project-details { grid-template-columns: 1fr 1fr; }
         }
 
-        /* Filter buttons mobile scroll */
-        @media (max-width: 480px) {
-          .filter-buttons {
-            justify-content: flex-start;
-            overflow-x: auto;
-            padding-bottom: 10px;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-          }
-          
-          .filter-buttons::-webkit-scrollbar {
-            display: none;
-          }
-        }
-
-        /* Hover effects */
         @media (hover: hover) and (pointer: fine) {
-          .timeline-point:hover .point-dot {
-            transform: scale(1.2);
-            border-color: var(--color-primary-500);
-          }
-
-          .timeline-point:hover .point-label {
-            color: var(--color-primary-500);
-          }
-
-          .action-btn.primary:hover {
-            background: 'linear-gradient(135deg, #2563eb, #7c3aed)',
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.5);
-          }
-
-          .action-btn.secondary:hover {
-            background: #f8fafc;
-            border-color: var(--color-primary-500);
-            color: var(--color-primary-500);
-            transform: translateY(-1px);
-          }
+          .timeline-point:hover .point-dot { transform: scale(1.2); border-color: #f26d26; }
+          .timeline-point:hover .point-label { color: #f26d26; }
+          .action-btn.primary:hover { background: linear-gradient(135deg, #2563eb, #7c3aed); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.5); }
+          .action-btn.secondary:hover { background: #f8fafc; border-color: #f26d26; color: #f26d26; transform: translateY(-1px); }
         }
 
-        /* Dark mode adjustments */
-        @media (prefers-color-scheme: dark) {
-          .portfolio-section {
-            background: linear-gradient(135deg, #1f2937 0%, #111827 50%, #1f2937 100%);
-          }
-          
-          .portfolio-title {
-            color: #ffffff !important;
-          }
-          
-          .portfolio-description {
-            color: #d1d5db !important;
-          }
-          
-          .timeline-line {
-            background: #4b5563;
-          }
-
-          .point-dot {
-            background: #374151;
-            border-color: #4b5563;
-          }
-
-          .point-label {
-            color: #d1d5db;
-          }
-
-          .active-label {
-            color: var(--color-primary-400) !important;
-          }
-        }
-
-        /* Accessibility */
-        .timeline-point:focus {
-          outline: 2px solid var(--color-primary-500);
-          outline-offset: 4px;
-          border-radius: 4px;
-        }
-
-        .action-btn:focus {
-          outline: 2px solid var(--color-primary-500);
-          outline-offset: 2px;
-        }
-
-        /* Reduced motion */
-        @media (prefers-reduced-motion: reduce) {
-          .timeline-progress,
-          .timeline-point,
-          .point-dot,
-          .project-details,
-          .action-btn {
-            transition: none !important;
-          }
-          
-          .project-details {
-            animation: none !important;
-          }
-        }
+        .timeline-wrapper::-webkit-scrollbar { height: 6px; }
+        .timeline-wrapper::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 3px; }
+        .timeline-wrapper::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        .timeline-wrapper::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
       `}</style>
 
       <section style={styles.section} id="portfolio" className="portfolio-section">
-        <div style={styles.container}>
+        <div style={styles.container} className="portfolio-container">
           <div style={styles.header}>
             <span style={styles.tagline} className="portfolio-tagline">Our Portfolio</span>
             <h2 style={styles.title} className="portfolio-title">
@@ -518,26 +388,17 @@ const Portfolio = () => {
             <div style={styles.timelineWrapper} className="timeline-wrapper">
               <div style={styles.timelineTrack} className="timeline-track">
                 <div style={styles.timelineLine} className="timeline-line">
-                  <div 
-                    style={{
-                      ...styles.timelineProgress,
-                      width: progressWidth
-                    }}
-                  />
+                  <div style={{ ...styles.timelineProgress, width: progressWidth }} />
                 </div>
                 
                 <div style={styles.timelinePoints}>
-                  {filteredProjects.map((project, index) => (
+                  {filteredProjects.map((project) => (
                     <div
                       key={project.id}
                       style={styles.timelinePoint}
                       className="timeline-point"
                       onClick={() => handleProjectClick(project.id)}
-                      onKeyPress={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          handleProjectClick(project.id);
-                        }
-                      }}
+                      onKeyPress={(e) => (e.key === 'Enter' || e.key === ' ') && handleProjectClick(project.id)}
                       tabIndex={0}
                       role="button"
                       aria-pressed={selectedProject === project.id}
@@ -577,9 +438,7 @@ const Portfolio = () => {
                 </p>
                 <div style={styles.tagsList}>
                   {selectedProjectData.tags.map((tag, index) => (
-                    <span key={index} style={styles.tag}>
-                      {tag}
-                    </span>
+                    <span key={index} style={styles.tag}>{tag}</span>
                   ))}
                 </div>
                 <div style={styles.projectActions}>
@@ -587,6 +446,8 @@ const Portfolio = () => {
                     href={selectedProjectData.liveUrl}
                     style={{...styles.actionBtn, ...styles.primaryBtn}}
                     className="action-btn primary"
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
                     <Eye size={16} />
                     View Live
@@ -595,6 +456,8 @@ const Portfolio = () => {
                     href={selectedProjectData.codeUrl}
                     style={{...styles.actionBtn, ...styles.secondaryBtn}}
                     className="action-btn secondary"
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
                     <ExternalLink size={16} />
                     View Code
@@ -606,21 +469,11 @@ const Portfolio = () => {
                 <div style={styles.imageContainer} className="image-container">
                   <Image
                     src={selectedProjectData.image}
-                    alt={selectedProjectData.title}
+                    alt={`${selectedProjectData.title} - Project Screenshot`}
                     fill
-                    style={{
-                      objectFit: 'cover',
-                    }}
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.style.display = 'none';
-                      if (target.parentElement) {
-                        target.parentElement.style.background = 'linear-gradient(135deg, var(--color-primary-500), var(--color-secondary-500))';
-                        target.parentElement.style.display = 'flex';
-                        target.parentElement.style.alignItems = 'center';
-                        target.parentElement.style.justifyContent = 'center';
-                      }
-                    }}
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    style={{ objectFit: 'cover' }}
+                    priority={selectedProject === 1} // Faster load for default project
                   />
                 </div>
               </div>
