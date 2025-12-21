@@ -1,11 +1,161 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useCallback, memo } from 'react';
 import { Mail, Phone, Clock, Send, MessageSquare } from 'lucide-react';
 import { CSSProperties } from 'react';
 
-const Contact = () => {
-  const [formData, setFormData] = useState({
+// Type definitions
+interface FormData {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+}
+
+interface ContactInfoItem {
+  icon: React.ReactElement<any>;
+  title: string;
+  content: string;
+  subContent?: string;
+}
+
+// Memoized info item component
+const InfoItem = memo(({ 
+  info, 
+  styles 
+}: { 
+  info: ContactInfoItem; 
+  styles: { [key: string]: CSSProperties };
+}) => {
+  return (
+    <div style={styles.infoItem} className="info-item">
+      <div style={styles.iconWrapper} className="icon-wrapper">
+        {React.cloneElement(info.icon, {
+          style: { width: 'clamp(16px, 4vw, 22px)', height: 'clamp(16px, 4vw, 22px)' } as any
+        })}
+      </div>
+      <div style={styles.infoContent}>
+        <div style={styles.infoItemTitle} className="info-item-title">
+          {info.title}
+        </div>
+        <div style={styles.infoItemContent} className="info-item-content">
+          {info.content}
+        </div>
+        {info.subContent && (
+          <div style={styles.infoItemContent} className="info-item-content">
+            {info.subContent}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+});
+
+InfoItem.displayName = 'InfoItem';
+
+// Memoized form field component
+const FormField = memo(({ 
+  label, 
+  name, 
+  type = 'text', 
+  value, 
+  onChange, 
+  placeholder, 
+  styles,
+  isTextarea = false
+}: { 
+  label: string; 
+  name: string; 
+  type?: string; 
+  value: string; 
+  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void; 
+  placeholder: string; 
+  styles: { [key: string]: CSSProperties };
+  isTextarea?: boolean;
+}) => {
+  return (
+    <div style={styles.inputGroup} className="input-group">
+      <label style={styles.label} htmlFor={name} className="label">
+        {label}
+      </label>
+      {isTextarea ? (
+        <textarea
+          id={name}
+          name={name}
+          value={value}
+          onChange={onChange}
+          style={styles.textarea}
+          className="input-field textarea"
+          required
+          placeholder={placeholder}
+        />
+      ) : (
+        <input
+          type={type}
+          id={name}
+          name={name}
+          value={value}
+          onChange={onChange}
+          style={styles.input}
+          className="input-field"
+          required
+          placeholder={placeholder}
+        />
+      )}
+    </div>
+  );
+});
+
+FormField.displayName = 'FormField';
+
+// Memoized submit button component
+const SubmitButton = memo(({ 
+  isSubmitting, 
+  onClick, 
+  styles 
+}: { 
+  isSubmitting: boolean; 
+  onClick: () => void; 
+  styles: { [key: string]: CSSProperties };
+}) => {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      style={styles.submitButton}
+      className="submit-button"
+      disabled={isSubmitting}
+      aria-label="Send message"
+    >
+      {isSubmitting ? (
+        <>
+          <div
+            style={{
+              width: '14px',
+              height: '14px',
+              border: '2px solid #ffffff',
+              borderTop: '2px solid transparent',
+              borderRadius: '50%',
+              animation: 'spin 1s linear infinite',
+            }}
+            aria-hidden="true"
+          />
+          Sending...
+        </>
+      ) : (
+        <>
+          <Send size={16} />
+          Send
+        </>
+      )}
+    </button>
+  );
+});
+
+SubmitButton.displayName = 'SubmitButton';
+
+const Contact = memo(() => {
+  const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
     subject: '',
@@ -14,7 +164,7 @@ const Contact = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const contactInfo = [
+  const contactInfo: ContactInfoItem[] = [
     {
       icon: <Mail size={24} />,
       title: "Email Us",
@@ -33,47 +183,38 @@ const Contact = () => {
     },
   ];
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
-  };
+  }, []);
 
-  const handleSubmit = () => {
+  const handleSubmit = useCallback(() => {
     if (!formData.name || !formData.email || !formData.subject || !formData.message) {
       alert('Please fill in all fields before sending.');
       return;
     }
 
     setIsSubmitting(true);
-    
-    const whatsappMessage = `*New Contact Form Submission*%0A%0A` +
-      `*Name:* ${formData.name}%0A` +
-      `*Email:* ${formData.email}%0A` +
-      `*Subject:* ${formData.subject}%0A%0A` +
-      `*Message:*%0A${formData.message}%0A%0A` +
-      `----%0ASent from DigiKenya Contact Form`;
 
-    const whatsappNumber = '254742580239';
-    const whatsappURL = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
-    
+    // Simulate form submission - replace with actual API call
     setTimeout(() => {
       setIsSubmitting(false);
-      window.open(whatsappURL, '_blank');
+      alert('Thank you for your message! We\'ll get back to you soon.');
       setFormData({ name: '', email: '', subject: '', message: '' });
-      alert('Redirecting to WhatsApp! Your message will be sent when you click send in WhatsApp.');
-    }, 1000);
-  };
+    }, 1500);
+  }, [formData]);
 
   const styles: { [key: string]: CSSProperties } = {
     section: {
       padding: 'clamp(2rem, 8vw, 6rem) 0',
-      background: 'linear-gradient(135deg, #f8fafc 0%, #ffffff 50%, #f1f5f9 100%)', // Original gradient restored
+      background: 'linear-gradient(135deg, #f8fafc 0%, #ffffff 50%, #f1f5f9 100%)',
       fontFamily: 'var(--font-sans)',
       position: 'relative',
       zIndex: 10,
+      contain: 'layout style',
     },
     container: {
       maxWidth: '1280px',
@@ -107,7 +248,7 @@ const Contact = () => {
     },
     description: {
       fontSize: 'clamp(0.875rem, 2.5vw, 1rem)',
-      color: '#4b5563', // Better contrast
+      color: '#4b5563',
       maxWidth: '100%',
       margin: '0',
       lineHeight: '1.6',
@@ -124,6 +265,7 @@ const Contact = () => {
       borderRadius: '0.5rem',
       border: '1px solid #e5e7eb',
       boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
+      contain: 'layout',
     },
     infoTitle: {
       fontSize: 'clamp(1rem, 3vw, 1.25rem)',
@@ -146,6 +288,7 @@ const Contact = () => {
       padding: 'clamp(0.75rem, 2vw, 1rem)',
       borderRadius: '0.375rem',
       transition: 'all 0.3s ease',
+      willChange: 'background-color',
     },
     iconWrapper: {
       width: 'clamp(36px, 8vw, 44px)',
@@ -157,6 +300,7 @@ const Contact = () => {
       justifyContent: 'center',
       color: '#f26d26',
       flexShrink: 0,
+      contain: 'layout',
     },
     infoContent: {
       flex: 1,
@@ -169,7 +313,7 @@ const Contact = () => {
     },
     infoItemContent: {
       fontSize: 'clamp(0.75rem, 2vw, 0.9rem)',
-      color: '#4b5563', // Better contrast
+      color: '#4b5563',
       marginBottom: '0.125rem',
       lineHeight: '1.4',
     },
@@ -179,6 +323,7 @@ const Contact = () => {
       borderRadius: '0.5rem',
       border: '1px solid #e5e7eb',
       boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
+      contain: 'layout',
     },
     formTitle: {
       fontSize: 'clamp(1rem, 3vw, 1.25rem)',
@@ -201,7 +346,7 @@ const Contact = () => {
     label: {
       fontSize: 'clamp(0.75rem, 2vw, 0.8rem)',
       fontWeight: '500',
-      color: '#1f2937', // Stronger contrast
+      color: '#1f2937',
     },
     input: {
       padding: 'clamp(0.625rem, 2vw, 0.75rem) clamp(0.75rem, 2vw, 1rem)',
@@ -247,6 +392,7 @@ const Contact = () => {
       marginTop: 'clamp(0.75rem, 3vw, 1rem)',
       minHeight: '44px',
       boxShadow: '0 2px 8px rgba(242, 109, 38, 0.3)',
+      willChange: 'transform, box-shadow, background-color',
     },
   };
 
@@ -258,20 +404,17 @@ const Contact = () => {
           -moz-osx-font-smoothing: grayscale;
         }
 
-        /* Base responsive grid */
         .content-grid {
           grid-template-columns: 1fr !important;
           gap: clamp(1rem, 3vw, 1.5rem);
         }
 
-        /* Input focus */
         .input-field:focus {
           border-color: #f26d26;
           box-shadow: 0 0 0 3px rgba(242, 109, 38, 0.1);
           background-color: #fffbf7;
         }
 
-        /* Hover effects (desktop) */
         @media (hover: hover) and (pointer: fine) {
           .submit-button:hover:not(:disabled) {
             background: #e56320;
@@ -285,7 +428,6 @@ const Contact = () => {
           }
         }
 
-        /* Active effects (touch) */
         @media (hover: none) and (pointer: coarse) {
           .submit-button:active:not(:disabled) {
             background: #e56320;
@@ -311,7 +453,6 @@ const Contact = () => {
           outline-offset: 2px;
         }
 
-        /* Larger screens: switch to 2-column grid */
         @media (min-width: 769px) {
           .content-grid {
             grid-template-columns: 1fr 1fr !important;
@@ -321,8 +462,66 @@ const Contact = () => {
         }
 
         @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .submit-button,
+          .info-item,
+          .input-field {
+            transition: none !important;
+          }
+
+          @keyframes spin {
+            from {
+              transform: rotate(0deg);
+            }
+            to {
+              transform: rotate(0deg);
+            }
+          }
+        }
+
+        @media (prefers-color-scheme: dark) {
+          section {
+            background: linear-gradient(135deg, #1f2937 0%, #111827 50%, #0f172a 100%);
+          }
+
+          .input-field {
+            background: #374151;
+            border-color: #4b5563;
+            color: #ffffff;
+          }
+
+          .input-field:focus {
+            background: #1f2937;
+          }
+
+          .contact-info,
+          .form-wrapper {
+            background: #1f2937;
+            border-color: #4b5563;
+          }
+
+          .contact-title,
+          .contact-description,
+          .info-item-title {
+            color: #ffffff;
+          }
+
+          .contact-description,
+          .info-item-content {
+            color: #d1d5db;
+          }
+
+          .info-item:hover {
+            background: #374151 !important;
+          }
         }
       `}</style>
 
@@ -331,11 +530,11 @@ const Contact = () => {
           <div style={styles.header} className="contact-header">
             <span style={styles.tagline} className="contact-tagline">Contact Us</span>
             <h2 style={styles.title} className="contact-title">
-              Let&apos;s Start Your Project
+              Let's Start Your Project
             </h2>
             <p style={styles.description} className="contact-description">
-              Ready to transform your digital presence? Get in touch with us today 
-              and let&apos;s discuss how we can help bring your vision to life.
+              Ready to transform your digital presence? Get in touch with us today
+              and let's discuss how we can help bring your vision to life.
             </p>
           </div>
 
@@ -343,26 +542,13 @@ const Contact = () => {
             <div style={styles.contactInfo} className="contact-info">
               <h3 style={styles.infoTitle}>
                 {React.cloneElement(<MessageSquare size={24} />, {
-                  style: { width: 'clamp(18px, 5vw, 24px)', height: 'clamp(18px, 5vw, 24px)' }
+                  style: { width: 'clamp(18px, 5vw, 24px)', height: 'clamp(18px, 5vw, 24px)' } as any
                 })}
                 Get In Touch
               </h3>
               <div style={styles.infoGrid} className="infoGrid">
                 {contactInfo.map((info, index) => (
-                  <div key={index} style={styles.infoItem} className="info-item">
-                    <div style={styles.iconWrapper} className="icon-wrapper">
-                      {React.cloneElement(info.icon, {
-                        style: { width: 'clamp(16px, 4vw, 22px)', height: 'clamp(16px, 4vw, 22px)' }
-                      })}
-                    </div>
-                    <div style={styles.infoContent}>
-                      <div style={styles.infoItemTitle} className="info-item-title">{info.title}</div>
-                      <div style={styles.infoItemContent} className="info-item-content">{info.content}</div>
-                      {info.subContent && (
-                        <div style={styles.infoItemContent} className="info-item-content">{info.subContent}</div>
-                      )}
-                    </div>
-                  </div>
+                  <InfoItem key={index} info={info} styles={styles} />
                 ))}
               </div>
             </div>
@@ -370,96 +556,54 @@ const Contact = () => {
             <div style={styles.formWrapper} className="form-wrapper">
               <h3 style={styles.formTitle}>
                 {React.cloneElement(<Send size={24} />, {
-                  style: { width: 'clamp(18px, 5vw, 24px)', height: 'clamp(18px, 5vw, 24px)' }
+                  style: { width: 'clamp(18px, 5vw, 24px)', height: 'clamp(18px, 5vw, 24px)' } as any
                 })}
                 Send Message
               </h3>
               <div style={styles.form} className="form">
-                <div style={styles.inputGroup} className="input-group">
-                  <label style={styles.label} htmlFor="name" className="label">Full Name</label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    style={styles.input}
-                    className="input-field"
-                    required
-                    placeholder="Enter your full name"
-                  />
-                </div>
+                <FormField
+                  label="Full Name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  placeholder="Enter your full name"
+                  styles={styles}
+                />
 
-                <div style={styles.inputGroup} className="input-group">
-                  <label style={styles.label} htmlFor="email" className="label">Email Address</label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    style={styles.input}
-                    className="input-field"
-                    required
-                    placeholder="Enter your email address"
-                  />
-                </div>
+                <FormField
+                  label="Email Address"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  placeholder="Enter your email address"
+                  styles={styles}
+                />
 
-                <div style={styles.inputGroup} className="input-group">
-                  <label style={styles.label} htmlFor="subject" className="label">Subject</label>
-                  <input
-                    type="text"
-                    id="subject"
-                    name="subject"
-                    value={formData.subject}
-                    onChange={handleInputChange}
-                    style={styles.input}
-                    className="input-field"
-                    required
-                    placeholder="What's this about?"
-                  />
-                </div>
+                <FormField
+                  label="Subject"
+                  name="subject"
+                  value={formData.subject}
+                  onChange={handleInputChange}
+                  placeholder="What's this about?"
+                  styles={styles}
+                />
 
-                <div style={styles.inputGroup} className="input-group">
-                  <label style={styles.label} htmlFor="message" className="label">Message</label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    value={formData.message}
-                    onChange={handleInputChange}
-                    style={styles.textarea}
-                    className="input-field textarea"
-                    required
-                    placeholder="Tell us about your project..."
-                  />
-                </div>
+                <FormField
+                  label="Message"
+                  name="message"
+                  value={formData.message}
+                  onChange={handleInputChange}
+                  placeholder="Tell us about your project..."
+                  styles={styles}
+                  isTextarea
+                />
 
-                <button
-                  type="button"
+                <SubmitButton
+                  isSubmitting={isSubmitting}
                   onClick={handleSubmit}
-                  style={styles.submitButton}
-                  className="submit-button"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? (
-                    <>
-                      <div style={{
-                        width: '14px',
-                        height: '14px',
-                        border: '2px solid #ffffff',
-                        borderTop: '2px solid transparent',
-                        borderRadius: '50%',
-                        animation: 'spin 1s linear infinite'
-                      }} />
-                      Sending...
-                    </>
-                  ) : (
-                    <>
-                      <Send size={16} />
-                      Send
-                    </>
-                  )}
-                </button>
+                  styles={styles}
+                />
               </div>
             </div>
           </div>
@@ -467,6 +611,8 @@ const Contact = () => {
       </section>
     </>
   );
-};
+});
+
+Contact.displayName = 'Contact';
 
 export default Contact;

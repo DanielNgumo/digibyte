@@ -1,14 +1,99 @@
 "use client";
 
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback, memo } from 'react';
 import { Palette, Smartphone, Globe, Code, Database, Shield } from 'lucide-react';
 
-export default function Services() {
+// Service type definition
+interface Service {
+  icon: React.ReactElement<any>;
+  title: string;
+  description: string;
+  features: string[];
+}
+
+// Memoized service card component
+const ServiceCard = memo(({ 
+  service, 
+  isActive 
+}: { 
+  service: Service; 
+  isActive: boolean;
+}) => {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <div
+      className={`service-card-carousel ${isActive ? 'active' : 'side'}`}
+      role="article"
+      aria-label={`${service.title} service`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      style={{
+        willChange: isActive ? 'transform, opacity' : 'auto',
+      }}
+    >
+      <div className="icon-wrapper-carousel">
+        {React.cloneElement(service.icon, {
+          size: 32,
+          strokeWidth: 2
+        } as any)}
+      </div>
+      <h3 className="service-card-title-carousel">
+        {service.title}
+      </h3>
+      <p className="service-card-description-carousel">
+        {service.description}
+      </p>
+      <div className="features-list-carousel">
+        {service.features.map((feature: string, featureIndex: number) => (
+          <span key={featureIndex} className="feature-tag-carousel">
+            {feature}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+});
+
+ServiceCard.displayName = 'ServiceCard';
+
+// Memoized indicator component
+const Indicator = memo(({ 
+  index, 
+  isActive, 
+  onClick 
+}: { 
+  index: number; 
+  isActive: boolean; 
+  onClick: () => void;
+}) => {
+  return (
+    <div
+      className={`indicator ${isActive ? 'active' : ''}`}
+      onClick={onClick}
+      role="button"
+      tabIndex={0}
+      aria-label={`Go to service ${index + 1}`}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick();
+        }
+      }}
+    />
+  );
+});
+
+Indicator.displayName = 'Indicator';
+
+const Services = memo(() => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const startXRef = useRef(0);
   const scrollStartRef = useRef(0);
+  const dragThresholdRef = useRef(5);
+  const hasDraggedRef = useRef(false);
 
   const services = [
     {
@@ -49,7 +134,7 @@ export default function Services() {
     },
   ];
 
-  const handleScroll = () => {
+  const handleScroll = useCallback(() => {
     if (!scrollContainerRef.current) return;
     
     const container = scrollContainerRef.current;
@@ -71,13 +156,26 @@ export default function Services() {
     });
     
     setActiveIndex(closestIndex);
-  };
+  }, []);
+
+  const scrollToIndex = useCallback((index: number) => {
+    if (scrollContainerRef.current) {
+      const cardWidth = 300;
+      const gap = 16;
+      const scrollPosition = index * (cardWidth + gap) + 2 * 16 - (scrollContainerRef.current.offsetWidth / 2 - cardWidth / 2);
+      scrollContainerRef.current.scrollTo({
+        left: scrollPosition,
+        behavior: 'smooth'
+      });
+    }
+  }, []);
 
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
 
     const handleMouseDown = (e: MouseEvent) => {
+      hasDraggedRef.current = false;
       setIsDragging(true);
       startXRef.current = e.clientX;
       scrollStartRef.current = container.scrollLeft;
@@ -89,7 +187,11 @@ export default function Services() {
       if (!isDragging) return;
       
       const x = e.clientX - startXRef.current;
-      container.scrollLeft = scrollStartRef.current - x;
+      
+      if (Math.abs(x) > dragThresholdRef.current) {
+        hasDraggedRef.current = true;
+        container.scrollLeft = scrollStartRef.current - x;
+      }
     };
 
     const handleMouseUp = () => {
@@ -124,6 +226,7 @@ export default function Services() {
           padding: clamp(2rem, 8vw, 6rem) 0;
           background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
           font-family: 'Inter', system-ui, sans-serif;
+          contain: layout style;
         }
 
         .services-carousel-header {
@@ -179,6 +282,7 @@ export default function Services() {
           -webkit-user-select: none;
           -moz-user-select: none;
           -ms-user-select: none;
+          will-change: scroll-position;
         }
 
         .carousel-wrapper::-webkit-scrollbar {
@@ -223,6 +327,7 @@ export default function Services() {
           transform: scale(1) translateY(0);
           box-shadow: 0 20px 40px rgba(242, 109, 38, 0.15);
           border-color: #f26d26;
+          pointer-events: auto;
         }
 
         .service-card-carousel.side {
@@ -241,6 +346,7 @@ export default function Services() {
           margin-bottom: clamp(1rem, 2vw, 1.5rem);
           flex-shrink: 0;
           transition: all 0.3s ease;
+          contain: layout;
         }
 
         .service-card-carousel.active .icon-wrapper-carousel {
@@ -305,6 +411,7 @@ export default function Services() {
           cursor: pointer;
           transition: all 0.3s ease;
           border: 2px solid transparent;
+          will-change: background-color, width;
         }
 
         .indicator.active {
@@ -313,7 +420,6 @@ export default function Services() {
           border-radius: 5px;
         }
 
-        /* Extra Small (up to 320px) */
         @media (max-width: 320px) {
           .services-carousel-section {
             padding: 1.5rem 0;
@@ -345,7 +451,6 @@ export default function Services() {
           }
         }
 
-        /* Small Mobile (321px - 480px) */
         @media (min-width: 321px) and (max-width: 480px) {
           .services-carousel-section {
             padding: 2rem 0;
@@ -373,7 +478,6 @@ export default function Services() {
           }
         }
 
-        /* Large Mobile (481px - 640px) */
         @media (min-width: 481px) and (max-width: 640px) {
           .services-carousel-section {
             padding: 2.5rem 0;
@@ -393,7 +497,6 @@ export default function Services() {
           }
         }
 
-        /* Tablet (641px - 768px) */
         @media (min-width: 641px) and (max-width: 768px) {
           .services-carousel-section {
             padding: 3.5rem 0;
@@ -417,7 +520,6 @@ export default function Services() {
           }
         }
 
-        /* Small Desktop (769px - 1024px) */
         @media (min-width: 769px) and (max-width: 1024px) {
           .services-carousel-section {
             padding: 4rem 0;
@@ -437,7 +539,6 @@ export default function Services() {
           }
         }
 
-        /* Desktop (1025px - 1439px) */
         @media (min-width: 1025px) and (max-width: 1439px) {
           .services-carousel-section {
             padding: 5rem 0;
@@ -457,7 +558,6 @@ export default function Services() {
           }
         }
 
-        /* Large Desktop (1440px and up) */
         @media (min-width: 1440px) {
           .services-carousel-section {
             padding: 6rem 0;
@@ -477,7 +577,6 @@ export default function Services() {
           }
         }
 
-        /* Landscape Mobile */
         @media (max-height: 600px) and (orientation: landscape) {
           .services-carousel-section {
             padding: 1.5rem 0;
@@ -500,7 +599,6 @@ export default function Services() {
           }
         }
 
-        /* Hover Effects - Desktop Only */
         @media (hover: hover) and (pointer: fine) {
           .indicator:hover {
             background: #f26d26;
@@ -516,7 +614,6 @@ export default function Services() {
           }
         }
 
-        /* Touch devices */
         @media (hover: none) and (pointer: coarse) {
           .carousel-wrapper {
             cursor: default;
@@ -527,13 +624,11 @@ export default function Services() {
           }
         }
 
-        /* Focus states */
         .indicator:focus {
           outline: 2px solid #f26d26;
           outline-offset: 2px;
         }
 
-        /* High contrast mode */
         @media (prefers-contrast: high) {
           .service-card-carousel {
             border: 2px solid #1f2937;
@@ -544,7 +639,6 @@ export default function Services() {
           }
         }
 
-        /* Reduced motion */
         @media (prefers-reduced-motion: reduce) {
           .carousel-wrapper {
             scroll-behavior: auto;
@@ -557,7 +651,6 @@ export default function Services() {
           }
         }
 
-        /* Dark mode */
         @media (prefers-color-scheme: dark) {
           .services-carousel-section {
             background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
@@ -599,7 +692,6 @@ export default function Services() {
           }
         }
 
-        /* Print styles */
         @media print {
           .carousel-wrapper {
             overflow: visible;
@@ -633,7 +725,7 @@ export default function Services() {
             </h2>
             <p className="services-carousel-description">
               We offer a full range of technology services to help your business 
-              succeed in the digital world. From design to development, we ve got you covered.
+              succeed in the digital world. From design to development, we've got you covered.
             </p>
           </div>
 
@@ -644,57 +736,22 @@ export default function Services() {
           >
             <div className="carousel-track">
               {services.map((service, index) => (
-                <div
+                <ServiceCard 
                   key={index}
-                  className={`service-card-carousel ${
-                    index === activeIndex ? 'active' : 'side'
-                  }`}
-                  role="article"
-                  aria-label={`${service.title} service`}
-                >
-                  <div className="icon-wrapper-carousel">
-                    {React.cloneElement(service.icon, {
-                      size: 32,
-                      strokeWidth: 2
-                    })}
-                  </div>
-                  <h3 className="service-card-title-carousel">
-                    {service.title}
-                  </h3>
-                  <p className="service-card-description-carousel">
-                    {service.description}
-                  </p>
-                  <div className="features-list-carousel">
-                    {service.features.map((feature, featureIndex) => (
-                      <span key={featureIndex} className="feature-tag-carousel">
-                        {feature}
-                      </span>
-                    ))}
-                  </div>
-                </div>
+                  service={service}
+                  isActive={index === activeIndex}
+                />
               ))}
             </div>
           </div>
 
           <div className="carousel-indicators">
             {services.map((_, index) => (
-              <div
+              <Indicator
                 key={index}
-                className={`indicator ${index === activeIndex ? 'active' : ''}`}
-                onClick={() => {
-                  if (scrollContainerRef.current) {
-                    const cardWidth = 300;
-                    const gap = 16;
-                    const scrollPosition = index * (cardWidth + gap) + 2 * 16 - (scrollContainerRef.current.offsetWidth / 2 - cardWidth / 2);
-                    scrollContainerRef.current.scrollTo({
-                      left: scrollPosition,
-                      behavior: 'smooth'
-                    });
-                  }
-                }}
-                role="button"
-                tabIndex={0}
-                aria-label={`Go to service ${index + 1}`}
+                index={index}
+                isActive={index === activeIndex}
+                onClick={() => scrollToIndex(index)}
               />
             ))}
           </div>
@@ -702,4 +759,8 @@ export default function Services() {
       </section>
     </>
   );
-}
+});
+
+Services.displayName = 'Services';
+
+export default Services;

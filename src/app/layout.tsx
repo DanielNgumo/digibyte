@@ -1,52 +1,28 @@
-import type { Metadata } from "next";
-import { Inter, Poppins } from "next/font/google";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import { Toaster } from "sonner";
-import Script from "next/script";
-import { SpeedInsights } from "@vercel/speed-insights/next"
-
-// Use your brand fonts instead of Geist
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  display: 'swap',
-});
-
-const poppins = Poppins({
-  variable: "--font-poppins",
-  subsets: ["latin"],
-  weight: ['300', '400', '500', '600', '700', '800', '900'],
-  display: 'swap',
-});
 
 export const metadata: Metadata = {
-  title: "TechNasi Digital Solutions - IT Solutions & Digital Transformation",
-  description: "Leading IT solutions agency specializing in digital transformation, web development, and innovative technology services.",
+  title: "Your Company Name - IT Solutions & Digital Services",
+  description: "We craft stunning graphic designs, build powerful digital experiences, and provide expert IT solutions that elevate your brand and drive growth.",
+  keywords: "IT solutions, web development, graphic design, digital services",
+  authors: [{ name: "Your Company" }],
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{ children: React.ReactNode }>) {
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${poppins.variable} antialiased`}>
-        {/* Google Analytics */}
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-EMB6BD7L23"
-          strategy="afterInteractive"
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-EMB6BD7L23');
-          `}
-        </Script>
-
+      <body>
         {children}
-        <Toaster richColors position="top-right" />
-        <SpeedInsights />
       </body>
     </html>
   );

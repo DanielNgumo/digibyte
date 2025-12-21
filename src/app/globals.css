@@ -1,8 +1,6 @@
-/* 1. ALL IMPORTS MUST COME FIRST */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
-/* 2. Then your custom CSS */
 :root {
   /* Core Brand Colors */
   --color-primary-500: #f26d26;
@@ -27,7 +25,7 @@
   --shadow-brand-blue: 0 4px 14px 0 rgba(4, 140, 204, 0.25);
 }
 
-/* Essential Global Reset - Minimal and Safe */
+/* Optimized Global Reset */
 *,
 *::before,
 *::after {
@@ -40,7 +38,7 @@ html {
   padding: 0;
   width: 100%;
   overflow-x: hidden;
-  background-color: #0c4a6e; /* Prevents white flash */
+  background-color: #0c4a6e;
 }
 
 body {
@@ -52,8 +50,27 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
   overflow-x: hidden;
-  background-color: #0c4a6e; /* Prevents white flash */
+  background-color: #0c4a6e;
+}
+
+/* Performance optimization: contain layout shifts */
+img, video, iframe {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* GPU acceleration for animations */
+@media (prefers-reduced-motion: no-preference) {
+  .animate-bounce,
+  [class*="animate-"],
+  [class*="transition-"] {
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
 }
 
 /* Dark Mode Variables */
@@ -127,7 +144,7 @@ body {
   --sidebar-ring: oklch(0.556 0 0);
 }
 
-/* Selection Styling */
+/* Optimized Selection */
 ::selection {
   background: var(--color-primary-500);
   color: var(--text-inverse);
@@ -138,7 +155,7 @@ body {
   color: var(--text-inverse);
 }
 
-/* Accessibility */
+/* Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -150,13 +167,13 @@ body {
   }
 }
 
-/* Focus styles for keyboard navigation */
+/* Focus styles */
 .focus-visible:focus {
   outline: 2px solid var(--color-primary-500);
   outline-offset: 2px;
 }
 
-/* Utility Classes */
+/* Utility Classes - Optimized */
 .gradient-text {
   background: linear-gradient(135deg, var(--color-primary-500), var(--color-secondary-500));
   -webkit-background-clip: text;
@@ -180,11 +197,15 @@ body {
   color: var(--color-secondary-500);
 }
 
-/* Print Styles */
+/* Print Optimization */
 @media print {
   * {
     background: transparent !important;
     color: black !important;
     box-shadow: none !important;
+  }
+  
+  @page {
+    margin: 0.5cm;
   }
 }
