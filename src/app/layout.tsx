@@ -3,6 +3,7 @@ import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
 import Script from "next/script";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 // Use your brand fonts instead of Geist
 const inter = Inter({
@@ -45,6 +46,7 @@ export default function RootLayout({
 
         {children}
         <Toaster richColors position="top-right" />
+        <SpeedInsights />
       </body>
     </html>
   );
