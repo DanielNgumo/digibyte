@@ -168,7 +168,7 @@ const Contact = memo(() => {
     {
       icon: <Mail size={24} />,
       title: "Email Us",
-      content: "ngumodaniel80@gmail.com",
+      content: "dev@technasi.co.ke",
     },
     {
       icon: <Phone size={24} />,

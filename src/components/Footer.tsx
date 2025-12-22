@@ -258,7 +258,7 @@ const Footer = memo(() => {
   ], []);
 
   const contactInfo = useMemo(() => [
-    { icon: <Mail size={16} />, label: 'Email', content: 'ngumodaniel80@gmail.com' },
+    { icon: <Mail size={16} />, label: 'Email', content: 'dev@technasi.co.ke' },
     { icon: <Phone size={16} />, label: 'Phone', content: '+254 425 802 39' },
     { icon: <MapPin size={16} />, label: 'Location', content: 'Nairobi, Kenya' },
   ], []);

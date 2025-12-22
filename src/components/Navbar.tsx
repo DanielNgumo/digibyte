@@ -95,7 +95,7 @@ const Navbar = () => {
               </div>
               <div className="info-item">
                 <Mail size={12} />
-                <span className="info-text">ngumodaniel80@gmail.com</span>
+                <span className="info-text">dev@technasi.co.ke</span>
               </div>
             </div>
             <div className="top-bar-cta">
