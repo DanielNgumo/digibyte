@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
 import { Menu, X, Phone, MapPin, Mail } from 'lucide-react';
 import Link from 'next/link';
 
@@ -108,12 +109,15 @@ const Navbar = () => {
           <div className="nav-container">
             <Link href="/" className="logo">
               <div className="logo-container">
-                <img 
+                <Image 
                   src="/logo.png" 
                   alt="TechNasi Logo" 
-                  className="logo-image" 
                   width={40}
                   height={40}
+                  className="logo-image"
+                  priority={true}
+                  quality={90}
+                  sizes="(max-width: 480px) 32px, (max-width: 768px) 36px, (max-width: 1023px) 38px, 40px"
                 />
                 <span className="logo-text">TechNasi</span>
               </div>

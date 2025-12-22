@@ -1,13 +1,10 @@
 "use client";
 
-import React, { useCallback, memo } from 'react';
+import React, { useCallback, memo, useMemo } from 'react';
 import {
   Mail,
   Phone,
   MapPin,
-  Facebook,
-  Twitter,
-  Instagram,
   Linkedin,
   Github,
   ArrowUp,
@@ -33,6 +30,25 @@ interface ContactInfo {
   content: string;
 }
 
+// Memoized link item component
+const LinkItem = memo(({ 
+  link, 
+  style 
+}: { 
+  link: LinkItem; 
+  style: CSSProperties;
+}) => (
+  <a
+    href={link.href}
+    style={style}
+    className="footer-link"
+  >
+    {link.name}
+  </a>
+));
+
+LinkItem.displayName = 'LinkItem';
+
 // Memoized link list component
 const LinkList = memo(({ 
   links, 
@@ -44,20 +60,35 @@ const LinkList = memo(({
   return (
     <div style={styles.linkList}>
       {links.map((link, index) => (
-        <a
-          key={index}
-          href={link.href}
-          style={styles.link}
-          className="footer-link"
-        >
-          {link.name}
-        </a>
+        <LinkItem key={index} link={link} style={styles.link} />
       ))}
     </div>
   );
 });
 
 LinkList.displayName = 'LinkList';
+
+// Memoized social link item
+const SocialLinkItem = memo(({ 
+  social, 
+  style 
+}: { 
+  social: SocialLink; 
+  style: CSSProperties;
+}) => (
+  <a
+    href={social.href}
+    style={style}
+    className="social-link"
+    aria-label={social.name}
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    {social.icon}
+  </a>
+));
+
+SocialLinkItem.displayName = 'SocialLinkItem';
 
 // Memoized social links component
 const SocialLinks = memo(({ 
@@ -70,17 +101,7 @@ const SocialLinks = memo(({
   return (
     <div style={styles.socialLinks} className="social-links">
       {links.map((social, index) => (
-        <a
-          key={index}
-          href={social.href}
-          style={styles.socialLink}
-          className="social-link"
-          aria-label={social.name}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {social.icon}
-        </a>
+        <SocialLinkItem key={index} social={social} style={styles.socialLink} />
       ))}
     </div>
   );
@@ -88,7 +109,27 @@ const SocialLinks = memo(({
 
 SocialLinks.displayName = 'SocialLinks';
 
-// Memoized contact info component
+// Memoized contact info item
+const ContactItem = memo(({ 
+  contact, 
+  style 
+}: { 
+  contact: ContactInfo; 
+  style: CSSProperties;
+}) => (
+  <div style={style} className="contact-item">
+    {React.cloneElement(contact.icon, {
+      size: 16,
+      style: { flexShrink: 0 } as any,
+      'aria-hidden': 'true'
+    })}
+    <span>{contact.content}</span>
+  </div>
+));
+
+ContactItem.displayName = 'ContactItem';
+
+// Memoized contact info section
 const ContactInfoSection = memo(({ 
   contacts, 
   styles 
@@ -99,13 +140,7 @@ const ContactInfoSection = memo(({
   return (
     <>
       {contacts.map((contact, index) => (
-        <div key={index} style={styles.contactItem} className="contact-item">
-          {React.cloneElement(contact.icon, {
-            size: 16,
-            style: { flexShrink: 0 } as any
-          })}
-          <span>{contact.content}</span>
-        </div>
+        <ContactItem key={index} contact={contact} style={styles.contactItem} />
       ))}
     </>
   );
@@ -141,11 +176,21 @@ const ScrollTopButton = memo(({
   onClick: () => void; 
   styles: { [key: string]: CSSProperties };
 }) => {
+  const [isHovered, setIsHovered] = React.useState(false);
+
   return (
     <button
-      style={styles.scrollTopButton}
+      style={{
+        ...styles.scrollTopButton,
+        background: isHovered ? '#e56320' : '#f26d26',
+        boxShadow: isHovered 
+          ? '0 6px 16px rgba(242, 109, 38, 0.4)' 
+          : '0 4px 12px rgba(242, 109, 38, 0.3)'
+      }}
       className="scroll-top scroll-top-button"
       onClick={onClick}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       aria-label="Scroll to top"
       type="button"
     >
@@ -188,35 +233,35 @@ const BottomFooter = memo(({
 BottomFooter.displayName = 'BottomFooter';
 
 const Footer = memo(() => {
-  const currentYear = new Date().getFullYear();
+  const currentYear = useMemo(() => new Date().getFullYear(), []);
 
-  const quickLinks: LinkItem[] = [
+  const quickLinks = useMemo(() => [
     { name: 'Home', href: '#hero' },
     { name: 'About Us', href: '#about' },
     { name: 'Services', href: '#services' },
     { name: 'Portfolio', href: '#portfolio' },
     { name: 'Contact', href: '#contact' },
-  ];
+  ], []);
 
-  const services: LinkItem[] = [
+  const services = useMemo(() => [
     { name: 'Graphics Design', href: '#services' },
     { name: 'Web Design', href: '#services' },
     { name: 'Web Development', href: '#services' },
     { name: 'App Development', href: '#services' },
     { name: 'IT Security', href: '#services' },
     { name: 'Database Solutions', href: '#services' },
-  ];
+  ], []);
 
-  const socialLinks: SocialLink[] = [
-    { name: 'LinkedIn', icon: <Linkedin size={20} />, href: 'https://www.linkedin.com/in/daniel-ngumo-20960127b/' },
-    { name: 'GitHub', icon: <Github size={20} />, href: 'https://github.com/DanielNgumo' },
-  ];
+  const socialLinks = useMemo(() => [
+    { name: 'LinkedIn', icon: <Linkedin size={20} aria-hidden="true" />, href: 'https://www.linkedin.com/in/daniel-ngumo-20960127b/' },
+    { name: 'GitHub', icon: <Github size={20} aria-hidden="true" />, href: 'https://github.com/DanielNgumo' },
+  ], []);
 
-  const contactInfo: ContactInfo[] = [
+  const contactInfo = useMemo(() => [
     { icon: <Mail size={16} />, label: 'Email', content: 'ngumodaniel80@gmail.com' },
     { icon: <Phone size={16} />, label: 'Phone', content: '+254 425 802 39' },
     { icon: <MapPin size={16} />, label: 'Location', content: 'Nairobi, Kenya' },
-  ];
+  ], []);
 
   const scrollToTop = useCallback(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -356,7 +401,6 @@ const Footer = memo(() => {
       right: 'clamp(1rem, 4vw, 2rem)',
       width: '50px',
       height: '50px',
-      background: '#f26d26',
       borderRadius: '50%',
       display: 'flex',
       alignItems: 'center',
@@ -365,7 +409,6 @@ const Footer = memo(() => {
       cursor: 'pointer',
       transition: 'all 0.3s ease',
       border: 'none',
-      boxShadow: '0 4px 12px rgba(242, 109, 38, 0.3)',
       touchAction: 'manipulation',
       zIndex: 1000,
       willChange: 'background-color, transform, box-shadow',
@@ -649,9 +692,7 @@ const Footer = memo(() => {
           }
 
           .scroll-top:hover {
-            background: #e56320;
             transform: translateY(-3px);
-            box-shadow: 0 6px 16px rgba(242, 109, 38, 0.4);
           }
         }
 
@@ -667,16 +708,15 @@ const Footer = memo(() => {
           }
 
           .scroll-top:active {
-            background: #e56320;
             transform: translateY(-2px);
           }
         }
 
         /* Focus states for accessibility */
-        .footer-link:focus,
-        .social-link:focus,
-        .bottom-link:focus,
-        .scroll-top:focus {
+        .footer-link:focus-visible,
+        .social-link:focus-visible,
+        .bottom-link:focus-visible,
+        .scroll-top:focus-visible {
           outline: 2px solid #f26d26;
           outline-offset: 2px;
         }
@@ -726,13 +766,6 @@ const Footer = memo(() => {
             display: none;
           }
         }
-
-        /* Dark mode support */
-        @media (prefers-color-scheme: dark) {
-          .footer {
-            background: #1f2937;
-          }
-        }
       `}</style>
 
       <footer style={styles.footer} className="footer">
@@ -745,7 +778,7 @@ const Footer = memo(() => {
               {/* Brand Section */}
               <div style={{ ...styles.column, ...styles.brandSection }} className="brand-section">
                 <div style={styles.logo}>
-                  <Code size={24} color="#f26d26" />
+                  <Code size={24} color="#f26d26" aria-hidden="true" />
                   <span>TechNasi</span>
                 </div>
                 <p style={styles.brandText}>

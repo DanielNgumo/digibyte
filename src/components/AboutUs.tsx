@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, memo } from 'react';
+import Image from 'next/image';
 import { Award, Zap } from 'lucide-react';
 
 // Memoized stat card component
@@ -137,12 +138,17 @@ export default function AboutUs() {
               onMouseEnter={() => setIsImageHovered(true)}
               onMouseLeave={() => setIsImageHovered(false)}
             >
-              <img 
+              <Image 
                 src="/images/mobile.jpeg"
                 alt="Team collaboration and digital innovation"
+                width={380}
+                height={409}
+                sizes="(max-width: 640px) 280px, (max-width: 768px) 288px, 380px"
                 className="w-full h-full object-cover"
-                loading="lazy"
-                decoding="async"
+                quality={85}
+                priority={false}
+                placeholder="blur"
+                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDABQODxIPDRQSEBIXFRQYHjIhHhwcHj0sLiQySUBMS0dARkVQWnNiUFVtVkVGZIhlbXd7gYKBTmCNl4x9lnN+gXz/2wBDARUXFx4aHjshITt8U0ZTfHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHz/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWEREiMxUf/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
               />
               
               {/* Hover Overlay */}

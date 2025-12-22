@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect, useCallback, memo } from 'react';
 import { ArrowDown, Sparkles } from 'lucide-react';
+import Image from 'next/image';
 
-// Memoized feature card component to prevent unnecessary re-renders
+// Memoized feature card component
 const FeatureCard = memo(({ title, desc }: { title: string; desc: string }) => {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -20,10 +21,10 @@ const FeatureCard = memo(({ title, desc }: { title: string; desc: string }) => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <h3 className="text-sm sm:text-base md:text-lg font-bold mb-1 sm:mb-2" style={{ color: '#ffffff' }}>
+      <h3 className="text-sm sm:text-base md:text-lg font-bold mb-1 sm:mb-2 text-white">
         {title}
       </h3>
-      <p className="text-xs sm:text-sm" style={{ color: '#e5e7eb' }}>
+      <p className="text-xs sm:text-sm text-gray-200">
         {desc}
       </p>
     </div>
@@ -116,13 +117,20 @@ const Hero = () => {
     <div className="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] overflow-hidden">
       <section 
         className="relative min-h-screen flex items-center justify-center pt-[120px] pb-[60px] text-white overflow-hidden w-screen m-0"
-        style={{
-          backgroundImage: "url('/images/slide1.jpg')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-        }}
       >
+        {/* Background Image Container */}
+        <div className="absolute inset-0 -z-20">
+          <Image
+            src="/images/slide1.jpg"
+            alt="Hero Background"
+            fill
+            priority
+            quality={80}
+            className="object-cover"
+            sizes="100vw"
+          />
+        </div>
+        
         {/* Overlay */}
         <div 
           className="absolute inset-0 z-[1]"
@@ -145,7 +153,7 @@ const Hero = () => {
               borderColor: 'rgba(255, 255, 255, 0.2)',
             }}
           >
-            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" color="#f26d26" />
+            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" color="#f26d26" />
             <span className="text-xs sm:text-sm md:text-base font-semibold text-white">
               Transforming Ideas Into Digital Reality
             </span>
@@ -237,7 +245,7 @@ const Hero = () => {
           }}
           onClick={handleScrollDown}
           type="button"
-          aria-label="Scroll down"
+          aria-label="Scroll down to explore more content"
         >
           <span className="text-xs sm:text-sm font-medium">Explore More</span>
           <ArrowDown className="w-5 h-5 sm:w-6 sm:h-6 animate-bounce" />

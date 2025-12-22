@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, memo } from 'react';
+import React, { useState, useMemo, memo, useCallback } from 'react';
 import Image from 'next/image';
 import { ExternalLink, Eye, Code, Smartphone, Globe } from 'lucide-react';
 
@@ -9,7 +9,7 @@ const ProjectDetails = memo(({ project }: { project: any }) => {
   const styles: { [key: string]: React.CSSProperties } = {
     projectDetails: {
       display: 'grid',
-      gridTemplateColumns: '1fr',
+      gridTemplateColumns: '1fr 1fr',
       gap: 'clamp(1rem, 3vw, 2rem)',
       background: '#1f2937',
       borderRadius: 'clamp(0.5rem, 2vw, 1rem)',
@@ -23,13 +23,13 @@ const ProjectDetails = memo(({ project }: { project: any }) => {
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
-      order: 2,
+      order: 1,
     },
     projectImage: {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      order: 1,
+      order: 2,
       width: '100%',
     },
     imageContainer: {
@@ -108,23 +108,11 @@ const ProjectDetails = memo(({ project }: { project: any }) => {
 
   return (
     <div style={styles.projectDetails} className="project-details">
-      <div style={styles.projectImage} className="project-image">
-        <div style={styles.imageContainer} className="image-container">
-          <Image
-            src={project.image}
-            alt={`${project.title} - Project Screenshot`}
-            fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 50vw"
-            style={{ objectFit: 'cover' }}
-            priority={false}
-          />
-        </div>
-      </div>
-
       <div style={styles.projectContent}>
         <h3 style={styles.projectTitle} className="project-title">
           {React.cloneElement(project.icon as React.ReactElement<any>, { 
-            size: typeof window !== 'undefined' && window.innerWidth < 640 ? 20 : 24 
+            size: 24,
+            'aria-hidden': 'true'
           })}
           {project.title}
         </h3>
@@ -143,9 +131,10 @@ const ProjectDetails = memo(({ project }: { project: any }) => {
             className="action-btn primary"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label={`View ${project.title} live demo`}
           >
-            <Eye size={14} />
-            View Live
+            <Eye size={14} aria-hidden="true" />
+            <span>View Live</span>
           </a>
           <a
             href={project.codeUrl}
@@ -153,10 +142,25 @@ const ProjectDetails = memo(({ project }: { project: any }) => {
             className="action-btn secondary"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label={`View ${project.title} source code`}
           >
-            <ExternalLink size={14} />
-            View Code
+            <ExternalLink size={14} aria-hidden="true" />
+            <span>View Code</span>
           </a>
+        </div>
+      </div>
+
+      <div style={styles.projectImage} className="project-image">
+        <div style={styles.imageContainer} className="image-container">
+          <Image
+            src={project.image}
+            alt={`${project.title} - Project Screenshot`}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 50vw"
+            style={{ objectFit: 'cover' }}
+            priority={false}
+            loading="lazy"
+          />
         </div>
       </div>
     </div>
@@ -164,6 +168,104 @@ const ProjectDetails = memo(({ project }: { project: any }) => {
 });
 
 ProjectDetails.displayName = 'ProjectDetails';
+
+// Memoized timeline point component
+const TimelinePoint = memo(({ 
+  project, 
+  isSelected, 
+  onSelect 
+}: { 
+  project: any;
+  isSelected: boolean;
+  onSelect: (id: number) => void;
+}) => {
+  const handleKeyPress = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onSelect(project.id);
+    }
+  }, [project.id, onSelect]);
+
+  const styles: { [key: string]: React.CSSProperties } = {
+    timelinePoint: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      cursor: 'pointer',
+      flex: '0 0 auto',
+      minWidth: 'clamp(60px, 12vw, 85px)',
+      transition: 'all 0.3s ease',
+      padding: '0.25rem',
+    },
+    pointDot: {
+      width: 'clamp(10px, 2.5vw, 14px)',
+      height: 'clamp(10px, 2.5vw, 14px)',
+      borderRadius: '50%',
+      background: '#ffffff',
+      border: '2px solid #e5e7eb',
+      transition: 'all 0.3s ease',
+      marginBottom: 'clamp(0.375rem, 1.5vw, 0.625rem)',
+      zIndex: 3,
+    },
+    activeDot: {
+      width: 'clamp(14px, 3.5vw, 18px)',
+      height: 'clamp(14px, 3.5vw, 18px)',
+      border: '3px solid transparent',
+      background: 'linear-gradient(135deg, #3b82f6, #8b5cf6) padding-box, linear-gradient(135deg, #3b82f6, #8b5cf6) border-box',
+      boxShadow: '0 0 0 3px rgba(59, 130, 246, 0.2), 0 0 12px rgba(139, 92, 246, 0.4)',
+    },
+    pointLabel: {
+      fontSize: 'clamp(0.5625rem, 1.25vw, 0.8125rem)',
+      fontWeight: '600',
+      color: '#64748b',
+      textAlign: 'center',
+      transition: 'all 0.3s ease',
+      whiteSpace: 'normal',
+      maxWidth: '100%',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      lineHeight: '1.2',
+      wordBreak: 'break-word',
+      hyphens: 'auto',
+    },
+    activeLabel: {
+      color: '#f26d26',
+      fontWeight: '700',
+    },
+  };
+
+  return (
+    <div
+      style={styles.timelinePoint}
+      className="timeline-point"
+      onClick={() => onSelect(project.id)}
+      onKeyPress={handleKeyPress}
+      tabIndex={0}
+      role="button"
+      aria-pressed={isSelected}
+      aria-label={`Select ${project.title} project`}
+    >
+      <div
+        style={{
+          ...styles.pointDot,
+          ...(isSelected ? styles.activeDot : {})
+        }}
+        className="point-dot"
+      />
+      <span
+        style={{
+          ...styles.pointLabel,
+          ...(isSelected ? styles.activeLabel : {})
+        }}
+        className="point-label"
+      >
+        {project.title}
+      </span>
+    </div>
+  );
+});
+
+TimelinePoint.displayName = 'TimelinePoint';
 
 const Portfolio = () => {
   const [selectedProject, setSelectedProject] = useState<number | null>(1);
@@ -237,15 +339,21 @@ const Portfolio = () => {
     },
   ], []);
 
-  const filteredProjects = useMemo(() => projects, [projects]);
+  const handleProjectClick = useCallback((projectId: number) => {
+    setSelectedProject(prev => prev === projectId ? null : projectId);
+  }, []);
 
-  const handleProjectClick = (projectId: number) => {
-    setSelectedProject(selectedProject === projectId ? null : projectId);
-  };
+  const selectedProjectData = useMemo(() => 
+    selectedProject ? projects.find(p => p.id === selectedProject) : null,
+    [selectedProject, projects]
+  );
 
-  const selectedProjectData = selectedProject
-    ? filteredProjects.find(p => p.id === selectedProject)
-    : null;
+  const progressWidth = useMemo(() => 
+    selectedProject
+      ? `${((projects.findIndex(p => p.id === selectedProject) + 1) / projects.length) * 100}%`
+      : '0%',
+    [selectedProject, projects]
+  );
 
   const styles: { [key: string]: React.CSSProperties } = {
     section: {
@@ -340,56 +448,7 @@ const Portfolio = () => {
       zIndex: 3,
       gap: 'clamp(0.5rem, 2vw, 1rem)',
     },
-    timelinePoint: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      cursor: 'pointer',
-      flex: '0 0 auto',
-      minWidth: 'clamp(60px, 12vw, 85px)',
-      transition: 'all 0.3s ease',
-      padding: '0.25rem',
-    },
-    pointDot: {
-      width: 'clamp(10px, 2.5vw, 14px)',
-      height: 'clamp(10px, 2.5vw, 14px)',
-      borderRadius: '50%',
-      background: '#ffffff',
-      border: '2px solid #e5e7eb',
-      transition: 'all 0.3s ease',
-      marginBottom: 'clamp(0.375rem, 1.5vw, 0.625rem)',
-      zIndex: 3,
-    },
-    activeDot: {
-      width: 'clamp(14px, 3.5vw, 18px)',
-      height: 'clamp(14px, 3.5vw, 18px)',
-      border: '3px solid transparent',
-      background: 'linear-gradient(135deg, #3b82f6, #8b5cf6) padding-box, linear-gradient(135deg, #3b82f6, #8b5cf6) border-box',
-      boxShadow: '0 0 0 3px rgba(59, 130, 246, 0.2), 0 0 12px rgba(139, 92, 246, 0.4)',
-    },
-    pointLabel: {
-      fontSize: 'clamp(0.5625rem, 1.25vw, 0.8125rem)',
-      fontWeight: '600',
-      color: '#64748b',
-      textAlign: 'center',
-      transition: 'all 0.3s ease',
-      whiteSpace: 'normal',
-      maxWidth: '100%',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      lineHeight: '1.2',
-      wordBreak: 'break-word',
-      hyphens: 'auto',
-    },
-    activeLabel: {
-      color: '#f26d26',
-      fontWeight: '700',
-    },
   };
-
-  const progressWidth = selectedProject
-    ? `${((filteredProjects.findIndex(p => p.id === selectedProject) + 1) / filteredProjects.length) * 100}%`
-    : '0%';
 
   return (
     <>
@@ -412,6 +471,8 @@ const Portfolio = () => {
             padding: 0.875rem !important; 
             gap: 0.875rem !important;
           }
+          .project-content { order: 1; }
+          .project-image { order: 2; }
           .image-container { height: 180px !important; }
           .project-title { font-size: 1rem !important; gap: 0.375rem !important; }
           .project-description { font-size: 0.8125rem !important; }
@@ -428,6 +489,8 @@ const Portfolio = () => {
             padding: 1rem !important;
             gap: 1rem !important;
           }
+          .project-content { order: 1; }
+          .project-image { order: 2; }
           .image-container { height: 200px !important; }
           .project-title { font-size: 1.0625rem !important; }
           .timeline-point { min-width: 55px !important; }
@@ -439,6 +502,8 @@ const Portfolio = () => {
             grid-template-columns: 1fr !important; 
             gap: 1.125rem !important;
           }
+          .project-content { order: 1; }
+          .project-image { order: 2; }
           .image-container { height: 240px !important; }
           .timeline-point { min-width: 65px !important; }
         }
@@ -449,6 +514,8 @@ const Portfolio = () => {
             grid-template-columns: 1fr !important;
             gap: 1.25rem !important;
           }
+          .project-content { order: 1; }
+          .project-image { order: 2; }
           .image-container { height: 280px !important; }
           .timeline-point { min-width: 70px !important; }
         }
@@ -568,35 +635,13 @@ const Portfolio = () => {
                 </div>
 
                 <div style={styles.timelinePoints}>
-                  {filteredProjects.map((project) => (
-                    <div
+                  {projects.map((project) => (
+                    <TimelinePoint
                       key={project.id}
-                      style={styles.timelinePoint}
-                      className="timeline-point"
-                      onClick={() => handleProjectClick(project.id)}
-                      onKeyPress={(e) => (e.key === 'Enter' || e.key === ' ') && handleProjectClick(project.id)}
-                      tabIndex={0}
-                      role="button"
-                      aria-pressed={selectedProject === project.id}
-                      aria-label={`Select ${project.title} project`}
-                    >
-                      <div
-                        style={{
-                          ...styles.pointDot,
-                          ...(selectedProject === project.id ? styles.activeDot : {})
-                        }}
-                        className="point-dot"
-                      />
-                      <span
-                        style={{
-                          ...styles.pointLabel,
-                          ...(selectedProject === project.id ? styles.activeLabel : {})
-                        }}
-                        className="point-label"
-                      >
-                        {project.title}
-                      </span>
-                    </div>
+                      project={project}
+                      isSelected={selectedProject === project.id}
+                      onSelect={handleProjectClick}
+                    />
                   ))}
                 </div>
               </div>
