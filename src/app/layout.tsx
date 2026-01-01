@@ -114,8 +114,9 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="mobile-web-app-capable" content="yes" />
         
-        {/* Google Site Verification */}
+        {/* Search Engine Verification Tags */}
         <meta name="google-site-verification" content="HG9pK7EuifiUDLSGlXLugIZL_4hIMvAijVIOlZglSn4" />
+        <meta name="msvalidate.01" content="47787DFD61232F84163209B0AC915DD7" />
         
         {/* Structured Data - Organization Schema */}
         <script
