@@ -1,0 +1,24 @@
+# robots.txt for TechNasi
+# Location: public/robots.txt
+
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_next/
+Disallow: /.next/
+
+# Specific rules for Google Bot
+User-agent: Googlebot
+Allow: /
+
+# Specific rules for Bing Bot
+User-agent: Bingbot
+Allow: /
+
+# Specific rules for other bots
+User-agent: Slurp
+Allow: /
+
+# Sitemap location
+Sitemap: https://technasi.co.ke/sitemap.xml
