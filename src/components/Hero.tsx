@@ -109,7 +109,7 @@ const Hero = () => {
 
   const features = [
     { title: 'Graphic Design', desc: 'Logos, branding & UI/UX' },
-    { title: 'Web Development', desc: 'Modern, responsive websites' },
+    { title: 'Web Development', desc: 'Graphic Design & IT Support' },
     { title: 'IT Support', desc: 'Reliable tech solutions' }
   ];
 
@@ -189,7 +189,7 @@ const Hero = () => {
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
             }}>
-              Modern Businesses
+              Modern Businesses in Kenya
             </span>
           </h1>
 
