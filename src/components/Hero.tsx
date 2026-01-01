@@ -34,12 +34,12 @@ const FeatureCard = memo(({ title, desc }: { title: string; desc: string }) => {
 FeatureCard.displayName = 'FeatureCard';
 
 // Memoized button component
-const CTAButton = memo(({ 
-  onClick, 
+const CTAButton = memo(({
+  onClick,
   variant = 'primary',
-  children 
-}: { 
-  onClick: () => void; 
+  children
+}: {
+  onClick: () => void;
   variant?: 'primary' | 'secondary';
   children: React.ReactNode;
 }) => {
@@ -51,20 +51,20 @@ const CTAButton = memo(({
     background: variant === 'primary' ? '#f26d26' : 'transparent',
     color: 'white',
     backdropFilter: variant === 'secondary' ? 'blur(10px)' : undefined,
-    boxShadow: variant === 'primary' 
+    boxShadow: variant === 'primary'
       ? (isHovered ? '0 15px 40px rgba(242, 109, 38, 0.5)' : '0 10px 30px rgba(242, 109, 38, 0.4)')
       : undefined,
-    transform: isHovered 
+    transform: isHovered
       ? (variant === 'primary' ? 'translateY(-3px) scale(1.05)' : 'translateY(-3px)')
       : 'translateY(0) scale(1)',
-    borderColor: variant === 'secondary' 
+    borderColor: variant === 'secondary'
       ? (isHovered ? 'rgba(255, 255, 255, 0.8)' : 'rgba(255, 255, 255, 0.5)')
       : undefined,
     willChange: 'transform',
   };
 
   return (
-    <button 
+    <button
       className="px-6 sm:px-8 md:px-10 lg:px-12 py-3 sm:py-3.5 md:py-4 rounded-full text-sm sm:text-base md:text-lg font-bold w-full sm:w-auto sm:min-w-[180px] transition-all duration-300"
       style={baseStyle}
       onMouseEnter={() => setIsHovered(true)}
@@ -115,34 +115,46 @@ const Hero = () => {
 
   return (
     <div className="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] overflow-hidden">
-      <section 
+      <section
         className="relative min-h-screen flex items-center justify-center pt-[120px] pb-[60px] text-white overflow-hidden w-screen m-0"
       >
         {/* Background Image Container */}
-        <div className="absolute inset-0 -z-20">
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            zIndex: 0,
+          }}
+        >
           <Image
-            src="/images/slide1.jpg"
-            alt="Hero Background"
-            fill
-            priority
-            quality={80}
-            className="object-cover"
-            sizes="100vw"
+            src="/images/slide1.jpg"  // ← Changed from "../public/images/bas.jpeg"
+            alt="Hero background"
+            fill  // ← This is correct
+            priority  // ← Good for hero images
+            sizes="100vw"  // ← Add this for better optimization
+            style={{
+              objectFit: 'cover',
+              objectPosition: 'center',
+            }}
+            quality={85}  // ← Optional: adjust quality
           />
         </div>
-        
+
         {/* Overlay */}
-        <div 
+        <div
           className="absolute inset-0 z-[1]"
           style={{
             background: 'linear-gradient(135deg, rgba(12, 74, 110, 0.95) 0%, rgba(242, 109, 38, 0.85) 100%)',
           }}
         />
-        
+
         {/* Content */}
         <div className="text-center max-w-[1100px] w-full px-4 relative z-[2] flex flex-col items-center justify-center">
           {/* Badge */}
-          <div 
+          <div
             className="mb-4 sm:mb-6 md:mb-8 px-4 inline-flex items-center gap-2 py-2 rounded-full border"
             style={{
               opacity: isVisible ? 1 : 0,
@@ -160,7 +172,7 @@ const Hero = () => {
           </div>
 
           {/* Headline */}
-          <h1 
+          <h1
             className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-tight mb-3 sm:mb-4 md:mb-6 px-2"
             style={{
               color: '#ffffff',
@@ -171,7 +183,7 @@ const Hero = () => {
             }}
           >
             Innovative IT Solutions for
-            <span className="block mt-1" style={{ 
+            <span className="block mt-1" style={{
               background: 'linear-gradient(to right, #ffffff, #f26d26)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
@@ -182,7 +194,7 @@ const Hero = () => {
           </h1>
 
           {/* Subtitle */}
-          <p 
+          <p
             className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl leading-relaxed mb-6 sm:mb-8 md:mb-10 max-w-3xl px-4"
             style={{
               color: '#f3f4f6',
@@ -192,12 +204,12 @@ const Hero = () => {
               transition: 'all 1s cubic-bezier(0.4, 0, 0.2, 1) 0.3s',
             }}
           >
-            We craft stunning graphic designs, build powerful digital experiences, 
+            We craft stunning graphic designs, build powerful digital experiences,
             and provide expert IT solutions that elevate your brand and drive growth.
           </p>
 
           {/* Features */}
-          <div 
+          <div
             className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 md:gap-6 mb-6 sm:mb-8 md:mb-10 w-full max-w-4xl px-4"
             style={{
               opacity: isVisible ? 1 : 0,
@@ -211,7 +223,7 @@ const Hero = () => {
           </div>
 
           {/* CTA Buttons */}
-          <div 
+          <div
             className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 mb-6 sm:mb-8 w-full px-4"
             style={{
               opacity: isVisible ? 1 : 0,
