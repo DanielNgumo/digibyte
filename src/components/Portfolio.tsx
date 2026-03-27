@@ -134,10 +134,10 @@ const PROJECTS = [
 const CARD_PEEK = 48;   // was 28 — more of each card peeks out
 const NAV_HEIGHT = 88;
 
-// ─── Intersection observer hook ───────────────────────────────────────────────
-function useInView(threshold = 0.1) {
+// Replace your current useInView hook
+function useInView<T extends HTMLElement = HTMLDivElement>(threshold = 0.1) {
   const [inView, setInView] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<T>(null);
 
   useEffect(() => {
     const el = ref.current;
@@ -361,7 +361,7 @@ ProjectCard.displayName = "ProjectCard";
 
 // ─── Portfolio section ────────────────────────────────────────────────────────
 const Portfolio = memo(() => {
-  const [headerRef, headerInView] = useInView(0.3);
+  const [headerRef, headerInView] = useInView<HTMLHeadingElement>(0.3)
 
   return (
     /*
