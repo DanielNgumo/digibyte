@@ -1,658 +1,431 @@
 "use client";
 
-import React, { useState, useMemo, memo, useCallback } from 'react';
-import Image from 'next/image';
-import { ExternalLink, Eye, Code, Smartphone, Globe } from 'lucide-react';
+import React, { useState, useEffect, useRef, memo } from "react";
+import { motion } from "framer-motion";
+import {
+  ExternalLink,
+  Eye,
+  Globe,
+  Code,
+  Smartphone,
+  Circle,
+  ArrowUpRight,
+  ShoppingBag,
+} from "lucide-react";
+import Image from "next/image";
+import { cn } from "@/lib/utils";
 
-// Memoized project card component
-const ProjectDetails = memo(({ project }: { project: any }) => {
-  const styles: { [key: string]: React.CSSProperties } = {
-    projectDetails: {
-      display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
-      gap: 'clamp(1rem, 3vw, 2rem)',
-      background: '#1f2937',
-      borderRadius: 'clamp(0.5rem, 2vw, 1rem)',
-      padding: 'clamp(1rem, 3vw, 2rem)',
-      border: 'none',
-      boxShadow: 'none',
-      marginTop: '0.5rem',
-      animation: 'slideIn 0.4s ease',
-    },
-    projectContent: {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      order: 1,
-    },
-    projectImage: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      order: 2,
-      width: '100%',
-    },
-    imageContainer: {
-      position: 'relative',
-      width: '100%',
-      height: 'clamp(200px, 45vw, 350px)',
-      borderRadius: 'clamp(0.375rem, 1.5vw, 0.75rem)',
-      overflow: 'hidden',
-      border: '1px solid #4b5563',
-    },
-    projectTitle: {
-      fontSize: 'clamp(1.125rem, 3.5vw, 1.75rem)',
-      fontWeight: '700',
-      color: '#ffffff',
-      marginBottom: 'clamp(0.5rem, 2vw, 0.875rem)',
-      display: 'flex',
-      alignItems: 'center',
-      gap: 'clamp(0.375rem, 1.5vw, 0.625rem)',
-      flexWrap: 'wrap',
-    },
-    projectDescription: {
-      fontSize: 'clamp(0.875rem, 2vw, 1rem)',
-      color: '#d1d5db',
-      lineHeight: '1.6',
-      marginBottom: 'clamp(0.875rem, 2vw, 1.25rem)',
-    },
-    tagsList: {
-      display: 'flex',
-      flexWrap: 'wrap',
-      gap: 'clamp(0.375rem, 1.5vw, 0.5rem)',
-      marginBottom: 'clamp(0.875rem, 2vw, 1.25rem)',
-    },
-    tag: {
-      background: '#374151',
-      color: '#d1d5db',
-      padding: 'clamp(0.25rem, 1vw, 0.375rem) clamp(0.625rem, 1.5vw, 0.875rem)',
-      borderRadius: 'clamp(0.25rem, 1vw, 0.375rem)',
-      fontSize: 'clamp(0.6875rem, 1.5vw, 0.8125rem)',
-      fontWeight: '500',
-      border: '1px solid #4b5563',
-      whiteSpace: 'nowrap',
-    },
-    projectActions: {
-      display: 'flex',
-      gap: 'clamp(0.5rem, 2vw, 0.75rem)',
-      marginTop: 'auto',
-      flexWrap: 'wrap',
-    },
-    actionBtn: {
-      display: 'inline-flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: '0.375rem',
-      padding: 'clamp(0.5rem, 1.5vw, 0.625rem) clamp(0.875rem, 2vw, 1.125rem)',
-      borderRadius: 'clamp(0.375rem, 1vw, 0.5rem)',
-      fontSize: 'clamp(0.75rem, 1.5vw, 0.875rem)',
-      fontWeight: '500',
-      cursor: 'pointer',
-      transition: 'all 0.2s ease',
-      border: 'none',
-      textDecoration: 'none',
-      flex: '1 1 auto',
-      minWidth: 'clamp(100px, 30vw, 130px)',
-    },
-    primaryBtn: {
-      background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
-      color: '#ffffff',
-      boxShadow: '0 2px 8px rgba(59, 130, 246, 0.3)',
-    },
-    secondaryBtn: {
-      background: 'transparent',
-      color: '#d1d5db',
-      border: '1px solid #4b5563',
-    },
-  };
+// ─── Data ─────────────────────────────────────────────────────────────────────
+const PROJECTS = [
+  {
+    id: 1,
+    title: "Before After School",
+    category: "Web App",
+    icon: Globe,
+    description:
+      "Responsive payment app website with server-side rendering for SEO. Built with Next.js and TypeScript delivering lightning-fast load times and seamless UX.",
+    image: "/images/bas.jpeg",
+    tags: ["Next.js", "TypeScript", "APIs"],
+    liveUrl: "https://beforeafterschool.com/",
+    codeUrl: "#",
+    accentFrom: "#0c4a6e",
+    accentTo: "#f26d26",
+  },
+  {
+    id: 2,
+    title: "Wateramba",
+    category: "Web Design",
+    icon: Globe,
+    description:
+      "Aquatic services website with an interactive UI built on React. RESTful API integration ensures real-time data flows elegantly throughout the experience.",
+    image: "/images/wateramb.jpeg",
+    tags: ["React", "APIs", "JavaScript"],
+    liveUrl: "https://wateramba.com/",
+    codeUrl: "#",
+    accentFrom: "#164e63",
+    accentTo: "#0c4a6e",
+  },
+  {
+    id: 3,
+    title: "Tranzit Mobile App",
+    category: "Mobile",
+    icon: Smartphone,
+    description:
+      "Transportation-of-goods app with real-time geolocation tracking. Flutter-powered cross-platform delivery connecting drivers and customers instantly.",
+    image: "/images/tranzit.png",
+    tags: ["Flutter", "Geolocation", "APIs"],
+    liveUrl: "https://tranzit.cloud/",
+    codeUrl: "#",
+    accentFrom: "#f26d26",
+    accentTo: "#c2410c",
+  },
+  {
+    id: 4,
+    title: "Latisec",
+    category: "Cybersecurity",
+    icon: Code,
+    description:
+      "Enterprise cybersecurity website with secure API integration. Angular frontend paired with PHP backend delivers robust, penetration-tested architecture.",
+    image: "/images/latisec.jpeg",
+    tags: ["Angular", "PHP", "APIs"],
+    liveUrl: "https://latisec.com/",
+    codeUrl: "#",
+    accentFrom: "#0c4a6e",
+    accentTo: "#1d4ed8",
+  },
+  // {
+  //   id: 5,
+  //   title: "Ibukatech",
+  //   category: "E-Learning",
+  //   icon: Code,
+  //   description:
+  //     "Modern e-learning platform with server-side rendering for SEO dominance. Angular 17's latest features power a fast, accessible educational experience.",
+  //   image: "/images/ibuka.jpeg",
+  //   tags: ["Angular", "TypeScript", "SSR"],
+  //   liveUrl: "https://ibukatech.com/",
+  //   codeUrl: "#",
+  //   accentFrom: "#f26d26",
+  //   accentTo: "#0c4a6e",
+  // },
+  {
+    id: 6,
+    title: "Paynasi",
+    category: "Fintech",
+    icon: Globe,
+    description:
+      "Sleek payment app website built with Next.js and TypeScript. Optimised for conversion with SSR, blazing speed, and a polished mobile-first interface.",
+    image: "/images/paynasi_logo.jpg",
+    tags: ["Next.js", "TypeScript", "APIs"],
+    liveUrl: "#",
+    codeUrl: "https://paynasi-43tv.vercel.app/",
+    accentFrom: "#0c4a6e",
+    accentTo: "#f26d26",
+  },
+  {
+    id: 7,
+    title: "VeriStay",
+    category: "Mobile & Fintech",
+    icon: Smartphone, // Or use Home if you have it imported
+    description:
+      "Escrow-based property booking platform with automated M-Pesa integration. Built with Flutter and a Laravel backend, it features secure payment disbursements and real-time property management.",
+    image: "/images/veristay.png", // Ensure this path matches your image folder
+    tags: ["Flutter", "Laravel", "M-Pesa API"],
+    liveUrl: "https://app.veristay.co.ke/",
+    codeUrl: "#",
+    accentFrom: "#0c4a6e", // Using your signature deep blue
+    accentTo: "#16a34a",   // A "Success Green" to represent secure payments/growth
+  },
+  {
+    id: 8,
+    title: "Soomoja",
+    category: "E-commerce & AI",
+    icon: ShoppingBag, // Or use Sparkles if you emphasize the AI part
+    description:
+      "An AI-powered e-commerce aggregator designed to unify Kenya's fragmented shopping landscape. It features smart price comparison, 'Trusted Buyer' verification, and a streamlined checkout process to eliminate shopping friction.",
+    image: "/images/soomoja.png", 
+    tags: ["AI Integration", "React", "Next.js", "E-commerce"],
+    liveUrl: "https://soomoja.com/",
+    codeUrl: "#",
+    accentFrom: "#4f46e5", // A vibrant indigo/purple for that 'AI' feel
+    accentTo: "#06b6d4",   // A bright cyan to keep it modern and fresh
+  },
+];
 
-  return (
-    <div style={styles.projectDetails} className="project-details">
-      <div style={styles.projectContent}>
-        <h3 style={styles.projectTitle} className="project-title">
-          {React.cloneElement(project.icon as React.ReactElement<any>, { 
-            size: 24,
-            'aria-hidden': 'true'
-          })}
-          {project.title}
-        </h3>
-        <p style={styles.projectDescription} className="project-description">
-          {project.description}
-        </p>
-        <div style={styles.tagsList}>
-          {project.tags.map((tag: string, index: number) => (
-            <span key={index} style={styles.tag}>{tag}</span>
-          ))}
-        </div>
-        <div style={styles.projectActions}>
-          <a
-            href={project.liveUrl}
-            style={{ ...styles.actionBtn, ...styles.primaryBtn }}
-            className="action-btn primary"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`View ${project.title} live demo`}
-          >
-            <Eye size={14} aria-hidden="true" />
-            <span>View Live</span>
-          </a>
-          <a
-            href={project.codeUrl}
-            style={{ ...styles.actionBtn, ...styles.secondaryBtn }}
-            className="action-btn secondary"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`View ${project.title} source code`}
-          >
-            <ExternalLink size={14} aria-hidden="true" />
-            <span>View Code</span>
-          </a>
-        </div>
-      </div>
+const CARD_PEEK = 48;   // was 28 — more of each card peeks out
+const NAV_HEIGHT = 88;
 
-      <div style={styles.projectImage} className="project-image">
-        <div style={styles.imageContainer} className="image-container">
-          <Image
-            src={project.image}
-            alt={`${project.title} - Project Screenshot`}
-            fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 50vw"
-            style={{ objectFit: 'cover' }}
-            priority={false}
-            loading="lazy"
+// ─── Intersection observer hook ───────────────────────────────────────────────
+function useInView(threshold = 0.1) {
+  const [inView, setInView] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { threshold }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [threshold]);
+
+  return [ref, inView] as const;
+}
+
+// ─── Single project card ──────────────────────────────────────────────────────
+const ProjectCard = memo(
+  ({ project, index }: { project: (typeof PROJECTS)[0]; index: number }) => {
+    const [ref, inView] = useInView(0.08);
+    const Icon = project.icon;
+    const isEven = index % 2 === 0;
+
+    // Each card sticks progressively lower so they fan out like a deck
+    const stickyTop = NAV_HEIGHT + index * CARD_PEEK;
+
+    return (
+      /*
+       * FIX 1: The sticky wrapper MUST NOT have mb/padding on the inner card —
+       * the margin lives here on the wrapper so the scroll container has real
+       * height between sticking points.
+       *
+       * FIX 2: No overflow-hidden anywhere in the ancestor chain.
+       */
+     <div
+  className="sticky"
+  style={{ top: `${stickyTop}px`, marginBottom: "2.5rem" }}
+>
+  <div
+    ref={ref}
+    className={cn(
+      "relative rounded-2xl md:rounded-3xl",
+      "border border-white/[0.07]",
+      "grid grid-cols-1 md:grid-cols-2",
+      "shadow-[0_24px_80px_rgba(0,0,0,0.7)]",
+      "transition-all duration-700 ease-out"
+    )}
+    style={{
+      background: "linear-gradient(135deg, #0a1628 0%, #0d1f35 60%, #0a1220 100%)",
+      zIndex: index + 1,
+      opacity: inView ? 1 : 0,
+      transform: inView ? "translateY(0)" : "translateY(24px)",
+      overflow: "hidden",
+      // Scale down cards that are buried deeper in the stack
+      scale: `${1 - index * 0.012}`,
+      // Subtle rotation alternates left/right for a natural deck feel
+      rotate: `${index % 2 === 0 ? -index * 0.3 : index * 0.3}deg`,
+      transformOrigin: "top center",
+      willChange: "transform",
+    }}
+  >
+          {/* Gradient accent strip */}
+          <div
+            className="absolute top-0 left-0 right-0 h-[2px] z-10"
+            style={{
+              background: `linear-gradient(90deg, transparent, ${project.accentFrom}, ${project.accentTo}, transparent)`,
+            }}
           />
-        </div>
-      </div>
-    </div>
-  );
-});
 
-ProjectDetails.displayName = 'ProjectDetails';
+          {/* Ambient glow */}
+          <div
+            className="absolute -top-20 opacity-20 w-64 h-64 rounded-full blur-[80px] pointer-events-none"
+            style={{
+              background: project.accentFrom,
+              left: isEven ? "-2rem" : "auto",
+              right: isEven ? "auto" : "-2rem",
+            }}
+          />
 
-// Memoized timeline point component
-const TimelinePoint = memo(({ 
-  project, 
-  isSelected, 
-  onSelect 
-}: { 
-  project: any;
-  isSelected: boolean;
-  onSelect: (id: number) => void;
-}) => {
-  const handleKeyPress = useCallback((e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      onSelect(project.id);
-    }
-  }, [project.id, onSelect]);
+          {/* ── Text side ──────────────────────────────────────────────── */}
+          <div
+            className={cn(
+              "relative z-10 flex flex-col justify-center",
+              "px-8 py-10 md:px-12 md:py-14",
+              isEven ? "md:order-1" : "md:order-2"
+            )}
+          >
+            {/* Badge row */}
+            <div className="inline-flex items-center gap-2 w-fit mb-5">
+              <span
+                className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-widest border"
+                style={{
+                  color: project.accentFrom === "#f26d26" ? "#f26d26" : "#7dd3fc",
+                  borderColor:
+                    project.accentFrom === "#f26d26"
+                      ? "rgba(242,109,38,0.25)"
+                      : "rgba(125,211,252,0.2)",
+                  background:
+                    project.accentFrom === "#f26d26"
+                      ? "rgba(242,109,38,0.08)"
+                      : "rgba(12,74,110,0.25)",
+                }}
+              >
+                <Icon size={10} strokeWidth={2.5} />
+                {project.category}
+              </span>
+              <span className="text-white/20 text-[10px] font-mono">
+                {String(index + 1).padStart(2, "0")} /{" "}
+                {String(PROJECTS.length).padStart(2, "0")}
+              </span>
+            </div>
 
-  const styles: { [key: string]: React.CSSProperties } = {
-    timelinePoint: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      cursor: 'pointer',
-      flex: '0 0 auto',
-      minWidth: 'clamp(60px, 12vw, 85px)',
-      transition: 'all 0.3s ease',
-      padding: '0.25rem',
-    },
-    pointDot: {
-      width: 'clamp(10px, 2.5vw, 14px)',
-      height: 'clamp(10px, 2.5vw, 14px)',
-      borderRadius: '50%',
-      background: '#ffffff',
-      border: '2px solid #e5e7eb',
-      transition: 'all 0.3s ease',
-      marginBottom: 'clamp(0.375rem, 1.5vw, 0.625rem)',
-      zIndex: 3,
-    },
-    activeDot: {
-      width: 'clamp(14px, 3.5vw, 18px)',
-      height: 'clamp(14px, 3.5vw, 18px)',
-      border: '3px solid transparent',
-      background: 'linear-gradient(135deg, #3b82f6, #8b5cf6) padding-box, linear-gradient(135deg, #3b82f6, #8b5cf6) border-box',
-      boxShadow: '0 0 0 3px rgba(59, 130, 246, 0.2), 0 0 12px rgba(139, 92, 246, 0.4)',
-    },
-    pointLabel: {
-      fontSize: 'clamp(0.5625rem, 1.25vw, 0.8125rem)',
-      fontWeight: '600',
-      color: '#64748b',
-      textAlign: 'center',
-      transition: 'all 0.3s ease',
-      whiteSpace: 'normal',
-      maxWidth: '100%',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      lineHeight: '1.2',
-      wordBreak: 'break-word',
-      hyphens: 'auto',
-    },
-    activeLabel: {
-      color: '#f26d26',
-      fontWeight: '700',
-    },
-  };
+            <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white tracking-tight leading-tight mb-4">
+              {project.title}
+            </h3>
 
-  return (
-    <div
-      style={styles.timelinePoint}
-      className="timeline-point"
-      onClick={() => onSelect(project.id)}
-      onKeyPress={handleKeyPress}
-      tabIndex={0}
-      role="button"
-      aria-pressed={isSelected}
-      aria-label={`Select ${project.title} project`}
-    >
-      <div
-        style={{
-          ...styles.pointDot,
-          ...(isSelected ? styles.activeDot : {})
-        }}
-        className="point-dot"
-      />
-      <span
-        style={{
-          ...styles.pointLabel,
-          ...(isSelected ? styles.activeLabel : {})
-        }}
-        className="point-label"
-      >
-        {project.title}
-      </span>
-    </div>
-  );
-});
-
-TimelinePoint.displayName = 'TimelinePoint';
-
-const Portfolio = () => {
-  const [selectedProject, setSelectedProject] = useState<number | null>(1);
-
-  const projects = useMemo(() => [
-    {
-      id: 1,
-      title: "Before After School Limited",
-      category: "web",
-      description: "Responsive payment app website with server-side rendering for SEO using Next.js.",
-      image: "/images/bas.jpeg",
-      tags: ["Next.js", "TypeScript", "APIs"],
-      liveUrl: "https://beforeafterschool.com/",
-      codeUrl: "#",
-      icon: <Globe size={32} />
-    },
-    {
-      id: 2,
-      title: "Wateramba",
-      category: "web",
-      description: "Aquatic services website with interactive UI using React and RESTful APIs.",
-      image: "/images/wateramb.jpeg",
-      tags: ["React", "APIs", "JavaScript"],
-      liveUrl: "https://wateramba.com/",
-      codeUrl: "#",
-      icon: <Globe size={32} />
-    },
-    {
-      id: 3,
-      title: "Tranzit Mobile App",
-      category: "mobile",
-      description: "Transportation-of-goods app with real-time geolocation using Flutter.",
-      image: "/images/tranzit.png",
-      tags: ["Flutter", "Geolocation", "APIs"],
-      liveUrl: "https://tranzit.cloud/",
-      codeUrl: "#",
-      icon: <Smartphone size={32} />
-    },
-    {
-      id: 4,
-      title: "Latisec",
-      category: "web",
-      description: "Cybersecurity website with secure API integration using Angular and PHP.",
-      image: "/images/latisec.jpeg",
-      tags: ["Angular", "PHP", "APIs"],
-      liveUrl: "https://latisec.com/",
-      codeUrl: "#",
-      icon: <Code size={32} />
-    },
-    {
-      id: 5,
-      title: "Ibukatech",
-      category: "web",
-      description: "E-learning website with server-side rendering for SEO using Angular 17.",
-      image: "/images/ibuka.jpeg",
-      tags: ["Angular", "TypeScript", "SSR"],
-      liveUrl: "https://ibukatech.com/",
-      codeUrl: "#",
-      icon: <Code size={32} />
-    },
-    {
-      id: 6,
-      title: "Paynasi",
-      category: "web",
-      description: "Responsive payment app website with server-side rendering for SEO using Next.js.",
-      image: "/images/paynasi_logo.jpg",
-      tags: ["Next.js", "TypeScript", "APIs"],
-      liveUrl: "#",
-      codeUrl: "https://paynasi-43tv.vercel.app/",
-      icon: <Globe size={32} />
-    },
-  ], []);
-
-  const handleProjectClick = useCallback((projectId: number) => {
-    setSelectedProject(prev => prev === projectId ? null : projectId);
-  }, []);
-
-  const selectedProjectData = useMemo(() => 
-    selectedProject ? projects.find(p => p.id === selectedProject) : null,
-    [selectedProject, projects]
-  );
-
-  const progressWidth = useMemo(() => 
-    selectedProject
-      ? `${((projects.findIndex(p => p.id === selectedProject) + 1) / projects.length) * 100}%`
-      : '0%',
-    [selectedProject, projects]
-  );
-
-  const styles: { [key: string]: React.CSSProperties } = {
-    section: {
-      padding: 'clamp(1.5rem, 6vw, 4rem) 0',
-      background: 'linear-gradient(135deg, #f8fafc 0%, #ffffff 50%, #f1f5f9 100%)',
-      position: 'relative',
-      zIndex: 10,
-    },
-    container: {
-      maxWidth: '1280px',
-      margin: '0 auto',
-      padding: '0 clamp(0.875rem, 3vw, 1.5rem)',
-      width: '100%',
-      boxSizing: 'border-box',
-    },
-    header: {
-      textAlign: 'center',
-      marginBottom: 'clamp(1.25rem, 3vw, 2rem)',
-      padding: '0 clamp(0.5rem, 2vw, 1rem)',
-    },
-    tagline: {
-      color: '#f26d26',
-      fontSize: 'clamp(0.6875rem, 2vw, 0.875rem)',
-      fontWeight: '600',
-      marginBottom: 'clamp(0.375rem, 1.5vw, 0.625rem)',
-      textTransform: 'uppercase',
-      letterSpacing: '0.08em',
-      display: 'block',
-    },
-    title: {
-      fontSize: 'clamp(1.375rem, 5vw, 2.5rem)',
-      fontWeight: '700',
-      color: '#1f2937',
-      marginBottom: 'clamp(0.625rem, 2.5vw, 1rem)',
-      lineHeight: '1.2',
-    },
-    description: {
-      fontSize: 'clamp(0.875rem, 2vw, 1.0625rem)',
-      color: '#4b5563',
-      maxWidth: '100%',
-      margin: '0 auto',
-      lineHeight: '1.6',
-    },
-    timelineContainer: {
-      position: 'relative',
-      padding: 'clamp(0.875rem, 2.5vw, 1.5rem) 0 clamp(1.25rem, 3vw, 2rem)',
-      marginBottom: 'clamp(1rem, 3vw, 1.5rem)',
-    },
-    timelineWrapper: {
-      position: 'relative',
-      width: '100%',
-      overflowX: 'auto',
-      overflowY: 'visible',
-      paddingBottom: '0.75rem',
-      WebkitOverflowScrolling: 'touch',
-    },
-    timelineTrack: {
-      position: 'relative',
-      display: 'flex',
-      alignItems: 'center',
-      minWidth: '100%',
-      padding: '0 clamp(0.75rem, 2.5vw, 1.5rem)',
-    },
-    timelineLine: {
-      position: 'absolute',
-      top: '50%',
-      left: 'clamp(0.75rem, 2.5vw, 1.5rem)',
-      right: 'clamp(0.75rem, 2.5vw, 1.5rem)',
-      height: '2px',
-      background: '#e5e7eb',
-      transform: 'translateY(-50%)',
-      zIndex: 1,
-    },
-    timelineProgress: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      height: '100%',
-      background: 'linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899, #8b5cf6, #3b82f6)',
-      backgroundSize: '200% 100%',
-      animation: 'gradientShift 3s ease infinite',
-      transition: 'width 0.5s ease',
-      zIndex: 2,
-      boxShadow: '0 0 20px rgba(59, 130, 246, 0.4)',
-    },
-    timelinePoints: {
-      position: 'relative',
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      width: '100%',
-      zIndex: 3,
-      gap: 'clamp(0.5rem, 2vw, 1rem)',
-    },
-  };
-
-  return (
-    <>
-      <style jsx>{`
-        @keyframes slideIn {
-          from { opacity: 0; transform: translateY(15px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes gradientShift {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
-        }
-
-        /* Extra small devices (phones in portrait, less than 375px) */
-        @media (max-width: 374px) {
-          .project-details { 
-            grid-template-columns: 1fr !important; 
-            padding: 0.875rem !important; 
-            gap: 0.875rem !important;
-          }
-          .project-content { order: 1; }
-          .project-image { order: 2; }
-          .image-container { height: 180px !important; }
-          .project-title { font-size: 1rem !important; gap: 0.375rem !important; }
-          .project-description { font-size: 0.8125rem !important; }
-          .tag { font-size: 0.625rem !important; padding: 0.1875rem 0.5rem !important; }
-          .action-btn { padding: 0.4375rem 0.75rem !important; font-size: 0.6875rem !important; }
-          .timeline-point { min-width: 50px !important; }
-          .point-label { font-size: 0.5rem !important; }
-        }
-
-        /* Small devices (phones, 375px and up) */
-        @media (min-width: 375px) and (max-width: 479px) {
-          .project-details { 
-            grid-template-columns: 1fr !important; 
-            padding: 1rem !important;
-            gap: 1rem !important;
-          }
-          .project-content { order: 1; }
-          .project-image { order: 2; }
-          .image-container { height: 200px !important; }
-          .project-title { font-size: 1.0625rem !important; }
-          .timeline-point { min-width: 55px !important; }
-        }
-
-        /* Medium-small devices (large phones, 480px to 639px) */
-        @media (min-width: 480px) and (max-width: 639px) {
-          .project-details { 
-            grid-template-columns: 1fr !important; 
-            gap: 1.125rem !important;
-          }
-          .project-content { order: 1; }
-          .project-image { order: 2; }
-          .image-container { height: 240px !important; }
-          .timeline-point { min-width: 65px !important; }
-        }
-
-        /* Medium devices (tablets, 640px to 767px) */
-        @media (min-width: 640px) and (max-width: 767px) {
-          .project-details { 
-            grid-template-columns: 1fr !important;
-            gap: 1.25rem !important;
-          }
-          .project-content { order: 1; }
-          .project-image { order: 2; }
-          .image-container { height: 280px !important; }
-          .timeline-point { min-width: 70px !important; }
-        }
-
-        /* Medium-large devices (tablets landscape, 768px to 1023px) */
-        @media (min-width: 768px) and (max-width: 1023px) {
-          .project-details { 
-            grid-template-columns: 1fr 1fr !important;
-            gap: 1.5rem !important;
-          }
-          .project-content { order: 1; }
-          .project-image { order: 2; }
-          .image-container { height: 300px !important; }
-        }
-
-        /* Large devices (desktops, 1024px and up) */
-        @media (min-width: 1024px) {
-          .project-details { 
-            grid-template-columns: 1fr 1fr !important; 
-            gap: 2rem !important;
-          }
-          .project-content { order: 1; }
-          .project-image { order: 2; }
-          .image-container { height: 350px !important; }
-        }
-
-        /* Touch device optimizations */
-        @media (hover: none) and (pointer: coarse) {
-          .timeline-point {
-            min-height: 44px;
-            min-width: 44px;
-          }
-          .action-btn {
-            min-height: 44px;
-          }
-        }
-
-        /* Hover effects for devices that support it */
-        @media (hover: hover) and (pointer: fine) {
-          .timeline-point:hover .point-dot { 
-            transform: scale(1.15); 
-            border-color: #f26d26; 
-          }
-          .timeline-point:hover .point-label { 
-            color: #f26d26; 
-          }
-          .action-btn.primary:hover { 
-            background: linear-gradient(135deg, #2563eb, #7c3aed); 
-            transform: translateY(-2px); 
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.5); 
-          }
-          .action-btn.secondary:hover { 
-            background: #374151; 
-            border-color: #6b7280; 
-            color: #ffffff; 
-            transform: translateY(-2px); 
-          }
-        }
-
-        /* Custom scrollbar styling */
-        .timeline-wrapper::-webkit-scrollbar { 
-          height: 5px; 
-        }
-        .timeline-wrapper::-webkit-scrollbar-track { 
-          background: #f1f5f9; 
-          border-radius: 2.5px; 
-        }
-        .timeline-wrapper::-webkit-scrollbar-thumb { 
-          background: #cbd5e1; 
-          border-radius: 2.5px; 
-        }
-        .timeline-wrapper::-webkit-scrollbar-thumb:hover { 
-          background: #94a3b8; 
-        }
-
-        /* Smooth scrolling behavior */
-        .timeline-wrapper {
-          scroll-behavior: smooth;
-          scroll-snap-type: x proximity;
-        }
-
-        .timeline-point {
-          scroll-snap-align: center;
-        }
-
-        /* Focus styles for accessibility */
-        .timeline-point:focus-visible {
-          outline: 2px solid #f26d26;
-          outline-offset: 4px;
-          border-radius: 4px;
-        }
-
-        .action-btn:focus-visible {
-          outline: 2px solid #3b82f6;
-          outline-offset: 2px;
-        }
-      `}</style>
-
-      <section style={styles.section} id="portfolio" className="portfolio-section">
-        <div style={styles.container} className="portfolio-container">
-          <div style={styles.header}>
-            <span style={styles.tagline} className="portfolio-tagline">Our Portfolio</span>
-            <h2 style={styles.title} className="portfolio-title">
-              Recent Projects
-            </h2>
-            <p style={styles.description} className="portfolio-description">
-              Take a look at some of our recent work and see how we&apos;ve helped
-              businesses transform their digital presence.
+            <p className="text-sm md:text-base text-white/45 leading-relaxed mb-7 max-w-sm font-light">
+              {project.description}
             </p>
-          </div>
 
-          <div style={styles.timelineContainer}>
-            <div style={styles.timelineWrapper} className="timeline-wrapper">
-              <div style={styles.timelineTrack} className="timeline-track">
-                <div style={styles.timelineLine} className="timeline-line">
-                  <div style={{ ...styles.timelineProgress, width: progressWidth }} />
-                </div>
+            {/* Tags */}
+            <div className="flex flex-wrap gap-2 mb-8">
+              {project.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="px-2.5 py-1 rounded-full text-[11px] font-medium tracking-wide text-white/50 bg-white/[0.05] border border-white/[0.08]"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
 
-                <div style={styles.timelinePoints}>
-                  {projects.map((project) => (
-                    <TimelinePoint
-                      key={project.id}
-                      project={project}
-                      isSelected={selectedProject === project.id}
-                      onSelect={handleProjectClick}
-                    />
-                  ))}
-                </div>
-              </div>
+            {/* CTAs */}
+            <div className="flex items-center gap-3 flex-wrap">
+              <motion.a
+                href={project.liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ y: -2, scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold text-white"
+                style={{
+                  background: `linear-gradient(135deg, ${project.accentFrom}, ${project.accentTo})`,
+                  boxShadow: `0 6px 20px ${project.accentFrom}50`,
+                }}
+              >
+                <Eye size={14} />
+                View Live
+                <ArrowUpRight size={13} strokeWidth={2.5} />
+              </motion.a>
+
+              <motion.a
+                href={project.codeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.97 }}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium text-white/60 border border-white/[0.12] hover:border-white/25 hover:text-white/80 transition-all duration-200"
+              >
+                <ExternalLink size={13} />
+                Source
+              </motion.a>
             </div>
           </div>
 
-          {selectedProjectData && <ProjectDetails project={selectedProjectData} />}
-        </div>
-      </section>
-    </>
-  );
-};
+          {/* ── Image side ─────────────────────────────────────────────── */}
+          <div
+            className={cn(
+              "relative min-h-[240px] md:min-h-0",
+              isEven ? "md:order-2" : "md:order-1"
+            )}
+          >
+            {/* Divider line */}
+            <div
+              className={cn(
+                "absolute inset-y-0 w-px z-10 pointer-events-none",
+                "bg-gradient-to-b from-transparent via-white/[0.08] to-transparent",
+                isEven ? "left-0" : "right-0"
+              )}
+            />
 
-export default memo(Portfolio);
+            <Image
+              src={project.image}
+              alt={project.title}
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-cover"
+              style={{ filter: "brightness(0.72) saturate(0.85)" }}
+              loading="lazy"
+            />
+
+            {/* Bleed gradient toward text */}
+            <div
+              className={cn(
+                "absolute inset-0",
+                isEven
+                  ? "bg-gradient-to-r from-[#0a1628]/80 via-[#0a1628]/20 to-transparent"
+                  : "bg-gradient-to-l from-[#0a1628]/80 via-[#0a1628]/20 to-transparent"
+              )}
+            />
+
+            {/* Live badge */}
+            <div className="absolute top-5 right-5 z-20 flex items-center gap-1.5">
+              <span
+                className="w-2 h-2 rounded-full animate-pulse"
+                style={{
+                  background: project.accentTo,
+                  boxShadow: `0 0 8px ${project.accentTo}`,
+                }}
+              />
+              <span className="text-[9px] text-white/40 uppercase tracking-[0.25em] font-mono">
+                Live
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+);
+ProjectCard.displayName = "ProjectCard";
+
+// ─── Portfolio section ────────────────────────────────────────────────────────
+const Portfolio = memo(() => {
+  const [headerRef, headerInView] = useInView(0.3);
+
+  return (
+    /*
+     * FIX 3: section must NOT have overflow-hidden — that breaks sticky
+     * on all descendant elements. Use overflow-visible (default) and
+     * control visual bleed with pointer-events-none decorative layers only.
+     */
+    <section
+      id="portfolio"
+      className="relative w-full bg-[#030303] py-20 md:py-28"
+      // no overflow-hidden here!
+    >
+      {/* Decorative ambient blobs — pointer-events-none so they don't block */}
+      <div className="absolute inset-0 pointer-events-none" aria-hidden>
+        <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-[#030303] to-transparent z-10" />
+        <div className="absolute top-1/4 right-0 w-[500px] h-[500px] rounded-full bg-[#0c4a6e]/8 blur-[120px]" />
+        <div className="absolute bottom-1/4 left-0 w-[400px] h-[400px] rounded-full bg-[#f26d26]/6 blur-[100px]" />
+      </div>
+
+      <div className="relative z-10 max-w-5xl mx-auto px-4 md:px-8">
+
+        {/* ── Section header ──────────────────────────────────────────── */}
+        <div
+          ref={headerRef}
+          className={cn(
+            "text-center mb-16 md:mb-20 transition-all duration-700 ease-out",
+            headerInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+          )}
+        >
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.1] mb-6">
+            <Circle className="h-2 w-2 fill-[#f26d26] text-[#f26d26]" />
+            <span className="text-xs text-white/50 tracking-widest uppercase font-medium">
+              Our Portfolio
+            </span>
+          </div>
+
+          <h2 className="text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-5">
+            <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/75">
+              Recent Projects
+            </span>
+            <br />
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-sky-300 via-white/90 to-[#f26d26]">
+              Built for Impact
+            </span>
+          </h2>
+
+          <p className="text-base md:text-lg text-white/40 max-w-xl mx-auto leading-relaxed font-light">
+            A selection of digital products we&apos;ve crafted for Kenyan and global
+            businesses — from concept to launch.
+          </p>
+        </div>
+
+        <div
+          className="relative"
+          style={{ paddingBottom: `${CARD_PEEK * 2}px` }}
+        >
+          {PROJECTS.map((project, index) => (
+            <ProjectCard key={project.id} project={project} index={index} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+});
+
+Portfolio.displayName = "Portfolio";
+export default Portfolio;

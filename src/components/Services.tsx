@@ -1,766 +1,390 @@
 "use client";
 
-import React, { useRef, useEffect, useState, useCallback, memo } from 'react';
-import { Palette, Smartphone, Globe, Code, Database, Shield } from 'lucide-react';
+import React, { useState, useEffect, useCallback, memo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Palette,
+  Smartphone,
+  Globe,
+  Code,
+  Database,
+  Shield,
+  Circle,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
 
-// Service type definition
-interface Service {
-  icon: React.ReactElement<any>;
-  title: string;
-  description: string;
-  features: string[];
-}
+// ─── Data ─────────────────────────────────────────────────────────────────────
+const SERVICES = [
+  {
+    id: "design",
+    label: "Graphic Design",
+    icon: Palette,
+    image: "https://images.unsplash.com/photo-1561070791-2526d30994b5?q=80&w=1200",
+    description: "Creative visual solutions, branding, and digital artwork that captivate your audience.",
+    features: ["Logo Design", "Brand Identity", "Digital Art", "Print Design"],
+    accent: "#f26d26",
+  },
+  {
+    id: "mobile",
+    label: "App Development",
+    icon: Smartphone,
+    image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?q=80&w=1200",
+    description: "Native and cross-platform mobile apps with seamless UX and robust functionality.",
+    features: ["iOS Apps", "Android Apps", "Cross-Platform", "App Store Optimization"],
+    accent: "#0c4a6e",
+  },
+  {
+    id: "webdesign",
+    label: "Web Design",
+    icon: Globe,
+    image: "https://images.unsplash.com/photo-1547658719-da2b51169166?q=80&w=1200",
+    description: "Modern, responsive websites that engage users and convert visitors into customers.",
+    features: ["Responsive Design", "UI/UX Design", "Landing Pages", "E-commerce"],
+    accent: "#f26d26",
+  },
+  {
+    id: "webdev",
+    label: "Web Development",
+    icon: Code,
+    image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1200",
+    description: "Robust, scalable web applications built with the latest technologies and best practices.",
+    features: ["Frontend Dev", "Backend Systems", "API Integration", "Performance"],
+    accent: "#0c4a6e",
+  },
+  {
+    id: "database",
+    label: "Database Solutions",
+    icon: Database,
+    image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1200",
+    description: "Efficient data management and database architecture for optimal performance.",
+    features: ["Database Design", "Data Migration", "Performance Tuning", "Backups"],
+    accent: "#f26d26",
+  },
+  {
+    id: "security",
+    label: "IT Security",
+    icon: Shield,
+    image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1200",
+    description: "Comprehensive security solutions to protect your digital assets and ensure continuity.",
+    features: ["Security Audits", "Data Protection", "Network Security", "Compliance"],
+    accent: "#0c4a6e",
+  },
+];
 
-// Memoized service card component
-const ServiceCard = memo(({ 
-  service, 
-  isActive 
-}: { 
-  service: Service; 
-  isActive: boolean;
-}) => {
-  const [isHovered, setIsHovered] = useState(false);
+const AUTO_PLAY_INTERVAL = 3500;
+const ITEM_HEIGHT = 62;
 
-  return (
-    <div
-      className={`service-card-carousel ${isActive ? 'active' : 'side'}`}
-      role="article"
-      aria-label={`${service.title} service`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      style={{
-        willChange: isActive ? 'transform, opacity' : 'auto',
-      }}
-    >
-      <div className="icon-wrapper-carousel">
-        {React.cloneElement(service.icon, {
-          size: 32,
-          strokeWidth: 2
-        } as any)}
-      </div>
-      <h3 className="service-card-title-carousel">
-        {service.title}
-      </h3>
-      <p className="service-card-description-carousel">
-        {service.description}
-      </p>
-      <div className="features-list-carousel">
-        {service.features.map((feature: string, featureIndex: number) => (
-          <span key={featureIndex} className="feature-tag-carousel">
-            {feature}
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-});
+const wrap = (min: number, max: number, v: number) => {
+  const rangeSize = max - min;
+  return ((((v - min) % rangeSize) + rangeSize) % rangeSize) + min;
+};
 
-ServiceCard.displayName = 'ServiceCard';
-
-// Memoized indicator component
-const Indicator = memo(({ 
-  index, 
-  isActive, 
-  onClick 
-}: { 
-  index: number; 
-  isActive: boolean; 
-  onClick: () => void;
-}) => {
-  return (
-    <div
-      className={`indicator ${isActive ? 'active' : ''}`}
-      onClick={onClick}
-      role="button"
-      tabIndex={0}
-      aria-label={`Go to service ${index + 1}`}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          onClick();
-        }
-      }}
-    />
-  );
-});
-
-Indicator.displayName = 'Indicator';
-
+// ─── Services Component ───────────────────────────────────────────────────────
 const Services = memo(() => {
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-  const startXRef = useRef(0);
-  const scrollStartRef = useRef(0);
-  const dragThresholdRef = useRef(5);
-  const hasDraggedRef = useRef(false);
+  const [step, setStep] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
-  const services = [
-    {
-      icon: <Palette size={32} />,
-      title: "Graphics Design",
-      description: "Creative visual solutions, branding, and digital artwork that captivate your audience and strengthen your brand identity.",
-      features: ["Logo Design", "Brand Identity", "Digital Art", "Print Design"]
-    },
-    {
-      icon: <Smartphone size={32} />,
-      title: "App Development",
-      description: "Native and cross-platform mobile applications with seamless user experiences and robust functionality.",
-      features: ["iOS Apps", "Android Apps", "Cross-Platform", "App Store Optimization"]
-    },
-    {
-      icon: <Globe size={32} />,
-      title: "Web Design",
-      description: "Modern, responsive websites that engage users and convert visitors into customers with stunning designs.",
-      features: ["Responsive Design", "UI/UX Design", "Landing Pages", "E-commerce Design"]
-    },
-    {
-      icon: <Code size={32} />,
-      title: "Web Development",
-      description: "Robust, scalable web applications and systems built with the latest technologies and best practices.",
-      features: ["Frontend Development", "Backend Systems", "API Integration", "Performance Optimization"]
-    },
-    {
-      icon: <Database size={32} />,
-      title: "Database Solutions",
-      description: "Efficient data management systems and database architecture for optimal performance and security.",
-      features: ["Database Design", "Data Migration", "Performance Tuning", "Backup Solutions"]
-    },
-    {
-      icon: <Shield size={32} />,
-      title: "IT Security",
-      description: "Comprehensive security solutions to protect your digital assets and ensure business continuity.",
-      features: ["Security Audits", "Data Protection", "Network Security", "Compliance"]
-    },
-  ];
+  const currentIndex = ((step % SERVICES.length) + SERVICES.length) % SERVICES.length;
+  const current = SERVICES[currentIndex];
 
-  const handleScroll = useCallback(() => {
-    if (!scrollContainerRef.current) return;
-    
-    const container = scrollContainerRef.current;
-    const cardWidth = 300;
-    const scrollLeft = container.scrollLeft;
-    const containerCenter = scrollLeft + container.offsetWidth / 2;
-    
-    let closestIndex = 0;
-    let closestDistance = Infinity;
-    
-    services.forEach((_, index) => {
-      const cardCenter = 2 * 16 + (index * (cardWidth + 16)) + cardWidth / 2;
-      const distance = Math.abs(cardCenter - containerCenter);
-      
-      if (distance < closestDistance) {
-        closestDistance = distance;
-        closestIndex = index;
-      }
-    });
-    
-    setActiveIndex(closestIndex);
-  }, []);
+  const nextStep = useCallback(() => setStep((s) => s + 1), []);
 
-  const scrollToIndex = useCallback((index: number) => {
-    if (scrollContainerRef.current) {
-      const cardWidth = 300;
-      const gap = 16;
-      const scrollPosition = index * (cardWidth + gap) + 2 * 16 - (scrollContainerRef.current.offsetWidth / 2 - cardWidth / 2);
-      scrollContainerRef.current.scrollTo({
-        left: scrollPosition,
-        behavior: 'smooth'
-      });
-    }
-  }, []);
+  const handleChipClick = useCallback(
+    (index: number) => {
+      const diff = (index - currentIndex + SERVICES.length) % SERVICES.length;
+      if (diff > 0) setStep((s) => s + diff);
+    },
+    [currentIndex]
+  );
 
   useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (!container) return;
-
-    const handleMouseDown = (e: MouseEvent) => {
-      hasDraggedRef.current = false;
-      setIsDragging(true);
-      startXRef.current = e.clientX;
-      scrollStartRef.current = container.scrollLeft;
-      container.style.scrollBehavior = 'auto';
-      container.classList.add('dragging');
-    };
-
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!isDragging) return;
-      
-      const x = e.clientX - startXRef.current;
-      
-      if (Math.abs(x) > dragThresholdRef.current) {
-        hasDraggedRef.current = true;
-        container.scrollLeft = scrollStartRef.current - x;
-      }
-    };
-
-    const handleMouseUp = () => {
-      setIsDragging(false);
-      container.style.scrollBehavior = 'smooth';
-      container.classList.remove('dragging');
-    };
-
-    const handleMouseLeave = () => {
-      setIsDragging(false);
-      container.style.scrollBehavior = 'smooth';
-      container.classList.remove('dragging');
-    };
-
-    container.addEventListener('mousedown', handleMouseDown);
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-    container.addEventListener('mouseleave', handleMouseLeave);
-
-    return () => {
-      container.removeEventListener('mousedown', handleMouseDown);
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-      container.removeEventListener('mouseleave', handleMouseLeave);
-    };
-  }, [isDragging]);
+    if (isPaused) return;
+    const id = setInterval(nextStep, AUTO_PLAY_INTERVAL);
+    return () => clearInterval(id);
+  }, [nextStep, isPaused]);
 
   return (
-    <>
-      <style>{`
-        .services-carousel-section {
-          padding: clamp(2rem, 8vw, 6rem) 0;
-          background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-          font-family: 'Inter', system-ui, sans-serif;
-          contain: layout style;
-        }
-
-        .services-carousel-header {
-          text-align: center;
-          margin-bottom: clamp(1.5rem, 6vw, 4rem);
-          padding: 0 clamp(0.75rem, 4vw, 2rem);
-        }
-
-        .services-carousel-tagline {
-          color: #f26d26;
-          font-size: clamp(0.75rem, 2.5vw, 1rem);
-          font-weight: 600;
-          font-family: 'Poppins', system-ui, sans-serif;
-          margin-bottom: clamp(0.5rem, 2vw, 1rem);
-          text-transform: uppercase;
-          letter-spacing: 0.1em;
-          display: block;
-        }
-
-        .services-carousel-title {
-          font-size: clamp(1.5rem, 6vw, 3rem);
-          font-weight: 700;
-          font-family: 'Poppins', system-ui, sans-serif;
-          color: #1f2937;
-          margin-bottom: clamp(0.75rem, 3vw, 1.5rem);
-          line-height: 1.2;
-        }
-
-        .services-carousel-description {
-          font-size: clamp(0.9rem, 2.5vw, 1.125rem);
-          color: #6b7280;
-          max-width: 600px;
-          margin: 0 auto;
-          line-height: 1.6;
-        }
-
-        .carousel-container {
-          max-width: 1280px;
-          margin: 0 auto;
-          padding: 0 clamp(0.75rem, 4vw, 2rem);
-          width: 100%;
-          box-sizing: border-box;
-        }
-
-        .carousel-wrapper {
-          overflow-x: auto;
-          scroll-behavior: smooth;
-          scrollbar-width: none;
-          -ms-overflow-style: none;
-          padding: clamp(1rem, 4vw, 2rem) 0;
-          cursor: grab;
-          user-select: none;
-          -webkit-user-select: none;
-          -moz-user-select: none;
-          -ms-user-select: none;
-          will-change: scroll-position;
-        }
-
-        .carousel-wrapper::-webkit-scrollbar {
-          display: none;
-        }
-
-        .carousel-wrapper.dragging {
-          cursor: grabbing;
-          user-select: none;
-        }
-
-        .carousel-track {
-          display: flex;
-          gap: clamp(0.75rem, 2vw, 1.5rem);
-          padding: 0 clamp(1rem, 3vw, 2rem);
-          width: fit-content;
-          user-select: none;
-          -webkit-user-select: none;
-        }
-
-        .service-card-carousel {
-          flex: 0 0 clamp(250px, 80vw, 320px);
-          min-width: clamp(250px, 80vw, 320px);
-          height: auto;
-          min-height: clamp(350px, 60vw, 450px);
-          background: #ffffff;
-          border: 1px solid #e5e7eb;
-          border-radius: clamp(0.75rem, 2vw, 1.25rem);
-          padding: clamp(1rem, 3vw, 1.75rem);
-          display: flex;
-          flex-direction: column;
-          box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-          transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-          opacity: 0.6;
-          transform: scale(0.85) translateY(40px);
-          pointer-events: none;
-          user-select: none;
-        }
-
-        .service-card-carousel.active {
-          opacity: 1;
-          transform: scale(1) translateY(0);
-          box-shadow: 0 20px 40px rgba(242, 109, 38, 0.15);
-          border-color: #f26d26;
-          pointer-events: auto;
-        }
-
-        .service-card-carousel.side {
-          opacity: 0.5;
-        }
-
-        .icon-wrapper-carousel {
-          width: clamp(48px, 10vw, 64px);
-          height: clamp(48px, 10vw, 64px);
-          background: #fef3e8;
-          border-radius: clamp(0.625rem, 2vw, 1rem);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: #f26d26;
-          margin-bottom: clamp(1rem, 2vw, 1.5rem);
-          flex-shrink: 0;
-          transition: all 0.3s ease;
-          contain: layout;
-        }
-
-        .service-card-carousel.active .icon-wrapper-carousel {
-          background: #f26d26;
-          color: white;
-          transform: scale(1.1);
-        }
-
-        .service-card-title-carousel {
-          font-size: clamp(1rem, 3vw, 1.375rem);
-          font-weight: 600;
-          font-family: 'Poppins', system-ui, sans-serif;
-          color: #1f2937;
-          margin-bottom: clamp(0.5rem, 1.5vw, 0.875rem);
-          line-height: 1.3;
-        }
-
-        .service-card-carousel.active .service-card-title-carousel {
-          color: #f26d26;
-        }
-
-        .service-card-description-carousel {
-          font-size: clamp(0.85rem, 2vw, 1rem);
-          color: #6b7280;
-          line-height: 1.5;
-          margin-bottom: clamp(0.75rem, 2vw, 1.25rem);
-          flex: 1;
-        }
-
-        .features-list-carousel {
-          display: flex;
-          flex-wrap: wrap;
-          gap: clamp(0.4rem, 1.5vw, 0.75rem);
-          margin-top: auto;
-        }
-
-        .feature-tag-carousel {
-          background: #f1f5f9;
-          color: #475569;
-          padding: clamp(0.3rem, 1vw, 0.5rem) clamp(0.6rem, 1.5vw, 0.875rem);
-          border-radius: clamp(0.375rem, 1vw, 0.5rem);
-          font-size: clamp(0.7rem, 1.5vw, 0.875rem);
-          font-weight: 500;
-          border: 1px solid #e2e8f0;
-          line-height: 1.2;
-          white-space: nowrap;
-        }
-
-        .carousel-indicators {
-          display: flex;
-          justify-content: center;
-          gap: clamp(0.375rem, 1.5vw, 0.75rem);
-          margin-top: clamp(1.5rem, 4vw, 2.5rem);
-          flex-wrap: wrap;
-        }
-
-        .indicator {
-          width: clamp(8px, 2vw, 10px);
-          height: clamp(8px, 2vw, 10px);
-          border-radius: 50%;
-          background: #d1d5db;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          border: 2px solid transparent;
-          will-change: background-color, width;
-        }
-
-        .indicator.active {
-          background: #f26d26;
-          width: clamp(24px, 6vw, 30px);
-          border-radius: 5px;
-        }
-
-        @media (max-width: 320px) {
-          .services-carousel-section {
-            padding: 1.5rem 0;
-          }
-
-          .carousel-wrapper {
-            padding: 1rem 0;
-          }
-
-          .carousel-track {
-            padding: 0 0.5rem;
-            gap: 0.75rem;
-          }
-
-          .service-card-carousel {
-            flex: 0 0 85vw;
-            min-width: 85vw;
-            height: auto;
-            min-height: 340px;
-            padding: 1rem;
-          }
-
-          .services-carousel-title {
-            font-size: 1.375rem;
-          }
-
-          .services-carousel-description {
-            font-size: 0.875rem;
-          }
-        }
-
-        @media (min-width: 321px) and (max-width: 480px) {
-          .services-carousel-section {
-            padding: 2rem 0;
-          }
-
-          .carousel-wrapper {
-            padding: 1.25rem 0;
-          }
-
-          .carousel-track {
-            padding: 0 0.75rem;
-            gap: 1rem;
-          }
-
-          .service-card-carousel {
-            flex: 0 0 80vw;
-            min-width: 80vw;
-            height: auto;
-            min-height: 350px;
-            padding: 1.25rem;
-          }
-
-          .services-carousel-description {
-            font-size: 0.9rem;
-          }
-        }
-
-        @media (min-width: 481px) and (max-width: 640px) {
-          .services-carousel-section {
-            padding: 2.5rem 0;
-          }
-
-          .carousel-track {
-            padding: 0 1rem;
-            gap: 1rem;
-          }
-
-          .service-card-carousel {
-            flex: 0 0 70vw;
-            min-width: 260px;
-            height: auto;
-            min-height: 360px;
-            padding: 1.25rem;
-          }
-        }
-
-        @media (min-width: 641px) and (max-width: 768px) {
-          .services-carousel-section {
-            padding: 3.5rem 0;
-          }
-
-          .carousel-track {
-            padding: 0 1.5rem;
-            gap: 1.25rem;
-          }
-
-          .service-card-carousel {
-            flex: 0 0 50%;
-            min-width: 280px;
-            height: auto;
-            min-height: 380px;
-            padding: 1.5rem;
-          }
-
-          .services-carousel-title {
-            font-size: 2.25rem;
-          }
-        }
-
-        @media (min-width: 769px) and (max-width: 1024px) {
-          .services-carousel-section {
-            padding: 4rem 0;
-          }
-
-          .carousel-track {
-            padding: 0 1.5rem;
-            gap: 1.25rem;
-          }
-
-          .service-card-carousel {
-            flex: 0 0 45%;
-            min-width: 280px;
-            height: auto;
-            min-height: 380px;
-            padding: 1.5rem;
-          }
-        }
-
-        @media (min-width: 1025px) and (max-width: 1439px) {
-          .services-carousel-section {
-            padding: 5rem 0;
-          }
-
-          .carousel-track {
-            padding: 0 2rem;
-            gap: 1.5rem;
-          }
-
-          .service-card-carousel {
-            flex: 0 0 300px;
-            min-width: 300px;
-            height: auto;
-            min-height: 420px;
-            padding: 1.75rem;
-          }
-        }
-
-        @media (min-width: 1440px) {
-          .services-carousel-section {
-            padding: 6rem 0;
-          }
-
-          .carousel-track {
-            padding: 0 2rem;
-            gap: 1.5rem;
-          }
-
-          .service-card-carousel {
-            flex: 0 0 320px;
-            min-width: 320px;
-            height: auto;
-            min-height: 450px;
-            padding: 2rem;
-          }
-        }
-
-        @media (max-height: 600px) and (orientation: landscape) {
-          .services-carousel-section {
-            padding: 1.5rem 0;
-          }
-
-          .carousel-wrapper {
-            padding: 1rem 0;
-          }
-
-          .services-carousel-header {
-            margin-bottom: 1.5rem;
-          }
-
-          .service-card-carousel {
-            min-height: 300px;
-          }
-
-          .carousel-indicators {
-            margin-top: 1rem;
-          }
-        }
-
-        @media (hover: hover) and (pointer: fine) {
-          .indicator:hover {
-            background: #f26d26;
-            transform: scale(1.1);
-          }
-
-          .carousel-wrapper {
-            cursor: grab;
-          }
-
-          .carousel-wrapper.dragging {
-            cursor: grabbing;
-          }
-        }
-
-        @media (hover: none) and (pointer: coarse) {
-          .carousel-wrapper {
-            cursor: default;
-          }
-
-          .indicator:active {
-            transform: scale(1.15);
-          }
-        }
-
-        .indicator:focus {
-          outline: 2px solid #f26d26;
-          outline-offset: 2px;
-        }
-
-        @media (prefers-contrast: high) {
-          .service-card-carousel {
-            border: 2px solid #1f2937;
-          }
-
-          .feature-tag-carousel {
-            border: 2px solid #475569;
-          }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .carousel-wrapper {
-            scroll-behavior: auto;
-          }
-
-          .service-card-carousel,
-          .icon-wrapper-carousel,
-          .indicator {
-            transition: none !important;
-          }
-        }
-
-        @media (prefers-color-scheme: dark) {
-          .services-carousel-section {
-            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
-          }
-
-          .services-carousel-title {
-            color: #ffffff;
-          }
-
-          .services-carousel-description {
-            color: #d1d5db;
-          }
-
-          .service-card-carousel {
-            background: #374151;
-            border-color: #4b5563;
-          }
-
-          .service-card-carousel.active {
-            border-color: #f26d26;
-          }
-
-          .service-card-title-carousel {
-            color: #ffffff;
-          }
-
-          .service-card-description-carousel {
-            color: #d1d5db;
-          }
-
-          .feature-tag-carousel {
-            background: #4b5563;
-            color: #e5e7eb;
-            border-color: #6b7280;
-          }
-
-          .icon-wrapper-carousel {
-            background: rgba(242, 109, 38, 0.2);
-          }
-        }
-
-        @media print {
-          .carousel-wrapper {
-            overflow: visible;
-          }
-
-          .carousel-track {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            width: 100%;
-            padding: 0;
-          }
-
-          .service-card-carousel {
-            flex: 1;
-            transform: none !important;
-            opacity: 1 !important;
-          }
-
-          .carousel-indicators {
-            display: none;
-          }
-        }
-      `}</style>
-
-      <section className="services-carousel-section" id="services">
-        <div className="carousel-container">
-          <div className="services-carousel-header">
-            <span className="services-carousel-tagline">Our Services</span>
-            <h2 className="services-carousel-title">
-              Comprehensive IT Solutions
-            </h2>
-            <p className="services-carousel-description">
-              We offer a full range of technology services to help your business 
-              succeed in the digital world. From design to development, we've got you covered.
-            </p>
-          </div>
-
-          <div 
-            className="carousel-wrapper"
-            ref={scrollContainerRef}
-            onScroll={handleScroll}
+    <section
+      id="services"
+      className="relative w-full bg-[#030303] py-20 md:py-28 overflow-hidden"
+    >
+      {/* Ambient bleed — mirrors hero gradient mesh */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-[#030303] to-transparent z-10" />
+        <div className="absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full bg-[#0c4a6e]/10 blur-[120px]" />
+        <div className="absolute -bottom-40 -right-20 w-[500px] h-[500px] rounded-full bg-[#f26d26]/8 blur-[100px]" />
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-8">
+
+        {/* ── Section header ─────────────────────────────────────────────── */}
+        <div className="text-center mb-14 md:mb-20">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.1] mb-6"
           >
-            <div className="carousel-track">
-              {services.map((service, index) => (
-                <ServiceCard 
-                  key={index}
-                  service={service}
-                  isActive={index === activeIndex}
-                />
-              ))}
+            <Circle className="h-2 w-2 fill-[#f26d26] text-[#f26d26]" />
+            <span className="text-xs text-white/50 tracking-widest uppercase font-medium">
+              What We Offer
+            </span>
+          </motion.div>
+
+          <motion.h2
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.9, delay: 0.1 }}
+            className="text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight"
+          >
+            <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/75">
+              Comprehensive IT
+            </span>
+            <br />
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-sky-300 via-white/90 to-[#f26d26]">
+              Solutions for Kenya
+            </span>
+          </motion.h2>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="mt-5 text-base md:text-lg text-white/40 max-w-xl mx-auto leading-relaxed font-light"
+          >
+            From design to development — full-spectrum technology services that
+            help your business thrive in the digital world.
+          </motion.p>
+        </div>
+
+        {/* ── Carousel ───────────────────────────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1, delay: 0.3 }}
+          className={cn(
+            "relative overflow-hidden rounded-[2rem] md:rounded-[3rem]",
+            "flex flex-col lg:flex-row",
+            "min-h-[580px] lg:min-h-0 lg:aspect-video",
+            "border border-white/[0.08]",
+            "shadow-[0_0_80px_rgba(0,0,0,0.6)]"
+          )}
+        >
+          {/* ── LEFT: scrolling pill selector ──────────────────────────── */}
+          <div
+            className={cn(
+              "w-full lg:w-[38%] relative z-30",
+              "flex flex-col items-start justify-center",
+              "min-h-[300px] lg:h-full overflow-hidden",
+              "px-8 md:px-14 lg:pl-14",
+              "bg-gradient-to-br from-[#0c4a6e] via-[#0a3d5c] to-[#061f30]"
+            )}
+          >
+            {/* top + bottom fade masks */}
+            <div className="absolute inset-x-0 top-0 h-16 md:h-24 bg-gradient-to-b from-[#0c4a6e] to-transparent z-40 pointer-events-none" />
+            <div className="absolute inset-x-0 bottom-0 h-16 md:h-24 bg-gradient-to-t from-[#061f30] to-transparent z-40 pointer-events-none" />
+
+            {/* Subtle texture dots */}
+            <div
+              className="absolute inset-0 opacity-[0.04]"
+              style={{
+                backgroundImage: "radial-gradient(circle, #fff 1px, transparent 1px)",
+                backgroundSize: "28px 28px",
+              }}
+            />
+
+            {/* Pill list */}
+            <div className="relative w-full h-full flex items-center justify-center lg:justify-start z-20">
+              {SERVICES.map((service, index) => {
+                const Icon = service.icon;
+                const isActive = index === currentIndex;
+                const distance = index - currentIndex;
+                const wrappedDistance = wrap(
+                  -(SERVICES.length / 2),
+                  SERVICES.length / 2,
+                  distance
+                );
+
+                return (
+                  <motion.div
+                    key={service.id}
+                    style={{ height: ITEM_HEIGHT, width: "fit-content" }}
+                    animate={{
+                      y: wrappedDistance * ITEM_HEIGHT,
+                      opacity: 1 - Math.abs(wrappedDistance) * 0.28,
+                    }}
+                    transition={{ type: "spring", stiffness: 85, damping: 20, mass: 1 }}
+                    className="absolute flex items-center justify-start"
+                  >
+                    <button
+                      onClick={() => handleChipClick(index)}
+                      onMouseEnter={() => setIsPaused(true)}
+                      onMouseLeave={() => setIsPaused(false)}
+                      className={cn(
+                        "relative flex items-center gap-3.5 px-6 md:px-8 py-3.5 rounded-full",
+                        "transition-all duration-500 text-left border",
+                        isActive
+                          ? "bg-[#f26d26] text-white border-[#f26d26] shadow-[0_6px_24px_rgba(242,109,38,0.45)] scale-105"
+                          : "bg-transparent text-white/50 border-white/[0.15] hover:border-white/30 hover:text-white/80"
+                      )}
+                    >
+                      <Icon
+                        size={16}
+                        strokeWidth={2}
+                        className={cn(
+                          "flex-shrink-0 transition-colors duration-300",
+                          isActive ? "text-white" : "text-white/40"
+                        )}
+                      />
+                      <span className="text-sm font-medium tracking-wide whitespace-nowrap">
+                        {service.label}
+                      </span>
+                    </button>
+                  </motion.div>
+                );
+              })}
             </div>
           </div>
 
-          <div className="carousel-indicators">
-            {services.map((_, index) => (
-              <Indicator
-                key={index}
-                index={index}
-                isActive={index === activeIndex}
-                onClick={() => scrollToIndex(index)}
-              />
-            ))}
+          {/* ── RIGHT: animated image card ─────────────────────────────── */}
+          <div
+            className={cn(
+              "flex-1 relative bg-[#06141d]",
+              "flex items-center justify-center",
+              "min-h-[360px] md:min-h-[480px] lg:h-full",
+              "py-12 md:py-20 px-6 md:px-12 lg:px-10",
+              "overflow-hidden border-t lg:border-t-0 lg:border-l border-white/[0.06]"
+            )}
+          >
+            {/* faint grid lines */}
+            <div
+              className="absolute inset-0 opacity-[0.03]"
+              style={{
+                backgroundImage:
+                  "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)",
+                backgroundSize: "60px 60px",
+              }}
+            />
+
+            <div className="relative w-full max-w-[380px] aspect-[4/5] flex items-center justify-center">
+              {SERVICES.map((service, index) => {
+                const diff = index - currentIndex;
+                const len = SERVICES.length;
+                let normalizedDiff = diff;
+                if (diff > len / 2) normalizedDiff -= len;
+                if (diff < -len / 2) normalizedDiff += len;
+
+                const isActive = normalizedDiff === 0;
+                const isPrev = normalizedDiff === -1;
+                const isNext = normalizedDiff === 1;
+                const Icon = service.icon;
+
+                return (
+                  <motion.div
+                    key={service.id}
+                    initial={false}
+                    animate={{
+                      x: isActive ? 0 : isPrev ? -90 : isNext ? 90 : 0,
+                      scale: isActive ? 1 : isPrev || isNext ? 0.86 : 0.72,
+                      opacity: isActive ? 1 : isPrev || isNext ? 0.35 : 0,
+                      rotate: isPrev ? -4 : isNext ? 4 : 0,
+                      zIndex: isActive ? 20 : isPrev || isNext ? 10 : 0,
+                      pointerEvents: isActive ? "auto" : "none",
+                    }}
+                    transition={{ type: "spring", stiffness: 260, damping: 26, mass: 0.8 }}
+                    className="absolute inset-0 rounded-[1.8rem] overflow-hidden border-4 border-[#030303] bg-[#030303] origin-center"
+                  >
+                    {/* Image */}
+                    <img
+                      src={service.image}
+                      alt={service.label}
+                      className={cn(
+                        "w-full h-full object-cover transition-all duration-700",
+                        isActive ? "grayscale-0 brightness-90" : "grayscale blur-[2px] brightness-50"
+                      )}
+                    />
+
+                  {/* Top scrim — keeps "Featured" badge readable */}
+<div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/60 to-transparent pointer-events-none" />
+
+{/* Bottom overlay with info */}
+<AnimatePresence>
+  {isActive && (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 12 }}
+      transition={{ duration: 0.4 }}
+      className="absolute inset-x-0 bottom-0 p-7 pt-36 bg-gradient-to-t from-black via-black/90 via-[55%] to-transparent pointer-events-none"
+    >
+      {/* Badge */}
+      <div className="inline-flex items-center gap-2 bg-[#f26d26] text-white px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-widest mb-3 shadow-lg">
+        <Icon size={10} strokeWidth={2.5} />
+        {service.label}
+      </div>
+
+      <p className="text-white font-light text-lg md:text-xl leading-snug tracking-tight mb-4">
+        {service.description}
+      </p>
+
+      {/* Feature tags */}
+      <div className="flex flex-wrap gap-1.5">
+        {service.features.map((f) => (
+          <span
+            key={f}
+            className="px-2.5 py-1 rounded-full bg-white/10 border border-white/15 text-white/70 text-[10px] font-medium tracking-wide backdrop-blur-sm"
+          >
+            {f}
+          </span>
+        ))}
+      </div>
+    </motion.div>
+  )}
+</AnimatePresence>
+
+                    {/* Live indicator */}
+                    <div
+                      className={cn(
+                        "absolute top-6 left-6 flex items-center gap-2 transition-opacity duration-300",
+                        isActive ? "opacity-100" : "opacity-0"
+                      )}
+                    >
+                      <span className="w-2 h-2 rounded-full bg-[#f26d26] shadow-[0_0_8px_#f26d26] animate-pulse" />
+                      <span className="text-white/60 text-[10px] font-medium uppercase tracking-[0.25em] font-mono">
+                        Featured
+                      </span>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
           </div>
+        </motion.div>
+
+        {/* ── Dot indicators ─────────────────────────────────────────────── */}
+        <div className="flex justify-center gap-2 mt-8">
+          {SERVICES.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => handleChipClick(i)}
+              aria-label={`Go to ${SERVICES[i].label}`}
+              className={cn(
+                "h-[6px] rounded-full transition-all duration-400",
+                i === currentIndex
+                  ? "w-8 bg-[#f26d26]"
+                  : "w-[6px] bg-white/20 hover:bg-white/40"
+              )}
+            />
+          ))}
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 });
 
-Services.displayName = 'Services';
-
+Services.displayName = "Services";
 export default Services;

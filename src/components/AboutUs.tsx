@@ -1,200 +1,163 @@
 "use client";
 
-import React, { useState, memo } from 'react';
-import Image from 'next/image';
-import { Award, Zap } from 'lucide-react';
+import { motion } from "framer-motion";
+import { Circle } from "lucide-react";
+import {
+  AreaChart,
+  Area,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+} from "recharts";
 
-// Memoized stat card component
-const StatCard = memo(({ icon, number, label }: { icon: React.ReactElement<any>; number: string; label: string }) => {
-  const [isHovered, setIsHovered] = useState(false);
+// ─── Chart data ───────────────────────────────────────────────────────────────
+const chartData = [
+  { month: "Jan", projects: 4  },
+  { month: "Feb", projects: 12 },
+  { month: "Mar", projects: 22 },
+  { month: "Apr", projects: 35 },
+  { month: "May", projects: 50 },
+  { month: "Jun", projects: 68 },
+  { month: "Jul", projects: 80 },
+  { month: "Aug", projects: 92 },
+  { month: "Sep", projects: 100 },
+  { month: "Oct", projects: 110 },
+  { month: "Nov", projects: 116 },
+  { month: "Dec", projects: 120 },
+];
 
+// ─── Custom tooltip ───────────────────────────────────────────────────────────
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (!active || !payload?.length) return null;
   return (
-    <div 
-      className="bg-white border border-gray-200 rounded-lg p-3 md:p-4 flex items-center gap-3 md:gap-4 transition-all duration-300 cursor-pointer flex-1 lg:flex-1 min-w-fit"
-      style={{
-        borderColor: isHovered ? '#f26d26' : '#e5e7eb',
-        boxShadow: isHovered ? '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' : 'none',
-        willChange: 'border-color, box-shadow',
-      }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      tabIndex={0}
-      role="button"
-      aria-label={`${number} ${label}`}
-    >
-      <div 
-        className="w-12 h-12 md:w-14 md:h-14 rounded-lg flex items-center justify-center flex-shrink-0 transition-all duration-300"
-        style={{
-          backgroundColor: isHovered ? '#f26d26' : '#fff7ed',
-          color: isHovered ? '#ffffff' : '#f26d26',
-          willChange: 'background-color, color',
-        }}
-      >
-        {React.cloneElement(icon as React.ReactElement<any>, {
-          size: 20,
-          strokeWidth: 2
-        })}
-      </div>
-      <div className="flex flex-col gap-1">
-        <div className="text-lg md:text-xl font-bold text-gray-900 leading-none">
-          {number}
-        </div>
-        <div className="text-xs md:text-sm text-gray-600 font-medium leading-tight whitespace-nowrap">
-          {label}
-        </div>
-      </div>
+    <div className="bg-[#0a1628] border border-white/[0.1] rounded-xl px-4 py-3 text-xs shadow-xl">
+      <p className="text-white/40 mb-1">{label}</p>
+      <p className="font-semibold text-[#f26d26]">
+        {payload[0].value} projects
+      </p>
     </div>
   );
-});
+};
 
-StatCard.displayName = 'StatCard';
-
+// ─── About section ────────────────────────────────────────────────────────────
 export default function AboutUs() {
-  const [isImageHovered, setIsImageHovered] = useState(false);
-
-  const stats = [
-    {
-      icon: <Award size={20} />,
-      number: "5+",
-      label: "Years Experience"
-    },
-    {
-      icon: <Zap size={20} />,
-      number: "24/7",
-      label: "Support Available"
-    },
-  ];
-
   return (
-    <section id="about" className="py-16 md:py-24 lg:py-32 bg-white">
-      <style jsx>{`
-        @media (max-width: 640px) {
-          .image-wrapper {
-            max-width: min(100%, 280px);
-            height: auto;
-            aspect-ratio: 3/4;
-          }
+    <section
+      id="about"
+      className="relative w-full bg-[#030303] py-20 md:py-28"
+    >
+      {/* Ambient blobs */}
+      <div className="absolute inset-0 pointer-events-none" aria-hidden>
+        <div className="absolute top-0 right-0 w-[500px] h-[400px] rounded-full bg-[#f26d26]/5 blur-[120px]" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-[#0c4a6e]/10 blur-[100px]" />
+      </div>
 
-          .title {
-            font-size: clamp(1.5rem, 5vw, 2.5rem);
-          }
+      <div className="relative z-10 w-full max-w-6xl mx-auto px-4 md:px-8">
 
-          .tagline {
-            font-size: clamp(0.75rem, 2vw, 0.875rem);
-          }
+        {/* ── Badge ─────────────────────────────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.1] mb-10"
+        >
+          <Circle className="h-2 w-2 fill-[#f26d26] text-[#f26d26]" />
+          <span className="text-xs text-white/50 tracking-widest uppercase font-medium">
+            About Us
+          </span>
+        </motion.div>
 
-          .description {
-            font-size: clamp(0.95rem, 2.5vw, 1.05rem);
-          }
+        {/*
+          ── Headline + inline gray description
+          Exactly like featured-section-stats:
+          bold large title, then a gray span continuation at the same font-size
+        */}
+        <motion.h2
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.05 }}
+          className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-white mb-14 md:mb-16 leading-snug max-w-5xl"
+        >
+          Transforming ideas into digital reality.{" "}
+          <span className="text-white/40 font-normal text-xl sm:text-2xl lg:text-3xl">
+            We are a passionate team of technology experts committed to delivering
+            innovative solutions that help Kenyan businesses thrive — from graphic
+            design and web development to mobile apps and IT security.
+          </span>
+        </motion.h2>
 
-          .stats-grid {
-            grid-template-columns: 1fr;
-            gap: clamp(0.75rem, 2vw, 1rem);
-          }
-        }
+        {/*
+          ── Stats row — exactly like featured-section-stats grid
+          grid-cols-2 sm:grid-cols-4
+        */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.15 }}
+          className="grid grid-cols-2 sm:grid-cols-4 gap-6 mb-10"
+        >
+          {[
+            { number: "15+",  label: "Projects Delivered" },
+            { number: "15+",   label: "Happy Clients"      },
+            { number: "5+",    label: "Years Experience"   },
+            { number: "24/7",  label: "Support Available"  },
+          ].map((stat) => (
+            <div key={stat.label}>
+              <p className="text-3xl font-semibold text-white mb-1">
+                {stat.number}
+              </p>
+              <p className="text-white/40 text-sm">
+                {stat.label}
+              </p>
+            </div>
+          ))}
+        </motion.div>
 
-        @media (min-width: 641px) and (max-width: 768px) {
-          .image-wrapper {
-            max-width: 100%;
-            height: auto;
-            aspect-ratio: 3/4;
-          }
-
-          .title {
-            font-size: 2.25rem;
-          }
-
-          .description {
-            font-size: 1rem;
-          }
-
-          .stats-grid {
-            grid-template-columns: 1fr 1fr;
-            gap: 1.25rem;
-          }
-        }
-
-        @media (min-width: 769px) {
-          .image-wrapper {
-            width: 100%;
-            max-width: 100%;
-            height: auto;
-            aspect-ratio: 3/4;
-          }
-        }
-      `}</style>
-
-      <div className="max-w-7xl mx-auto px-4 md:px-8 lg:ml-[250px]">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-12 items-start justify-center">
-          
-          {/* Empty space on left (1.5 cols) */}
-          <div className="hidden lg:block lg:col-span-1.5"></div>
-
-          {/* Image Column - Left (3 cols) */}
-          <div className="lg:col-span-3 flex justify-center lg:justify-start">
-            <div 
-              className="relative w-full md:w-72 h-80 md:h-96 rounded-2xl overflow-hidden shadow-lg group cursor-pointer image-wrapper"
-              style={{ willChange: 'transform' }}
-              onMouseEnter={() => setIsImageHovered(true)}
-              onMouseLeave={() => setIsImageHovered(false)}
-            >
-              <Image 
-                src="/images/mobile.jpeg"
-                alt="Team collaboration and digital innovation"
-                width={380}
-                height={409}
-                sizes="(max-width: 640px) 280px, (max-width: 768px) 288px, 380px"
-                className="w-full h-full object-cover"
-                quality={85}
-                priority={false}
-                placeholder="blur"
-                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDABQODxIPDRQSEBIXFRQYHjIhHhwcHj0sLiQySUBMS0dARkVQWnNiUFVtVkVGZIhlbXd7gYKBTmCNl4x9lnN+gXz/2wBDARUXFx4aHjshITt8U0ZTfHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHz/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWEREiMxUf/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+        {/*
+          ── Full-width area chart — exactly like featured-section-stats
+        */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.25 }}
+          className="w-full h-48"
+        >
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={chartData} margin={{ top: 4, right: 0, left: -28, bottom: 0 }}>
+              <defs>
+                <linearGradient id="gradOrange" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%"  stopColor="#f26d26" stopOpacity={0.4} />
+                  <stop offset="95%" stopColor="#f26d26" stopOpacity={0}   />
+                </linearGradient>
+              </defs>
+              <XAxis
+                dataKey="month"
+                tick={{ fill: "rgba(255,255,255,0.25)", fontSize: 11 }}
+                axisLine={false}
+                tickLine={false}
               />
-              
-              {/* Hover Overlay */}
-              <div 
-                className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-5 transition-opacity duration-300"
-                style={{
-                  opacity: isImageHovered ? 1 : 0,
-                  willChange: 'opacity',
-                }}
-              >
-                <p className="text-white text-sm md:text-base leading-relaxed font-medium">
-                  From stunning graphics to powerful applications, we help businesses thrive in the digital landscape with cutting-edge technology and creative excellence.
-                </p>
-              </div>
-            </div>
-          </div>
+              <Tooltip
+                content={<CustomTooltip />}
+                cursor={{ stroke: "rgba(255,255,255,0.06)", strokeWidth: 1 }}
+              />
+              <Area
+                type="monotone"
+                dataKey="projects"
+                stroke="#f26d26"
+                strokeWidth={2}
+                fillOpacity={1}
+                fill="url(#gradOrange)"
+                dot={false}
+                activeDot={{ r: 4, fill: "#f26d26", strokeWidth: 0 }}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </motion.div>
 
-          {/* Text & Stats Column - Right (5 cols) */}
-          <div className="lg:col-span-5 flex flex-col justify-start">
-            <span className="text-orange-600 text-sm md:text-base font-semibold uppercase tracking-widest mb-3 md:mb-4 block tagline">
-              About Us
-            </span>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-black mb-4 md:mb-6 leading-tight title">
-              Transforming Ideas Into Digital Reality
-            </h2>
-            <p className="text-base md:text-lg text-gray-500 leading-relaxed mb-6 md:mb-8 description">
-              We are a passionate team of technology experts committed to delivering 
-              innovative digital solutions.
-            </p>
-
-            {/* Stats Grid */}
-            <div className="grid grid-cols-2 lg:flex lg:flex-wrap gap-3 md:gap-4 stats-grid">
-              {stats.map((stat, index) => (
-                <StatCard 
-                  key={index}
-                  icon={stat.icon}
-                  number={stat.number}
-                  label={stat.label}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* Empty space on right (2.5 cols) */}
-          <div className="hidden lg:block lg:col-span-2.5"></div>
-        </div>
       </div>
     </section>
   );
