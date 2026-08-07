@@ -1,269 +1,62 @@
 "use client";
 
-import React, { useCallback, useMemo, memo, type ComponentProps, type ReactNode } from "react";
-import { motion, useReducedMotion } from "framer-motion";
-import {
-  Mail,
-  Phone,
-  MapPin,
-  Linkedin,
-  Github,
-  Twitter,
-  Facebook,
-  ArrowUp,
-  Code2,
-  Circle,
-} from "lucide-react";
+import { Instagram, Linkedin } from "lucide-react";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-interface FooterLink {
-  title: string;
-  href: string;
-  icon?: React.ComponentType<{ className?: string; size?: number }>;
-}
-interface FooterSection {
-  label: string;
-  links: FooterLink[];
-}
-
-// ─── AnimatedContainer (from footer-section prompt) ──────────────────────────
-type ViewAnimationProps = {
-  delay?: number;
-  className?: ComponentProps<typeof motion.div>["className"];
-  children: ReactNode;
-};
-
-function AnimatedContainer({ className, delay = 0.1, children }: ViewAnimationProps) {
-  const shouldReduceMotion = useReducedMotion();
-  if (shouldReduceMotion) return <>{children}</>;
+function DribbbleIcon({ className }: { className?: string }) {
   return (
-    <motion.div
-      initial={{ filter: "blur(4px)", translateY: 16, opacity: 0 }}
-      whileInView={{ filter: "blur(0px)", translateY: 0, opacity: 1 }}
-      viewport={{ once: true }}
-      transition={{ delay, duration: 0.8, ease: [0.25, 0.4, 0.25, 1] }}
-      className={className}
-    >
-      {children}
-    </motion.div>
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden>
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c5.51 0 10-4.48 10-10S17.51 2 12 2zm6.605 4.61a8.502 8.502 0 011.93 5.314c-.281-.054-3.101-.629-5.943-.271-.065-.152-.136-.306-.209-.459-.232-.491-.481-.98-.744-1.459 2.284-1.003 4.862-2.988 4.966-3.125zM12 3.475c2.17 0 4.154.813 5.662 2.148-.152.129-2.576 1.924-4.942 2.888-.845-1.521-1.781-2.989-2.775-4.361A8.686 8.686 0 0112 3.475zm-3.633.803a53.896 53.896 0 012.816 4.247c-3.511 1.055-6.635 1.011-6.929 1.007a8.523 8.523 0 014.113-5.254zM3.475 12c0-.084.002-.168.007-.252.291.005 3.912.051 6.7-1.276.187.363.366.728.535 1.092-.076.024-.15.049-.224.075-3.341 1.137-5.717 4.243-5.898 4.519a8.445 8.445 0 01-2.12-3.158zm8.522 8.523a8.445 8.445 0 01-3.158-2.12c.276-.182 3.382-2.557 4.519-5.898.026-.074.051-.148.075-.224.364.169.729.348 1.092.535-1.327 2.788-1.281 6.409-1.276 6.7-.084.005-.168.007-.252.007zm4.847-1.235c-.131-.233-2.116-2.682-4.966-3.125a49.106 49.106 0 011.311-3.497 8.523 8.523 0 013.655 6.622zm-2.829-7.785a50.334 50.334 0 00-1.214-3.587c.293-.015.588-.023.884-.023 2.48 0 4.814.722 6.788 1.962-.912 1.175-2.831 2.414-5.458 2.648z" />
+    </svg>
   );
 }
 
-// ─── Data ─────────────────────────────────────────────────────────────────────
-const footerSections: FooterSection[] = [
-  {
-    label: "Quick Links",
-    links: [
-      { title: "Home",      href: "#hero" },
-      { title: "About Us",  href: "#about" },
-      { title: "Services",  href: "#services" },
-      { title: "Portfolio", href: "#portfolio" },
-      { title: "Contact",   href: "#contact" },
-    ],
-  },
-  {
-    label: "Our Services",
-    links: [
-      { title: "Graphic Design",     href: "#services" },
-      { title: "Web Design",         href: "#services" },
-      { title: "Web Development",    href: "#services" },
-      { title: "App Development",    href: "#services" },
-      { title: "IT Security",        href: "#services" },
-      { title: "Database Solutions", href: "#services" },
-    ],
-  },
-  {
-    label: "Company",
-    links: [
-      { title: "Privacy Policy",   href: "/privacy" },
-      { title: "Terms of Service", href: "/terms" },
-    ],
-  },
-];
-
 const socialLinks = [
-  { name: "LinkedIn", icon: Linkedin,  href: "https://www.linkedin.com/in/daniel-ngumo-20960127b/" },
-  { name: "GitHub",   icon: Github,    href: "https://github.com/DanielNgumo" },
-  { name: "Twitter",  icon: Twitter,   href: "#" },
-  { name: "Facebook", icon: Facebook,  href: "#" },
+  { name: "LinkedIn", icon: Linkedin, href: "https://www.linkedin.com/in/daniel-ngumo-20960127b/" },
+  { name: "Dribbble", icon: DribbbleIcon, href: "https://dribbble.com" },
+  { name: "Instagram", icon: Instagram, href: "https://instagram.com" },
 ];
 
-const contactInfo = [
-  { icon: Mail,   content: "dev@technasi.co.ke" },
-  { icon: Phone,  content: "+254 742 580 239" },
-  { icon: MapPin, content: "Nairobi, Kenya" },
-];
-
-// ─── Scroll-to-top button ─────────────────────────────────────────────────────
-const ScrollTopButton = memo(({ onClick }: { onClick: () => void }) => (
-  <motion.button
-    onClick={onClick}
-    whileHover={{ y: -4, scale: 1.08 }}
-    whileTap={{ scale: 0.95 }}
-    aria-label="Scroll to top"
-    type="button"
-    className="absolute -top-6 right-6 md:right-12 w-12 h-12 rounded-full flex items-center justify-center
-               bg-[#f26d26] text-white shadow-[0_6px_24px_rgba(242,109,38,0.45)]
-               border border-[#f26d26]/30 transition-shadow duration-300
-               hover:shadow-[0_10px_32px_rgba(242,109,38,0.6)]"
-  >
-    <ArrowUp size={20} />
-  </motion.button>
-));
-ScrollTopButton.displayName = "ScrollTopButton";
-
-// ─── Footer ───────────────────────────────────────────────────────────────────
-const Footer = memo(() => {
-  const currentYear = useMemo(() => new Date().getFullYear(), []);
-
-  const scrollToTop = useCallback(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []);
+export default function Footer() {
+  const year = new Date().getFullYear();
 
   return (
-    <footer className="relative w-full bg-[#030303] border-t border-white/[0.07] overflow-hidden">
-      {/* Radial glow at top — mirrors the footer-section prompt effect */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[40%] h-px bg-gradient-to-r from-transparent via-[#f26d26]/40 to-transparent" />
-      <div
-        className="absolute top-0 left-0 right-0 h-48 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(50% 120px at 50% 0%, rgba(12,74,110,0.18) 0%, transparent 100%)",
-        }}
-      />
-
-      {/* Ambient blobs */}
-      <div className="absolute bottom-0 left-0 w-[400px] h-[300px] rounded-full bg-[#0c4a6e]/8 blur-[100px] pointer-events-none" />
-      <div className="absolute top-10 right-0 w-[300px] h-[250px] rounded-full bg-[#f26d26]/6 blur-[90px] pointer-events-none" />
-
-      {/* Dot-grid texture */}
-      <div
-        className="absolute inset-0 opacity-[0.025] pointer-events-none"
-        style={{
-          backgroundImage: "radial-gradient(circle, #fff 1px, transparent 1px)",
-          backgroundSize: "32px 32px",
-        }}
-      />
-
-      <ScrollTopButton onClick={scrollToTop} />
-
-      {/* ── Main content ──────────────────────────────────────────────────── */}
-      <div className="relative z-10 max-w-6xl mx-auto px-6 pt-16 pb-10 md:pt-20 md:pb-12">
-        <div className="grid xl:grid-cols-3 gap-10 xl:gap-12 mb-14">
-
-          {/* Brand column */}
-          <AnimatedContainer delay={0.05} className="xl:col-span-1 space-y-5">
-            {/* Logo */}
-            <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-[#f26d26]/10 border border-[#f26d26]/20 flex items-center justify-center">
-                <Code2 size={18} className="text-[#f26d26]" />
-              </div>
-              <span className="text-xl font-extrabold text-white tracking-tight">
-                TechNasi
-              </span>
-            </div>
-
-            {/* Tagline */}
-            <p className="text-sm text-white/45 leading-relaxed max-w-xs">
-              Transforming ideas into digital reality. Your trusted partner for
-              innovative tech solutions and creative excellence in Kenya.
+    <footer className="bg-white border-t border-portfolio-border">
+      <div className="max-w-7xl mx-auto px-5 md:px-8 py-8 md:py-10">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="text-center sm:text-left">
+            <p className="font-display text-lg font-bold text-portfolio-fg">
+              Daniel Ngumo
             </p>
+            <p className="text-xs text-portfolio-muted mt-1">
+              © {year} All rights reserved.
+            </p>
+          </div>
 
-            {/* Contact info */}
-            <ul className="space-y-2.5 mt-2">
-              {contactInfo.map(({ icon: Icon, content }) => (
-                <li key={content} className="flex items-center gap-2.5 text-sm text-white/50 hover:text-white/80 transition-colors duration-200">
-                  <Icon size={13} className="text-[#f26d26] flex-shrink-0" />
-                  <span>{content}</span>
-                </li>
-              ))}
-            </ul>
-
-            {/* Social icons */}
-            <div className="flex items-center gap-2 pt-1">
-              {socialLinks.map(({ name, icon: Icon, href }) => (
-                <motion.a
-                  key={name}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={name}
-                  whileHover={{ y: -3, scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="w-9 h-9 rounded-xl bg-white/[0.05] border border-white/[0.09] flex items-center justify-center
-                             text-white/50 hover:text-white hover:bg-[#f26d26]/20 hover:border-[#f26d26]/30
-                             transition-colors duration-200"
-                >
-                  <Icon size={15} />
-                </motion.a>
-              ))}
-            </div>
-          </AnimatedContainer>
-
-          {/* Link columns */}
-          <div className="xl:col-span-2 grid grid-cols-2 md:grid-cols-3 gap-8">
-            {footerSections.map((section, i) => (
-              <AnimatedContainer key={section.label} delay={0.12 + i * 0.08}>
-                <div>
-                  <h3 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/40 mb-4">
-                    {section.label}
-                  </h3>
-                  <ul className="space-y-2.5">
-                    {section.links.map((link) => (
-                      <li key={link.title}>
-                        <a
-                          href={link.href}
-                          className="group inline-flex items-center gap-1.5 text-sm text-white/50
-                                     hover:text-white transition-all duration-200
-                                     hover:translate-x-1 transform"
-                        >
-                          {link.icon && (
-                            <link.icon size={13} className="text-[#f26d26]/70 group-hover:text-[#f26d26]" />
-                          )}
-                          {link.title}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </AnimatedContainer>
+          <div className="flex items-center gap-4">
+            {socialLinks.map(({ name, icon: Icon, href }) => (
+              <a
+                key={name}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={name}
+                className="w-9 h-9 flex items-center justify-center rounded-full border border-portfolio-border text-portfolio-muted hover:text-portfolio-fg hover:border-portfolio-fg transition-colors"
+              >
+                <Icon className="w-4 h-4" />
+              </a>
             ))}
           </div>
-        </div>
 
-        {/* ── Divider ─────────────────────────────────────────────────────── */}
-        <div className="w-full h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent mb-7" />
-
-        {/* ── Bottom bar ──────────────────────────────────────────────────── */}
-        <AnimatedContainer delay={0.4}>
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            {/* Copyright */}
-            <div className="flex items-center gap-2 text-xs text-white/30">
-              <Circle className="w-1.5 h-1.5 fill-[#f26d26] text-[#f26d26]" />
-              <span>© {currentYear} TechNasi. All rights reserved.</span>
-            </div>
-
-            {/* Legal links */}
-            <div className="flex items-center gap-6">
-              {[
-                { label: "Privacy Policy", href: "/privacy" },
-                { label: "Terms of Service", href: "/terms" },
-              ].map(({ label, href }) => (
-                <a
-                  key={label}
-                  href={href}
-                  className="text-xs text-white/30 hover:text-white/70 transition-colors duration-200"
-                >
-                  {label}
-                </a>
-              ))}
-            </div>
+          <div className="flex items-center gap-4 text-xs text-portfolio-muted">
+            <a href="/privacy" className="hover:text-portfolio-fg transition-colors">
+              Privacy
+            </a>
+            <a href="/terms" className="hover:text-portfolio-fg transition-colors">
+              Terms
+            </a>
           </div>
-        </AnimatedContainer>
+        </div>
       </div>
     </footer>
   );
-});
-
-Footer.displayName = "Footer";
-export default Footer;
+}

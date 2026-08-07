@@ -17,15 +17,14 @@ const nextConfig = {
     // Optional: Add domains if you use external images
     // domains: ['example.com'],
     
-    // Optional: Add remote patterns for external images
-    // remotePatterns: [
-    //   {
-    //     protocol: 'https',
-    //     hostname: 'example.com',
-    //     port: '',
-    //     pathname: '/images/**',
-    //   },
-    // ],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        port: '',
+        pathname: '/**',
+      },
+    ],
   },
   
   // Optimize production builds
